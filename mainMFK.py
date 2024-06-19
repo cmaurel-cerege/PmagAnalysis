@@ -29,17 +29,19 @@ if type == 'r':
             Tstep.append(float(cols[0]))
             K.append(float(cols[6])*1e-5/(mass*1e-3))
     fp.close()
+    Tstep, K = np.array(Tstep), np.array(K)
 
-    normsus = input('Normalize susceptibility? (y/N)')
-    fig = plt.figure()
+    normsus = input('Normalize susceptibility? (Y/n)')
+    fig = plt.figure(figsize=(6,4))
+    plt.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
     plt.xlabel('Temperature (C)')
-    plt.xlim(0, np.max(Tstep)+20)
-    if normsus == 'N':
-        plt.ylabel('Susceptibility (m3 kg-1)')
-        plt.ylim(0, 1.1*np.max(K))
-    else:
+    plt.xlim(np.min(Tstep)-20, np.max(Tstep)+20)
+    if normsus != 'n':
         plt.ylabel('Normalized susceptibility')
         plt.ylim(0, 1.1*np.max(K/K[0]))
+    else:
+        plt.ylabel('Susceptibility (m3 kg-1)')
+        plt.ylim(0, 1.1*np.max(K))
     plt.plot(Tstep,K/K[0],'k-',marker='o',ms='3',lw=0.5,mfc='k')
     fig.tight_layout()
 
@@ -107,27 +109,29 @@ if type == 'l' or type == 'h':
             plotderivativeonfig = 'n'
 
         fig, ax1 = plt.subplots(1,1,figsize=(6,4))
+        plt.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
         plt.xlabel('Temperature (K)')
         ax1.set_ylabel('Susceptibility (m3 kg-1)')
-        ax1.set_ylim(0, np.max(K_LT_corr)+0.1*np.max(K_LT_corr))
+        ax1.set_ylim(0, 1.1*np.max(K_LT_corr))
         ax1.plot(T_LT_interp+273.15, K_LT_corr, 'k-', marker='.', ms='0', lw=1.5)
         if plotderivative != 'n' and plotderivativeonfig != 'n':
             ax2 = ax1.twinx()
             ax2.set_ylabel('Derivative of susceptibility (m3 kg-1 K-1)')
-            ax2.set_ylim(np.min(K_LT_corr_prime)-0.1*np.min(K_LT_corr_prime), np.max(K_LT_corr_prime)+0.1*np.max(K_LT_corr_prime))
+            ax2.set_ylim(1.1*np.min(K_LT_corr_prime), 1.1*np.max(K_LT_corr_prime))
             ax2.plot(T_LT_interp+273.15, K_LT_corr_prime, 'r-', marker='.', ms='0', lw=1.5)
             fig.tight_layout()
             if save == 'y':
                 plt.savefig(path + sample + '_suscLT.pdf', format='pdf', dpi=200, bbox_inches="tight")
         if plotderivative != 'n' and plotderivativeonfig == 'n':
             fig = plt.figure()
+            plt.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
             plt.xlabel('Temperature (K)')
             plt.ylabel('Derivative of susceptibility (m3 kg-1 K-1)')
+            plt.ylim(1.1*np.min(K_LT_corr_prime), 1.1*np.max(K_LT_corr_prime))
             plt.plot(T_LT_interp+273.15, K_LT_corr_prime, 'k-', marker='o', ms='4', lw=0.5)
             fig.tight_layout()
             if save == 'y':
                 plt.savefig(path + sample + '_suscLT.pdf', format='pdf', dpi=200, bbox_inches="tight")
-
 
     if type == 'h':
 
@@ -157,10 +161,11 @@ if type == 'l' or type == 'h':
         K_HTc_corr = (K_HTc_interp-K_HTcpe_interp)*1e-5/(mass*1e-3)
 
         fig = plt.figure(figsize=(6,4))
+        plt.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
         plt.xlabel('Temperature (C)')
         plt.ylabel('Susceptibility (m3 kg-1)')
         plt.xlim(0, 710)
-        plt.ylim(0, 2.4)
+        plt.ylim(0, 1.1*np.max(K_HTc_corr))
         plt.plot(T_LT_interp, K_HTh_corr, 'r-', marker='o', ms='0', lw=1.5)
         plt.plot(T_LT_interp, K_HTc_corr, 'b-', marker='o', ms='0', lw=1.5)
         fig.tight_layout()
