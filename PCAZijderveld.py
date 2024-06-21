@@ -66,7 +66,7 @@ def Calc_MAD_and_DANG(Mx, My, Mz, AF, id1, id2, mass=1):
 
     CoM = np.array([np.mean(Mx), np.mean(My), np.mean(Mz)])
     DANG = np.arccos(np.dot(Mcmax/np.linalg.norm(Mcmax),CoM/np.linalg.norm(CoM)))*180/np.pi
-    print(" * DANG = " + f'{DANG:.2f}'+'°')
+    print(" * DANG = " + f'{DANG:.2f}'+'°\n')
 
     return MAD, DANG, vecs[0], MAD95, Mcmax
 
