@@ -34,10 +34,10 @@ for j, line in enumerate(fp):
         ## Name code to know which step (Z, I, C, T) you're looking at:
         if thellier == 'y':
             step = str(cols[17]).split('.')
-            if step[-1] == '00': Thtype.append('Z')
-            elif step[-1] == '01': Thtype.append('I')
-            elif step[-1] == '02': Thtype.append('C')
-            elif step[-1] == '03': Thtype.append('T')
+            if step[-1] == '00': Thtype.append('Z')  ## Z step
+            elif step[-1] == '01': Thtype.append('I')  ## I step
+            elif step[-1] == '02': Thtype.append('C')  ## pTRM check
+            elif step[-1] == '03': Thtype.append('T')  ## pTRM tail check
             else: print('Temperature notation problem...'); sys.exit()
             Thstep.append(int(cols[-8].split('.')[0]))
         else:
