@@ -16,25 +16,21 @@ for k in np.arange(len(sys.argv[1].split('/')) - 1):
 
 sample = sys.argv[1].split('/')[-1].split('.')[0]
 
-
-
-Mx, My, Mz, Thstep, type = [], [], [], [], []
+Mx, My, Mz, Thstep, Thtype = [], [], [], [], []
 for j, line in enumerate(fp):
     if j > 0:
         cols = line.split()
         Mx.append(float(cols[1]) * 1e-3)
         My.append(float(cols[2]) * 1e-3)
         Mz.append(float(cols[3]) * 1e-3)
+        ## Name code to know which step (Z, I, C, T) you're looking at:
         if thellier == 'y':
             step = str(cols[17]).split('.')
-            if step[-1] == '00':
-                type.append('Z')
-            elif step[-1] == '01':
-                type.append('I')
-            elif step[-1] == '02':
-                type.append('C')
-            elif step[-1] == '03':
-                type.append('T')
+            if step[-1] == '00': Thtype.append('Z')
+            elif step[-1] == '01': Thtype.append('I')
+            elif step[-1] == '02': Thtype.append('C')
+            elif step[-1] == '03': Thtype.append('T')
+            else: print('Temperature notation problem...'); sys.exit()
             Thstep.append(int(cols[-8].split('.')[0]))
         else:
             Thstep.append(float(cols[17]))
@@ -44,20 +40,19 @@ Mx, My, Mz = np.array(Mx), np.array(My), np.array(Mz)
 if thellier == 'y':
     arm = input('ARM sample? (y/N)')
     if arm == 'y':
-        Plot_thellier_arm(Mx, My, Mz, Thstep, type)
+        Plot_thellier_arm(Mx, My, Mz, Thstep, Thtype)
         if save == 'y':
             plt.savefig(path + sample + '-ARMvsT.pdf', format='pdf', dpi=400, bbox_inches="tight")
     else:
-
-        Plot_thellier_intensities(Mx, My, Mz, Thstep, type)
+        Plot_Thellier(Mx, My, Mz, Thstep, Thtype)
         if save == 'y':
             plt.savefig(path + sample + '-Thellier_int.pdf', format='pdf', dpi=400, bbox_inches="tight")
 
-        NRMx, NRMy, NRMz, NRM, pTRMgained, cHgained, zStep, cStep = Plot_aray(Mx, My, Mz, Thstep, type)
+        NRMx, NRMy, NRMz, NRM, pTRMgained, cHgained, zStep, cStep = Plot_aray(Mx, My, Mz, Thstep, Thtype)
         if save == 'y':
             plt.savefig(path + sample + '-Aray.pdf', format='pdf', dpi=400, bbox_inches="tight")
 
-        Calc_stat_thellier(NRM, pTRMgained, cHgained, zStep, cStep, field=30)
+        Stat_Thellier(NRM, pTRMgained, cHgained, zStep, cStep, field=30)
         if save == 'y':
             plt.savefig(path + sample + '-Aray_fit.pdf', format='pdf', dpi=400, bbox_inches="tight")
 

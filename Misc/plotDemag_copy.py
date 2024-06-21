@@ -24,10 +24,10 @@ def Plot_thermal_demag(Mx, My, Mz, T, norm=False, color='lightgray', marker='o')
 
     fig = plt.figure(figsize=(6,3))
     plt.xlabel('Temperature (°C)')
-    plt.ylabel('Normalized moment')
+    plt.ylabel('Moment (A m2)')
     plt.xlim(0, np.max(T)+10)
-    plt.ylim(0, 1.1)
-    plt.plot(T,NRM/NRM[0],color='k',marker=marker,mec='k',mfc=color,ms=5,lw=0.5,mew=0.5)
+    plt.ylim(0, 1.1*np.max(NRM))
+    plt.plot(T,NRM,marker=marker,mec='k',mfc=color,ms=5,lw=0.5)
 
     return
 
@@ -132,8 +132,6 @@ def Plot_Aray(Mx, My, Mz, Thstep, type):
 
     return NRMx, NRMy, NRMz, NRM, pTRMgained, cHgained, zStep, cStep
 
-
-### #TO DO...
 def Stat_Thellier(NRM,pTRMgained,cHgained,zStep,cStep,field):
 
     idstart = int(eval(input("Start step for analysis? ")))
@@ -175,3 +173,56 @@ def Stat_Thellier(NRM,pTRMgained,cHgained,zStep,cStep,field):
         print("DRATS = "+f'{DRATS*100:.1f}'+'%')
 
     return
+
+def Plot_thellier_arm(Mx, My, Mz, step, color='k', line=0.5, marker='o', path=''):
+
+    Mx, My, Mz = np.array(Mx), np.array(My), np.array(Mz)
+    NRM = [np.sqrt(Mx[0]**2+My[0]**2+Mz[0]**2),np.sqrt(Mx[1]**2+My[1]**2+Mz[1]**2)]
+    T = step[0:2]
+    for k in np.arange(2,len(step)):
+        if step[k]>step[k-1] and step[k]>step[k-2]:
+            NRM.append(np.sqrt(Mx[k] ** 2 + My[k] ** 2 + Mz[k] ** 2))
+            T.append(step[k])
+    NRM = np.array(NRM)
+    print(NRM)
+    fig = plt.figure()
+    plt.xlabel('Temperature (C)')
+    plt.ylabel('ARM normalized to ARM0')
+    plt.xlim(10, max(step) + 10)
+    #plt.ylim(0.6,1.4)
+    plt.plot(T, NRM/NRM[0], c='k', marker='o', markeredgecolor='k', markerfacecolor='darkred', ms=6, lw=0.5, zorder=3)
+    fig.tight_layout()
+
+
+
+
+
+
+
+
+
+
+
+
+# def Plot_ratio_demag(Mxa, Mya, Mza, Mxb, Myb, Mzb, step, color='k', label, path):
+#
+#     Mxa, Mya, Mza, Mxb, Myb, Mzb = np.array(Mxa), np.array(Mya), np.array(Mza), np.array(Mxb), np.array(Myb), np.array(Mzb)
+#
+#     Ma = np.sqrt(Mxa ** 2 + Mya ** 2 + Mza ** 2)
+#     Mb = np.sqrt(Mxb ** 2 + Myb ** 2 + Mzb ** 2)
+#
+#     ax = plt.subplot()
+#     ax.set_xlabel('AF level (mT)')
+#     ax.set_ylabel('M / Mlab')
+#     ax.set_xlim(-2, max(AFstep) + 2)
+#     #ax.set_ylim(0,0.6)
+#     #ax.set_xscale('log')
+#     ax.set_yscale('log')
+#     ax.plot(AFstep, Ma/Mb, color=color, marker='o', markeredgecolor='k', ms=5, lw=0, label=label)
+#     #res = stats.linregress(np.log(AFstep),np.log(Ma/Mb))
+#     #ax.plot(AFstep, np.exp((res.slope * np.log(AFstep) + res.intercept)*np.log(2.7)), 'k--', lw=1)
+#     #print('M/Mlab = f(AFstep) slope: '+str(res.slope))
+#
+#     plt.legend()
+#     if path != '':
+#         plt.savefig(str(path), format='png', dpi=200, bbox_inches="tight")

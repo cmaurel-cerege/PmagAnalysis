@@ -5,14 +5,11 @@ import scipy.spatial as spatial
 class FollowDotCursor(object):
 
     def __init__(self, ax, x, y, L, AF, y2):
-        try:
-            x = np.asarray(x, dtype='float')
-        except (TypeError, ValueError):
-            x = np.asarray(mdates.date2num(x), dtype='float')
+        x = np.asarray(x, dtype='float')
         y = np.asarray(y, dtype='float')
         mask = ~(np.isnan(x) | np.isnan(y))
-        x = x[mask]
-        y = y[mask]
+        x, y = x[mask], y[mask]
+        self.x0 = np.max([np.max(np.absolute(np.array(x))),np.max(np.absolute(np.array(y)))])
         self._points = np.column_stack((x, y))
         y = y[np.abs(y - y.mean()) <= 3 * y.std()]
         self.scale = x.ptp()
@@ -24,17 +21,10 @@ class FollowDotCursor(object):
         self.AF = AF
         self.y2 = y2
         self.annotation = {}
-        self.dot = ax.scatter([x.min()], [y.min()], s=60, color='green', alpha=0.7)
-        self.dot2 = ax.scatter([x.min()], [y2.min()], s=60, color='green', alpha=0.7)
+        self.dot = ax.scatter([x.min()], [y.min()], s=60, color='green', alpha=0.7, zorder=3)
+        self.dot2 = ax.scatter([x.min()], [y2.min()], s=60, color='green', alpha=0.7, zorder=3)
 
-        self.xoffset, self.yoffset = -30, 30
-
-        # self.annotation = ax.annotate("",xy=(x, y), xytext=(self.xoffset, self.yoffset),textcoords='offset points', ha='left', va='center',bbox=dict(boxstyle='round,pad=0.5', fc='white', alpha=0.5),arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
-
-        self.annotation = ax.annotate("", xy=(x, y), xytext=(self.xoffset, self.yoffset), textcoords='offset points',
-                                      ha='left', va='center',
-                                      bbox=dict(boxstyle='round,pad=0.5', fc='white', alpha=0.5),
-                                      arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0'))
+        self.annotation = ax.annotate("", xy=(self.x0, self.x0), xytext=(0,0), textcoords='offset points',ha='left', va='center',bbox=dict(boxstyle='round,pad=0.5', fc='white', alpha=0.5),transform=ax.transAxes)
 
         self.annotation.set_visible(False)
 
@@ -60,7 +50,7 @@ class FollowDotCursor(object):
             inv = ax.transData.inverted()
             x, y = inv.transform([(event.x, event.y)]).ravel()
         x, y = self.snap(x, y)
-        self.annotation.xy = x, y
+        self.annotation.xy = -self.x0, self.x0
         id = list(l).index(min(l, key=lambda a: abs(a - x)))
         self.annotation.set_text("Index: " + str(id) + "\nLevel: " + str(af[id]))
         self.annotation.set_visible(True)
@@ -71,16 +61,6 @@ class FollowDotCursor(object):
         self.dot.set_offsets(np.column_stack((x, y)))
         self.dot2.set_offsets(np.column_stack((x, yy)))
         self.fig.canvas.draw_idle()
-
-    def annotate(self, ax):
-        """Draws and hides the annotation box for the given axis "ax"."""
-        annotation = ax.annotate(self.formatter, xy=(0, 0), ha='left',
-                                 xytext=self.offsets, textcoords='offset points', va='center',
-                                 bbox=dict(boxstyle='round,pad=0.5', fc='white', alpha=0.5),
-                                 arrowprops=dict(arrowstyle='->', connectionstyle='arc3,rad=0')
-                                 )
-        annotation.set_visible(False)
-        return annotation
 
     def snap(self, x, y):
         """Return the value in self.tree closest to x, y."""

@@ -1,12 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
-from scipy import stats
-from scipy.optimize import curve_fit
 from plotHyst import *
-
-def Get_closest_id(L,value):
-    return list(L).index(min(L, key=lambda x:abs(x-value)))
 
 save = input('Save the figures? (y/N)')
 
@@ -14,91 +9,144 @@ path = ''
 for k in np.arange(len(sys.argv[1].split('/')) - 1):
     path += str(sys.argv[1].split('/')[k]) + '/'
 sample = sys.argv[1].split('/')[-1].split('-')[0]
-# if len(sys.argv[1].split('/')[-1].split('_')) == 2:
-#     sample = sys.argv[1].split('/')[-1].split('_')[0]
-# elif len(sys.argv[1].split('/')[-1].split('_')) >= 3:
-#     sample = sys.argv[1].split('/')[-1].split('_')[0]+'_'+sys.argv[1].split('/')[-1].split('_')[1]
 
+files = sys.argv[1:]
+fp_irm, fp_bcr, fp_hyst = None, None, None
+for fp in files:
+    if 'IRMacq' in fp:
+        fp_irm = open(fp,'r',encoding="utf8", errors='ignore')
+    elif 'Hy' in fp:
+        fp_hyst = open(fp,'r',encoding="utf8", errors='ignore')
+    elif 'Bcr' in fp:
+        fp_bcr = open(fp,'r',encoding="utf8", errors='ignore')
+    elif 'LT' in fp:
+        fp_LT = open(fp,'r',encoding="utf8", errors='ignore')
 
-fp = open(sys.argv[1],'r',encoding="utf8", errors='ignore')
-if 'IRMacq' in sys.argv[1]:
-    type = 'IRM'
-elif 'Hy' in sys.argv[1]:
-    type = 'Hy'
-elif 'Bcr' in sys.argv[1]:
-    type = 'Bcr'
-elif 'LT' in sys.argv[1]:
-    type = 'LT'
+if fp_irm != None:
+    Birm, Mirm = [], []
+    if 'txt' in fp_irm.name:
+        for j,line in enumerate(fp_irm):
+            cols = line.split(',')
+            Birm.append(float(cols[0])*1e-3) ## field in T for plotting
+            Mirm.append(float(cols[1]))
+    else:
+        for j,line in enumerate(fp_irm):
+            cols = line.split(',')
+            if len(cols) > 1:
+                if cols[1] == '0':
+                    Birm.append(float(cols[3]))
+                    Mirm.append(float(cols[4]))
 
-B, M, T = [], [], []
-if 'txt' in sys.argv[1]:
-    for j,line in enumerate(fp):
-        cols = line.split(',')
-        B.append(float(cols[0])*1e-3) ## field in T for plotting
-        M.append(float(cols[1]))
-else:
-    for j,line in enumerate(fp):
+    simp = input('Simplify file? (y/N)  ')
+    if simp == 'y':
+        fpw = open(fp_irm[:-4]+'.txt', 'w')
+        for k in np.arange(1, len(Birm)):
+            fpw.write(f'{Birm[k] * 1e3:.3e}' + ',' + f'{Mirm[k]:.3e}' + '\n')
+        fpw.close()
+    fp_irm.close()
+
+    der = input('Plot derivative ? (y/N)  ')
+    IRMacq, Bvalue = plotIRMacq(Birm, Mirm, Bvalue=150, der=der, ylim=())
+    plt.show(block=False)
+
+    if save == 'y':
+        plt.savefig(path + sample + '_IRMacq.pdf', format='pdf', dpi=200, bbox_inches="tight")
+
+if fp_bcr != None:
+    Bbcr, Mbcr = [], []
+    for j, line in enumerate(fp_bcr):
         cols = line.split(',')
         if len(cols) > 1:
             if cols[1] == '0':
-                B.append(float(cols[3]))
-                M.append(float(cols[4]))
+                Bbcr.append(float(cols[3]))
+                Mbcr.append(float(cols[4]))
+    fp_bcr.close()
+    Bcr = plotBcr(Bbcr, Mbcr, ylim=())
+    plt.show(block=False)
 
-    if type == 'IRM':
-        simp = str(input('Simplify file? (y/N)'))
-        if simp == 'y':
-            fpw = open(sys.argv[1][:-3] + 'txt', 'w')
-            for k in np.arange(1, len(B)):
-                fpw.write(f'{B[k] * 1e3:.3e}' + ',' + f'{M[k]:.3e}' + '\n')
-            fpw.close()
-fp.close()
-
-if type == 'IRM':
-    der = input('Plot derivative ? (y/N)')
-    if der == 'y':
-        plotVSMdata(B,M,type=type,der='y',ylim=0,newfig='y')
-    else:
-        plotVSMdata(B, M, type=type, ylim=0, newfig='y')
     if save == 'y':
-        if der == 'y':
-            plt.savefig(path + sample + '_IRMacqder.pdf', format='pdf', dpi=400, bbox_inches="tight")
-        else:
-            plt.savefig(path + sample + '_IRMacq.pdf', format='pdf', dpi=400, bbox_inches="tight")
-    IRM150 = getIRMacq(B,M,0.150)
-    print("IRMacq. 150 mT = "+f'{IRM150:.3e}'+" A m2")
+        plt.savefig(path + sample + '_Bcr.pdf', format='pdf', dpi=200, bbox_inches="tight")
 
-elif type == 'Bcr':
-    plotVSMdata(B,M,type=type,ylim=0,newfig='y')
-    if save == 'y':
-        plt.savefig(path + sample + '_Bcr.pdf', format='pdf', dpi=400, bbox_inches="tight")
-    Bcr = getBcr(B,M)
-    print("Bcr = "+f'{Bcr*1000:.2f}'+" mT")
+if fp_hyst != None:
+    Bhyst, Mhyst = [], []
+    for j, line in enumerate(fp_hyst):
+        cols = line.split(',')
+        if len(cols) > 1:
+            if cols[1] == '0':
+                Bhyst.append(float(cols[3]))
+                Mhyst.append(float(cols[4]))
+    fp_hyst.close()
 
-elif type == 'Hy':
-
-    normalize = input("Mass normalize ? (y/N)")
-    if normalize == 'y':
-        mass = float(eval(input("Mass (g)? ")))*1e-3
+    mass = input("Mass of the sample ? ")
+    if mass != '':
+        mass = float(eval(mass))
     else:
         mass = 1
 
-    Bcut = [B[k] for k in np.arange(len(B)) if np.absolute(B[k])<1.6]
-    Mcut = [M[k] for k in np.arange(len(M)) if np.absolute(B[k])<1.6]
-    corr = input('Linear correction? (Y/n)')
-    if corr == 'n':
-        plotCorrHysteresis(Bcut, Mcut, type=type, mass=mass, linear=False, interval=0.2, ylim=0, shownocorr=True)
-        if save == 'y':
-            plt.savefig(path + sample + '_HyNC.pdf', format='pdf', dpi=400, bbox_inches="tight")
+    nonlincorr = input('Non-linear correction? (y/N)  ')
+    nocorr = input('Show data not corrected? (y/N)'  )
+    interval = 0.2
+
+    if nonlincorr == 'y':
+        if nocorr != 'y':
+            Ms, Mrs, Bc, sHF, kHF, alpha = plotHyst(Bhyst, Mhyst, mass=mass, linear=False, interval=interval, ylim=(), shownocorr=False)
+        else:
+            Ms, Mrs, Bc, sHF, kHF, alpha = plotHyst(Bhyst, Mhyst, mass=mass, linear=False, interval=interval, ylim=(), shownocorr=True)
     else:
-        plotCorrHysteresis(Bcut, Mcut, type=type, mass=mass, linear=True, interval=0.1, ylim=0, shownocorr=True)
-        if save == 'y':
-            plt.savefig(path + sample + '_HyC.pdf', format='pdf', dpi=400, bbox_inches="tight")
-
-
-if type == 'LT':
-    plotVSMLTdata(T, M, norm=True, newfig='y')
+        if nocorr != 'y':
+            Ms, Mrs, Bc, sHF, kHF, alpha = plotHyst(Bhyst, Mhyst, mass=mass, linear=True, interval=interval, ylim=(), shownocorr=False)
+        else:
+            Ms, Mrs, Bc, sHF, kHF, alpha = plotHyst(Bhyst, Mhyst, mass=mass, linear=True, interval=interval, ylim=(), shownocorr=True)
     if save == 'y':
-        plt.savefig(path + sample + '_LT.pdf', format='pdf', dpi=400, bbox_inches="tight")
+        plt.savefig(path + sample + '_Hyst.pdf', format='pdf', dpi=200, bbox_inches="tight")
+
+print('\n')
+if fp_irm != None:
+    if Bvalue != 0:
+        print(' * IRM acq. at '+str(int(Bvalue))+' mT = '+f'{IRMacq:.3e}'+' A m2\n')
+
+if fp_bcr != None:
+    print(' * Bcr = '+f'{Bcr*1000:.0f}'+' mT\n')
+
+if fp_hyst != None:
+    if nocorr != 'y':
+        if nonlincorr == 'y':
+            if mass != 1:
+                unit = 'A m2 kg-1'
+            else:
+                unit = 'A m2'
+            print(' * Ms = '+f'{Ms/mass:.3e}'+' '+unit)
+            print(' * Mrs = '+f'{Mrs/mass:.3e}'+' '+unit)
+            print(' * Bc = '+f'{Bc*1000:.2f}'+' mT')
+            print(' * HF slope = ' + f'{kHF:.3e}' + ' A m2 T-1')
+            print(' * alpha = ' + f'{alpha:.3e}' + ' A m2 T-2'+'\n')
+        else:
+            if mass != 1:
+                unit = 'A m2 kg-1'
+                unitHF = 'm3 kg-1'
+            else:
+                unit = 'A m2'
+                unitHF = 'm3'
+            print(' * Ms = ' + f'{Ms/mass:.3e}'+' '+unit)
+            print(' * Mrs = ' + f'{Mrs/mass:.3e}'+' '+unit)
+            print(' * Bc = ' + f'{Bc*1000:.1f}'+' mT')
+            print(' * HF slope = ' + f'{sHF:.2e}'+' A m2 T-1')
+            print(' * HF slope = ' + f'{kHF/mass:.2e}'+' '+unitHF+'\n')
+
+if fp_LT != None:
+    TLT, MLT = [], []
+    for j, line in enumerate(fp_hyst):
+        cols = line.split(',')
+        if len(cols) > 1:
+            if cols[1] == '0':
+                TLT.append(float(cols[3])) ## Not sure about the column
+                MLT.append(float(cols[4]))
+    fp_LT.close()
+
+    plotVSMLT(Bbcr, Mbcr, norm=False, ylim=())
+    if save == 'y':
+        plt.savefig(path + sample + '_hyLT.pdf', format='pdf', dpi=200, bbox_inches="tight")
+
 
 plt.show()
 

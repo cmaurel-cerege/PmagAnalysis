@@ -1,5 +1,4 @@
 import numpy as np
-import BPCA as bpca
 import pmagpy.pmag as pmag
 
 ## From Tauxe's book - sample eba24a
@@ -14,6 +13,6 @@ for k in np.arange(len(D)):
     z.append(pmag.dir2cart([D[k],I[k],intensity[k]])[2])
 Mx, My, Mz = x[6:14], y[6:14], z[6:14]
 
-w_mean, w_cov, mu_mean, MD2 = bpca.BPCA(np.array([Mx,My,Mz]))
+w_mean, w_cov, mu_mean, MD2 = BPCA.BPCA(np.array([Mx, My, Mz]))
 print("MD2 = "+str(MD2))
 print("W_mean = "+str(pmag.cart2dir(np.ravel(w_mean))))
