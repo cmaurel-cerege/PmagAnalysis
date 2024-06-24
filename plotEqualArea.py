@@ -64,7 +64,7 @@ def plot_frame_equal_area(fig):
     return
 
 
-def plot_equal_area_sequence(Mx, My, Mz, fig, title='', color='k', ms=5, lw=0.5):
+def plot_equal_area_sequence(Mx, My, Mz, fig, title='', color='k', ms=6, lw=0.5):
 
     plot_frame_equal_area(fig)
     plt.title(title)

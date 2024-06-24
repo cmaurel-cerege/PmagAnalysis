@@ -179,21 +179,13 @@ print('\n')
 ##################
 dopca = str(input('Run PCA analysis? (Y/n)  '))
 if dopca != 'n':
-    id1 = input('Index first datapoint?  ')
-    if id1 != '':
-        id1 = int(eval(id1))
-        id2 = input('Index last datapoint? (None for last)  ')
-        if id2 != '':
-            id2 = int(eval(id2))
-        else:
-            id2 = len(NRMatAFx)
 
-        MAD, DANG, vec, MAD95, Mcmax = pca.Calc_MAD_and_DANG(NRMatAFx,NRMatAFy,NRMatAFz,NRMatAFstep,id1,id2,mass=massNRM)
-
-        if len(NRMatAFx) != 0 and len(IRMatAFx) != 0:
-            print(" * REM IRM  " + f'{np.linalg.norm(Mcmax)/IRMatAF[id1]:.5f}')
-        if len(NRMatAFx) != 0 and len(ARMatAFx) != 0:
-            print(" * REM ARM  "+ f'{np.linalg.norm(Mcmax)/ARMatAF[id1]:.5f}\n')
+    if len(NRMatAFx) != 0 and len(ARMatAFx) != 0:
+        Mcx, Mcy, Mcz, Mcd, Mci, Mcmax, MAD, DANG, MAD95, id_i, id_f = pca.PCA_analysis(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, rem='ARM', remdata=ARMatAF, mass=massNRM)
+    elif len(NRMatAFx) != 0 and len(IRMatAFx) != 0:
+        Mcx, Mcy, Mcz, Mcd, Mci, Mcmax, MAD, DANG, MAD95, id_i, id_f = pca.PCA_analysis(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, rem='IRM', remdata=IRMatAF, mass=massNRM)
+    else:
+        Mcx, Mcy, Mcz, Mcd, Mci, Mcmax, MAD, DANG, MAD95, id_i, id_f = pca.PCA_analysis(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, mass=massNRM)
 
 
 ####################

@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import sys
 import os
 from plotDemag import *
+from plotThellier import *
 from plotZijderveld import *
 from plotEqualArea import *
 import PCAZijderveld as pca
@@ -46,24 +47,34 @@ fp.close()
 Mx, My, Mz = np.array(Mx), np.array(My), np.array(Mz)
 
 if thellier == 'y':
+    field = input('Applied field intensity? (default = 10 uT)  ')
+    if field == '':
+        field = 10
+    else:
+        field = float(eval(field))
+
     Plot_Thellier(Mx, My, Mz, Thstep, Thtype)
     if save == 'y':
         plt.savefig(path + sample + '-Thellier.pdf', format='pdf', dpi=400, bbox_inches="tight")
 
-    NRMx, NRMy, NRMz, NRM, pTRMgained, cHgained, zStep, cStep = Plot_Aray(Mx, My, Mz, Thstep, Thtype)
+    NRMx, NRMy, NRMz, pTRMgainx, pTRMgainy, pTRMgainz, cHgainx, cHgainy, cHgainz, tHgainx, tHgainy, tHgainz, zStep, izziseq, iStep, cStep, tStep = Plot_Aray(Mx, My, Mz, Thstep, Thtype)
     if save == 'y':
         plt.savefig(path + sample + '-Aray.pdf', format='pdf', dpi=400, bbox_inches="tight")
 
-    #### TO DO
-    Stat_Thellier(NRM, pTRMgained, cHgained, zStep, cStep, field=30)
-    if save == 'y':
-        plt.savefig(path + sample + '-Aray-fit.pdf', format='pdf', dpi=400, bbox_inches="tight")
-
+    fig = plt.figure(figsize=(4,4))
     Plot_Zijderveld(NRMx, NRMy, NRMz, zStep, unit='A m2', title='NRM@TH', color='TH')
     if save == 'y':
         plt.savefig(path + sample + '-Thellier-zijd.pdf', format='pdf', dpi=400, bbox_inches="tight")
-
     plt.show(block=False)
+
+    dostats = input('Run PCA and statistical analysis? (Y/n)  ')
+    if dostats != 'n':
+        Mcx, Mcy, Mcz, Mcd, Mci, Mcmax, MAD, DANG, MAD95, id_i, id_f = pca.PCA_analysis(Mx, My, Mz, Thstep, demag='TH')
+        print('\n')
+
+        best_fit_lines, paleoint_mean, paleoint_2se, beta, fvds, q, CDRATprime= Stat_Thellier(Mx, My, Mz, Thstep, Thtype, field, id_i=id_i, id_f=id_f, colors='y')
+        if save == 'y':
+                plt.savefig(path + sample + '-Aray-fit.pdf', format='pdf', dpi=200, bbox_inches="tight")
 
 else:
     Plot_thermal_demag(Mx, My, Mz, Thstep, norm=True)
@@ -80,16 +91,11 @@ else:
     if save == 'y':
         plt.savefig(path + sample + '-Therm-eqarea.pdf', format='pdf', dpi=400, bbox_inches="tight")
 
-    dopca = str(input('Run PCA analysis? (y/N)  '))
-    if dopca == 'y':
-        id1 = input('Index first datapoint?  ')
-        if id1 != '':
-            id1 = int(eval(id1))
-            id2 = input('Index last datapoint? (None for last)  ')
-            if id2 != '':
-                id2 = int(eval(id2))
-            else:
-                id2 = len(Mx)
-        MAD, DANG, vec, MAD95, Mcmax = pca.Calc_MAD_and_DANG(Mx,My,Mz,Thstep,id1,id2)
+    dopca = input('Run PCA analysis? (Y/n)  ')
+    if dopca != 'n':
+        Mcx, Mcy, Mcz, Mcd, Mci, Mcmax, MAD, DANG, MAD95, id_i, id_f = pca.PCA_analysis(Mx, My, Mz, Thstep, demag='TH')
+        fig = plt.figure(figsize=(5, 5))
+        plot_equal_area_sequence(Mcx, Mcy, Mcz, fig, 'PC@TH', color='k')
+
 
 plt.show()
