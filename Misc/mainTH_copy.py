@@ -63,7 +63,7 @@ if thellier == 'y':
         plt.show()
         dopca = str(input('Run PCA analysis? (Y/n)'))
         if dopca != 'n':
-            MAD, DANG, vec, MAD95, Mcmax, id1, id2 = pca.Calc_MAD_and_DANG(NRMx, NRMy, NRMz)
+            MAD, DANG, vec, MAD95, Mcmax, id1, id2 = pca.PCA_analysis(NRMx, NRMy, NRMz,,
 else:
     Plot_thermal_demag(Mx, My, Mz, Thstep, line=0)
     if save == 'y':

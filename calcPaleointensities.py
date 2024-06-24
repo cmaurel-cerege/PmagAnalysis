@@ -7,9 +7,9 @@ import random
 def Merge_AF_lists(NRMx,NRMy,NRMz,NRMAF,Mx,My,Mz,MAF):
 
     NRMAF, MAF = sorted(NRMAF), sorted(MAF)
-    AF = list(set(NRMAF)&set(MAF)).sort()
+    AF = list(set(NRMAF)&set(MAF))
 
-    NRMx = [NRMx[k] for k in np.arange(len(NRMx)) if (NRMAF[k] in AF and NRMAF[k] not in NRMAF[0:k])]
+    NRMx = [NRMx[k] for k in np.arange(1,len(NRMx)) if (NRMAF[k] in AF and NRMAF[k] not in NRMAF[0:k])]
     NRMy = [NRMy[k] for k in np.arange(len(NRMy)) if (NRMAF[k] in AF and NRMAF[k] not in NRMAF[0:k])]
     NRMz = [NRMz[k] for k in np.arange(len(NRMz)) if (NRMAF[k] in AF and NRMAF[k] not in NRMAF[0:k])]
     Mx = [Mx[k] for k in np.arange(len(Mx)) if (MAF[k] in AF and MAF[k] not in MAF[0:k])]
