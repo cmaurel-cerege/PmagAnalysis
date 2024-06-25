@@ -20,17 +20,24 @@ for j, line in enumerate(fp):
             step.append(int(cols[-1])*0.1)
 fp.close()
 
+## If GRM protocol was started after some demag steps
+id_start = 1
+for k in np.arange(len(step)-1):
+    if step[k] == step[k+1] and step[k] == step[k+2]:
+        id_start = k
+        break
+
 ## AF XYZ -> AF X -> AF Y
-Mxgrm = Mx[:1]+[(Mx[k]+Mx[k+1]+Mx[k+2])/3 for k in np.arange(1,len(Mx)-2,3)]
-Mygrm = My[:1]+[(My[k]+My[k+1]+My[k+2])/3 for k in np.arange(1,len(My)-2,3)]
-Mzgrm = Mz[:1]+[(Mz[k]+Mz[k+1]+Mz[k+2])/3 for k in np.arange(1,len(Mz)-2,3)]
-stepgrm = step[:1]+[(step[k]+step[k+1]+step[k+2])/3 for k in np.arange(1,len(step)-2,3)]
+Mxgrm = Mx[:id_start]+[(Mx[k]+Mx[k+1]+Mx[k+2])/3 for k in np.arange(id_start,len(Mx)-2,3)]
+Mygrm = My[:id_start]+[(My[k]+My[k+1]+My[k+2])/3 for k in np.arange(id_start,len(My)-2,3)]
+Mzgrm = Mz[:id_start]+[(Mz[k]+Mz[k+1]+Mz[k+2])/3 for k in np.arange(id_start,len(Mz)-2,3)]
+stepgrm = step[:id_start]+[int((step[k]+step[k+1]+step[k+2])/3) for k in np.arange(id_start,len(step)-2,3)]
 
 ## AF XYZ
-Mxnogrm = Mx[:1]+[Mx[k] for k in np.arange(1,len(Mx)-2,3)]
-Mynogrm = My[:1]+[My[k] for k in np.arange(1,len(My)-2,3)]
-Mznogrm = Mz[:1]+[Mz[k] for k in np.arange(1,len(Mz)-2,3)]
-stepnogrm = step[:1]+[step[k] for k in np.arange(1,len(step)-2,3)]
+Mxnogrm = Mx[:id_start]+[Mx[k] for k in np.arange(id_start,len(Mx)-2,3)]
+Mynogrm = My[:id_start]+[My[k] for k in np.arange(id_start,len(My)-2,3)]
+Mznogrm = Mz[:id_start]+[Mz[k] for k in np.arange(id_start,len(Mz)-2,3)]
+stepnogrm = step[:id_start]+[step[k] for k in np.arange(id_start,len(step)-2,3)]
 
 fpwgrm = open(path+name+'_GRMavg.txt', 'w')
 fpwnogrm = open(path+name+'_noGRM.txt', 'w')
