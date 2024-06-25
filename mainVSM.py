@@ -16,19 +16,22 @@ save = input('Save the figures? (y/N)')
 path = ''
 for k in np.arange(len(sys.argv[1].split('/')) - 1):
     path += str(sys.argv[1].split('/')[k]) + '/'
-sample = sys.argv[1].split('/')[-1].split('-')[0]
+sample = sys.argv[1].split('/')[-1].split('_')[0]
 
 files = sys.argv[1:]
-fp_irm, fp_bcr, fp_hyst, fp_LT = None, None, None, None
 for fp in files:
     if 'IRMacq' in fp:
         fp_irm = open(fp,'r',encoding="utf8", errors='ignore')
+        fp_bcr, fp_hyst, fp_LT = None, None, None
     elif 'Hy' in fp:
         fp_hyst = open(fp,'r',encoding="utf8", errors='ignore')
+        fp_irm, fp_bcr, fp_LT = None, None, None
     elif 'Bcr' in fp:
         fp_bcr = open(fp,'r',encoding="utf8", errors='ignore')
+        fp_irm, fp_hyst, fp_LT = None, None, None
     elif 'LT' in fp:
         fp_LT = open(fp,'r',encoding="utf8", errors='ignore')
+        fp_irm, fp_bcr, fp_hyst = None, None, None
 
     if fp_irm != None:
         Birm, Mirm = [], []
@@ -51,7 +54,6 @@ for fp in files:
             for k in np.arange(1, len(Birm)):
                 fpw.write(f'{Birm[k] * 1e3:.3e}' + ',' + f'{Mirm[k]:.3e}' + '\n')
             fpw.close()
-        fp_irm.close()
 
         der = input('Plot derivative ? (y/N)  ')
         IRMacq, Bvalue = plotIRMacq(Birm, Mirm, Bvalue=150, der=der, ylim=())
@@ -68,7 +70,6 @@ for fp in files:
                 if cols[1] == '0':
                     Bbcr.append(float(cols[3]))
                     Mbcr.append(float(cols[4]))
-        fp_bcr.close()
         Bcr = plotBcr(Bbcr, Mbcr, ylim=())
         plt.show(block=False)
 
@@ -83,16 +84,16 @@ for fp in files:
                 if cols[1] == '0':
                     Bhyst.append(float(cols[3]))
                     Mhyst.append(float(cols[4]))
-        fp_hyst.close()
 
-        mass = input("Mass of the sample ? ")
+        mass = input("Mass of the sample ? (default = 1)  ")
         if mass != '':
             mass = float(eval(mass))
         else:
             mass = 1
 
         nonlincorr = input('Non-linear correction? (y/N)  ')
-        nocorr = input('Show data not corrected? (y/N)'  )
+        nocorr = input('Show data not corrected? (y/N)  ')
+        print('\n')
         interval = 0.2
 
         if nonlincorr == 'y':
@@ -108,13 +109,14 @@ for fp in files:
         if save == 'y':
             plt.savefig(path + sample + '_Hyst.pdf', format='pdf', dpi=200, bbox_inches="tight")
 
-    print('\n')
     if fp_irm != None:
         if Bvalue != 0:
-            print(' * IRM acq. at '+str(int(Bvalue))+' mT = '+f'{IRMacq:.3e}'+' A m2\n')
+            print(' * IRM acq. at '+str(int(Bvalue))+' mT = '+f'{IRMacq:.3e}'+' A m2')
+        fp_irm.close()
 
     if fp_bcr != None:
-        print(' * Bcr = '+f'{Bcr*1000:.0f}'+' mT\n')
+        print(' * Bcr = '+f'{Bcr*1000:.0f}'+' mT')
+        fp_bcr.close()
 
     if fp_hyst != None:
         if nocorr != 'y':
@@ -127,7 +129,7 @@ for fp in files:
                 print(' * Mrs = '+f'{Mrs/mass:.3e}'+' '+unit)
                 print(' * Bc = '+f'{Bc*1000:.2f}'+' mT')
                 print(' * HF slope = ' + f'{kHF:.3e}' + ' A m2 T-1')
-                print(' * alpha = ' + f'{alpha:.3e}' + ' A m2 T-2'+'\n')
+                print(' * alpha = ' + f'{alpha:.3e}' + ' A m2 T-2')
             else:
                 if mass != 1:
                     unit = 'A m2 kg-1'
@@ -139,11 +141,12 @@ for fp in files:
                 print(' * Mrs = ' + f'{Mrs/mass:.3e}'+' '+unit)
                 print(' * Bc = ' + f'{Bc*1000:.1f}'+' mT')
                 print(' * HF slope = ' + f'{sHF:.2e}'+' A m2 T-1')
-                print(' * HF slope = ' + f'{kHF/mass:.2e}'+' '+unitHF+'\n')
+                print(' * HF slope = ' + f'{kHF/mass:.2e}'+' '+unitHF)
+        fp_hyst.close()
 
     if fp_LT != None:
         TLT, MLT = [], []
-        for j, line in enumerate(fp_hyst):
+        for j, line in enumerate(fp_LT):
             cols = line.split(',')
             if len(cols) > 1:
                 if cols[1] == '0':
@@ -154,6 +157,8 @@ for fp in files:
         plotVSMLT(Bbcr, Mbcr, norm=False, ylim=())
         if save == 'y':
             plt.savefig(path + sample + '_hyLT.pdf', format='pdf', dpi=200, bbox_inches="tight")
+
+
 
 
 plt.show()
