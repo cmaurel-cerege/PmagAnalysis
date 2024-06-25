@@ -1,3 +1,11 @@
+
+#### /!\ IMPORTANT NOTE /!\ ####
+
+# For the code to work flawlessly:
+#   IRM acquisition CSV or TXT files must contain "IRMacq"
+#   Hysteresis CSV files must contain "Hy"
+#   Bcr CSV files must contain "Bcr"
+
 import numpy as np
 import matplotlib.pyplot as plt
 import sys

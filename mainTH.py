@@ -1,3 +1,12 @@
+
+#### /!\ IMPORTANT NOTE /!\ ####
+
+# For the code to work flawlessly, the temperature step decimals must represent the type of step:
+#   if it's a zero-field step, you must enter temperature+".00" (e.g., 150.00)
+#   if it's an in-field step, you must enter temperature+".01" (e.g., 150.01)
+#   if it's a pTRM check, you must enter temperature+".02" (e.g., 150.02)
+#   if it's a pTRM tail check, you must enter temperature+".03" (e.g., 150.03)
+
 import numpy as np
 import matplotlib.pyplot as plt
 import sys

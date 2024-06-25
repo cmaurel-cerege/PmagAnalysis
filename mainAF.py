@@ -1,3 +1,11 @@
+
+#### /!\ IMPORTANT NOTE /!\ ####
+
+# For the code to work flawlessly:
+#   NRM demagnetation DAT file or txt file must contain "NRM"
+#   ARM demagnetation DAT file or txt file must contain "ARM"
+#   IRM demagnetation DAT file or txt file must contain "IRM"
+
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
