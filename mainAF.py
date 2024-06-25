@@ -19,7 +19,7 @@ save = input('Save the figures? (y/N)')
 
 if len(sys.argv) == 1:
     input('No files...')
-    sys.exit
+    sys.exit()
 
 files = sys.argv[1:]
 path = ''
@@ -39,20 +39,21 @@ for file in files:
     elif 'IRM' in file:
         type_of_file.append('IRM')
 
-    ## Moment in A m2, field in mT
     fp = open(str(file),'r')
     Mx, My, Mz, step = [], [], [], []
     if file[len(file)-3:] == 'txt':
+        ## This assumes moment in A m2, field in mT
         for j, line in enumerate(fp):
             cols = line.split(',')
-            Mx.append(float(cols[5])*1e-8)
-            My.append(float(cols[6])*1e-8)
-            Mz.append(float(cols[7])*1e-8)
-            step.append(int(cols[1])*0.1)
+            Mx.append(float(cols[1]))
+            My.append(float(cols[2]))
+            Mz.append(float(cols[3]))
+            step.append(int(cols[0]))
         fp.close()
 
     else:
         for j, line in enumerate(fp):
+            ## This assumes moment in emu, field in G
             if j > 0:
                 cols = line.split()
                 Mx.append(float(cols[1])*1e-3)
