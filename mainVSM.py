@@ -50,10 +50,32 @@ for fp in files:
 
         simp = input('Simplify file? (y/N)  ')
         if simp == 'y':
-            fpw = open(fp_irm.name[:-4]+'.txt', 'w')
-            for k in np.arange(1, len(Birm)):
-                fpw.write(f'{Birm[k] * 1e3:.3e}' + ',' + f'{Mirm[k]:.3e}' + '\n')
-            fpw.close()
+            down = input('Downsample data? (y/N)  ')
+            if down == 'y':
+                x = float(eval(input('Fraction of sIRM between two steps (%)? (e.g., 0.5)  ')))/100
+                dsBirm, dsMirm = Birm[:1],Mirm[:1]
+                f = 1
+                for k in np.arange(len(Birm)-1):
+                    if f > 1:
+                        f -= 1
+                        continue
+                    while (Mirm[k+f]-Mirm[k]) <= x*Mirm[-1]:
+                        if k+f == len(Mirm)-1:
+                            break
+                        else:
+                            f += 1
+                    dsBirm.append(Birm[k+f])
+                    dsMirm.append(Mirm[k+f])
+                print('Number of datapoints kept: '+str(len(dsMirm))+'/'+str(len(Mirm)))
+                fpw = open(fp_irm.name[:-4]+'_ds.txt', 'w')
+                for k in np.arange(1,len(dsBirm)):
+                    fpw.write(f'{dsBirm[k]*1e3:.3e}' + ',' + f'{dsMirm[k]:.3e}' + '\n')
+                fpw.close()
+            else:
+                fpw = open(fp_irm.name[:-4]+'.txt', 'w')
+                for k in np.arange(1,len(Birm)):
+                    fpw.write(f'{Birm[k]*1e3:.3e}' + ',' + f'{Mirm[k]:.3e}' + '\n')
+                fpw.close()
 
         der = input('Plot derivative ? (y/N)  ')
         IRMacq, Bvalue = plotIRMacq(Birm, Mirm, Bvalue=150, der=der, ylim=())

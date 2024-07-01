@@ -153,11 +153,11 @@ intdemag = str(input('Plot intensity demag? (Y/n)  '))
 if intdemag != 'n':
     fig = plt.figure(figsize=(6,3))
     if len(NRMatAFx) != 0:
-        Plot_AF_demag(NRMatAFx,NRMatAFy,NRMatAFz,NRMatAFstep, 'NRM', color='r')
+        Plot_AF_demag(NRMatAFx,NRMatAFy,NRMatAFz,NRMatAFstep, norm=True, type='NRM', color='r')
     if len(ARMatAFx) != 0:
-        Plot_AF_demag(ARMatAFx,ARMatAFy,ARMatAFz,ARMatAFstep,'ARM', color='g')
+        Plot_AF_demag(ARMatAFx,ARMatAFy,ARMatAFz,ARMatAFstep, norm=True, type='ARM', color='g')
     if len(IRMatAFx) != 0:
-        Plot_AF_demag(IRMatAFx,IRMatAFy,IRMatAFz,IRMatAFstep,'IRM', color='b')
+        Plot_AF_demag(IRMatAFx,IRMatAFy,IRMatAFz,IRMatAFstep, norm=True, type='IRM', color='b')
     if save == 'y':
         id = type_of_file.index('NRM')
         plt.savefig(path + 'Plots/' + sample_name[id][0:-4] + '-AFINT.pdf', format='pdf', dpi=200, bbox_inches="tight")
