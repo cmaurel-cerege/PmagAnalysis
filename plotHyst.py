@@ -16,7 +16,7 @@ def line(x, a, b):
 def poly(x,a,b,c):
     return a + b*x + c*x**(-2)
 
-def plotIRMacq(B,M,Bvalue=0,der='y',ylim=()):
+def plotIRMacq(B,M,Bvalue=0,ylim=()):
 
     if Bvalue != 0:
         id1 = Get_closest_id(B, Bvalue*1e-3)

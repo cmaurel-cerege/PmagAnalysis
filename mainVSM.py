@@ -78,8 +78,7 @@ for fp in files:
                     fpw.write(f'{Birm[k]*1e3:.3e}' + ',' + f'{Mirm[k]:.3e}' + '\n')
                 fpw.close()
 
-        der = input('Plot derivative ? (y/N)  ')
-        IRMacq, Bvalue = plotIRMacq(Birm, Mirm, Bvalue=150, der=der, ylim=())
+        IRMacq, Bvalue = plotIRMacq(Birm, Mirm, Bvalue=150, ylim=())
         plt.show(block=False)
 
         if save == 'y':
