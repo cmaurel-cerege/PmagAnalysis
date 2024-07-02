@@ -9,17 +9,18 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import sys
+import os
 from plotHyst import *
 
 save = input('Save the figures? (y/N)')
 
-path = ''
-for k in np.arange(len(sys.argv[1].split('/')) - 1):
-    path += str(sys.argv[1].split('/')[k]) + '/'
-sample = sys.argv[1].split('/')[-1].split('_')[0]
-
 files = sys.argv[1:]
 for fp in files:
+    path = ''
+    for k in np.arange(len(fp.split('/')) - 1):
+        path += str(fp.split('/')[k]) + '/'
+    sample = fp.split('/')[-1].split('_')[0]
+
     if 'IRMacq' in fp:
         fp_irm = open(fp,'r',encoding="utf8", errors='ignore')
         fp_bcr, fp_hyst, fp_LT = None, None, None

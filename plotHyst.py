@@ -37,22 +37,12 @@ def plotIRMacq(B,M,Bvalue=0,der='y',ylim=()):
     B = np.array([B[k] for k in np.arange(len(B)) if B[k] > 0])
     M = np.array([M[k] for k in np.arange(len(B)) if B[k] > 0])
     ax.set_xscale('log')
-    ax.set_xlabel('Field (T)')
+    ax.set_xlabel('Field (mT)')
     ax.set_ylabel('M (A m2)')
-    ax.plot(B, M, 'k-', lw=1.5, marker='.', ms=0)
-    ax.set_xlim(1e-3, np.max(B))
+    ax.plot(B*1e3, M, 'k-', lw=1.5, marker='.', ms=0)
+    ax.set_xlim(1, np.max(B)*1e3)
     if ylim != ():
         ax.set_ylim(ylim[0], ylim[1])
-
-    if der == 'y':
-        cs = CubicSpline(B, M)
-        xs = np.logspace(np.min(np.log10(B[3:])), np.max(np.log10(B[3:] * 1000)), 30)
-        ax2 = ax.twinx()
-        ax2.plot(xs, cs(xs, 1), ls='-', color='darkred', lw=1.5)
-        ax2.tick_params(axis="y")
-        ax2.set_ylabel('dM/dB (A m2 T-1)')
-    else:
-        ax.set_ylabel('IRM (A m2)')
 
     return IRMacq, Bvalue
 
