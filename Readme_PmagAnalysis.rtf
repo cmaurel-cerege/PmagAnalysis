@@ -1,0 +1,397 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2580
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\froman\fcharset0 TimesNewRomanPS-BoldMT;\f1\froman\fcharset0 TimesNewRomanPSMT;\f2\froman\fcharset0 TimesNewRomanPS-BoldItalicMT;
+\f3\froman\fcharset0 TimesNewRomanPS-ItalicMT;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;\red11\green76\blue180;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;\cssrgb\c1961\c38824\c75686;}
+\margl1440\margr1440\vieww21240\viewh11040\viewkind0
+\deftab720
+\pard\pardeftab720\partightenfactor0
+
+\f0\b\fs48 \cf2 \expnd0\expndtw0\kerning0
+1. T\'e9l\'e9charger PmagAnalysis pour l\'92analyse de donn\'e9es 2G, VSM, MFK, Minispin
+\f1\b0  
+\f2\i\b\fs36 [English version below]
+\f1\i0\b0\fs32 \
+\pard\pardeftab720\qj\partightenfactor0
+\cf2 \'a0\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f0\b \cf2 \'a0
+\f1\b0 \
+\pard\pardeftab720\qj\partightenfactor0
+
+\f0\b\fs48 \cf2 1.1. T\'e9l\'e9charger PyCharm Community Edition
+\f1\b0\fs32 \
+\'a0\
+\pard\pardeftab720\qj\partightenfactor0
+{\field{\*\fldinst{HYPERLINK "https://www.jetbrains.com/pycharm/download/?section=mac"}}{\fldrslt \cf3 \ul \ulc3 https://www.jetbrains.com/pycharm/download/?section=mac}}\
+\'a0\
+Ne pas confondre avec le PyCharm Professional qui est payant. Lors de l\'92installation, choisissez un environnement avec python 3.XX, c\'92est s\'fbrement ce qui vous sera propos\'e9 par d\'e9faut.\
+\'a0\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f0\b\fs48 \cf2 1.2. S\'92inscrire sur GitHub
+\f1\b0\fs32 \
+\'a0\
+\pard\pardeftab720\qj\partightenfactor0
+{\field{\*\fldinst{HYPERLINK "https://github.com/"}}{\fldrslt \cf3 \ul \ulc3 https://github.com/}}\
+\'a0\
+Cela va vous permettre d\'92acc\'e9der au r\'e9pertoire avec les codes sources.\
+\'a0\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f0\b\fs48 \cf2 1.3. Cloner le code source de PmagAnalysis dans PyCharm
+\f1\b0\fs32 \
+\'a0\
+Ouvrir PyCharm. Cr\'e9er un projet vide. Dans les onglets en haut de page, cliquer sur 
+\f3\i VCS
+\f1\i0  >> 
+\f3\i Get from Version Control 
+\f1\i0 >> 
+\f3\i Git
+\f1\i0 \
+\'a0\
+Un onglet \'ab\'a0
+\f3\i Git
+\f1\i0 \'a0\'bb appara\'eet. Cliquer sur 
+\f3\i Git
+\f1\i0  >> 
+\f3\i Clone
+\f1\i0  puis entrer l\'92URL\'a0:\
+\pard\pardeftab720\qj\partightenfactor0
+{\field{\*\fldinst{HYPERLINK "https://github.com/cmaurel-cerege/PmagAnalysis"}}{\fldrslt \cf3 \ul \ulc3 https://github.com/cmaurel-cerege/PmagAnalysis}}\
+\'a0\
+Il faut choisir l\'92emplacement o\'f9 le code sera sauvegard\'e9, puis l\'92ouvrir dans une nouvelle fen\'eatre.\
+Et voil\'e0, vous pouvez utiliser les codes (voir ci-dessous).\
+\'a0\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f0\b\fs48 \cf2 1.4. Faire des modifications locales et globales
+\f1\b0\fs32 \
+\'a0\
+Vous pouvez modifier \'e0 loisir le code en local. Si vous souhaitez proposer une modification du code pour tout le monde, il suffit de cliquer sur 
+\f3\i Git
+\f1\i0  >> 
+\f3\i Commit
+\f1\i0  puis d\'e9crire succinctement les changements apport\'e9s puis cliquer sur 
+\f3\i Push
+\f1\i0 .\
+\'a0\
+
+\f0\b\fs48 1.5. Mettre \'e0 jour le code utilis\'e9 localement
+\f1\b0\fs32 \
+\'a0\
+Si des changement ont \'e9t\'e9 apport\'e9s en global et que vous voulez mettre \'e0 jour le code en local, il suffit de cliquer sur 
+\f3\i Git
+\f1\i0  >> 
+\f3\i Update Project >> Merge incoming changes into the current branch
+\f1\i0 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\qj\partightenfactor0
+\cf2 \
+\
+\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f0\b\fs48 \cf2 2. Utiliser PmagAnalysis pour l\'92analyse de donn\'e9es 2G, VSM, MFK, Minispin
+\fs34\fsmilli17333  
+\f2\i\fs36 [English version below]
+\f1\i0\b0\fs32 \
+\'a0\
+\'a0\
+Pour lancer un script, il suffit de vous rendre dans la fen\'eatre \'ab\'a0Terminal\'a0\'bb. Le bouton se situe en bas de la fen\'eatre PyCharm. Dans cette fen\'eatre, il suffit de taper\'a0:\
+\'a0\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f0\b \cf2 python\'a0\'a0 my-script.py\'a0\'a0 path-to-my-files/files
+\f1\b0 \
+\'a0\
+Selon le script, vous pourrez avoir \'e0 entrer un ou plusieurs noms de fichiers.\
+\'a0\
+\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f0\b\fs48 \cf2 1. Codes principaux
+\f1\b0\fs32 \
+\'a0\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f2\i\b \cf2 mainAF.py
+\f1\i0\b0 \
+Ce script permet d\'92analyser un lot de fichiers de d\'e9saimantation AF. On peut choisir de ne rentrer qu\'92un fichier, par exemple un fichier NRM, ou alors une s\'e9rie de fichiers, par exemple NRM, ARM, IRM pour un \'e9chantillon. Le code propose de cr\'e9er diff\'e9rentes figures (Zijderveld, equal area plots\'85), d\'92effectuer un analyse PCA et de calculer une pal\'e9ointensit\'e9 le cas \'e9ch\'e9ant.\
+\'a0\
+Attention\'a0: le script prend en entr\'e9e des fichiers contenant dans leurs noms \'ab\'a0NRM\'a0\'bb, \'ab\'a0ARM\'a0\'bb ou \'ab\'a0IRM\'a0\'bb selon le fichier. Sinon il ne va pas les reconna\'eetre. Cela peut \'eatre les fichiers .DAT du 2G, ou bien des fichiers texte (par exemple lorsqu\'92on a combin\'e9 un fichier Minispin et 2G, ou qu\'92on a fait un protocole GRM\'a0; voir ci-dessous).\
+\'a0\
+
+\f2\i\b mainTH.py
+\f1\i0\b0 \
+Ce script permet d\'92analyser un fichier de d\'e9saimantation thermique ou de protocole Thellier-Thellier. Le code propose de cr\'e9er diff\'e9rentes figures (Zijderveld, stereonets\'85), d\'92effectuer un analyse PCA et autres param\'e8tres statistiques (bas\'e9s sur Paterson et al., 2014\'a0; lien ci-dessous) et de calculer une pal\'e9ointensit\'e9 le cas \'e9ch\'e9ant.\
+\'a0\
+\pard\pardeftab720\qj\partightenfactor0
+{\field{\*\fldinst{HYPERLINK "https://app.paperpile.com/my-library/Paterson-et-al-2014-pyvyv9~hyDl2o07gUiSm0Yg"}}{\fldrslt \cf3 \ul \ulc3 https://app.paperpile.com/my-library/Paterson-et-al-2014-pyvyv9~hyDl2o07gUiSm0Yg}}\
+\'a0\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f2\i\b \cf2 mainVSM.py
+\f1\i0\b0 \
+Ce script permet d\'92analyser un lot de fichiers du VSM\'a0(en format CSV, non corrig\'e9s sur le VSM)\'a0: hyst\'e9r\'e9sis, back field, IRM acquisition, hyst\'e9r\'e9sis basse temp\'e9rature. Le code propose de cr\'e9er les diff\'e9rentes figures associ\'e9es, et renvoie les param\'e8tres correspondants. Il permet aussi de cr\'e9er un fichier texte avec les donn\'e9es d\'92acquisition d\'92IRM \'e0 utiliser ensuite avec le logiciel MaxUnmix, et de sous-\'e9chantillonner les points si besoin pour att\'e9nuer le bruit.\
+\'a0\
+Attention\'a0: le script prend en entr\'e9e des fichiers contenant dans leurs noms \'ab\'a0Hy\'a0\'bb, \'ab\'a0Bcr\'a0\'bb ou \'ab\'a0IRMacq\'a0\'bb selon le fichier. Sinon il ne va pas les reconna\'eetre.\
+\'a0\
+
+\f2\i\b mainMFK.py
+\f1\i0\b0 \
+Ce script permet d\'92analyser un fichier du MFK\'a0(en format fourni par le logiciel)\'a0: temp\'e9rature ambiante (par exemple lorsqu\'92on mesure la susceptibilit\'e9 \'e0 chaque palier de d\'e9saimantation thermique), basse temp\'e9rature ou haute temp\'e9rature. Le code propose de cr\'e9er les diff\'e9rentes figures associ\'e9es.\
+\'a0\
+
+\f2\i\b mainMultifiles.py
+\f1\i0\b0 \
+Ce script permet de tracer des Zijderveld, st\'e9r\'e9onets et intensit\'e9s pour plusieurs fichiers \'e0 la fois, ind\'e9pendamment de s\'92il s\'92agit d\'92une NRM, ARM, IRM, etc.\
+\'a0\
+\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f0\b\fs48 \cf2 2. Codes secondaires
+\f1\b0\fs32 \
+\'a0\
+Il y a plein de scripts \'ab\'a0annexes\'a0\'bb qui sont soit appel\'e9s par les codes principaux (c-\'e0-d qui ne peuvent pas s\'92utiliser directement), soit \'e0 utiliser directement. Parmi ces derniers, on trouve\'a0en particulier :\
+\'a0\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f2\i\b \cf2 calcAARM.py
+\f1\i0\b0 \
+Ce script permet d\'92analyser un fichier d\'92anisotropie d\'92ARM acquis avec le LDA5. Il faut avoir suivi les encha\'eenements de positions propos\'e9s par le LDA5. Le code propose de calculer les directions principales, les param\'e8tre d\'92anisotropie et de tracer les figures associ\'e9es.\
+\'a0\
+
+\f2\i\b makeGRMfiles.py
+\f1\i0\b0 \
+Ce script permet de cr\'e9er deux fichiers texte\'a0: un o\'f9 sont calcul\'e9es les moyennes des trois \'e9tapes du protocole GRM par palier de d\'e9saimantation, un o\'f9 ne sont gard\'e9es que les premi\'e8re \'e9tapes, c-\'e0-d apr\'e8s la premi\'e8re d\'e9saimantation X-Y-Z.\
+\'a0\
+
+\f2\i\b minispin2cryo.py
+\f1\i0\b0 \
+Ce script permet de combiner un fichier minispin et un fichier 2G (typiquement lors d\'92une d\'e9saimantation o\'f9 le 2G sature aux premiers paliers), ou alors de transformer un fichier minispin pour \'eatre exploitable par 
+\f3\i mainAF.py
+\f1\i0 . Il cr\'e9e un fichier texte combin\'e9, au nom du fichier 2G.\
+\'a0\
+
+\f2\i\b plotDayDiagram.py
+\f1\i0\b0 \
+Ce script permet de cr\'e9er un diagramme de Day avec plusieurs \'e9chantillons. Il faut bien donner en entr\'e9e les fichiers CSV du VSM pour l\'92hyst\'e9r\'e9sis (le nom contient \'ab\'a0Hy\'a0\'bb) et back field (le nom contient \'ab\'a0Bcr\'a0\'bb).\
+\'a0\
+
+\f2\i\b makeVRMtimefile.py
+\f1\i0\b0 \
+Ce script permet de cr\'e9er un fichier texte avec les temps auxquels ont \'e9t\'e9 fait les mesures d\'92acquisition ou de d\'e9croissance de VRM. Ce fichier s\'92utilise ensuite avec 
+\f3\i plotVRM.py
+\f1\i0 . Le script compl\'e8te un fichier d\'e9j\'e0 existant ou cr\'e9e un nouveau fichier s\'92il s\'92agit des premi\'e8res mesures. Dans ce deuxi\'e8me cas, on ne rentre pas le nom de fichier apr\'e8s le nom du script.\
+\'a0\
+
+\f2\i\b plotVRM.py
+\f1\i0\b0 \
+Ce script permet d\'92analyser les donn\'e9es d\'92acquisition et d\'e9croissance de VRM. Il prend en entr\'e9e les fichiers DAT du 2G et les fichiers texte cr\'e9\'e9s avec 
+\f3\i makeVRMtimefile.py
+\f1\i0 . Les fichiers doivent avoir des noms avec certains attributs comme indiqu\'e9 en haut du script. Le script trace les figures associ\'e9es et calcule les taux d\'92acquisition, de d\'e9croissance, leur ratio et la VRM acquise apr\'e8s X ann\'e9es dans un champ de X \'b5T (par d\'e9faut = 10,000 ans et 45 \'b5T). \
+\
+\
+\
+\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f0\b\fs48 \cf2 3. Download PmagAnalysis for 2G, VSM, MFK, Minispin data analysis
+\f1\b0\fs32 \
+\'a0\
+
+\f0\b\fs34\fsmilli17333 \'a0
+\f1\b0\fs32 \
+
+\f0\b\fs48 3.1. Download PyCharm Community Edition
+\f1\b0\fs32 \
+\'a0\
+\pard\pardeftab720\qj\partightenfactor0
+{\field{\*\fldinst{HYPERLINK "https://www.jetbrains.com/pycharm/download/?section=mac"}}{\fldrslt \cf3 \ul \ulc3 https://www.jetbrains.com/pycharm/download/?section=mac}}\
+\'a0\
+Use the Community Edition and not the Professional Edition, which is not free. During the installation, choose an environment with python 3.XX, which will likely be the default one.\
+\pard\pardeftab720\qj\partightenfactor0
+
+\fs34\fsmilli17333 \cf2 \'a0
+\fs32 \
+\pard\pardeftab720\qj\partightenfactor0
+
+\f0\b\fs48 \cf2 3.2. Create an account on GitHub
+\f1\b0\fs32 \
+\'a0\
+\pard\pardeftab720\qj\partightenfactor0
+{\field{\*\fldinst{HYPERLINK "https://github.com/"}}{\fldrslt \cf3 \ul \ulc3 https://github.com/}}\
+\'a0\
+You\'92ll be able to access the PmagAnalysis repository with the source codes.
+\f0\b  
+\f1\b0 \
+\'a0\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f0\b\fs48 \cf2 3.3. Clone the PmagAnalysis source code in PyCharm
+\f1\b0\fs32 \
+\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0\'a0 \
+Open PyCharm. Create an empty project. In the top menus, click on 
+\f3\i VCS
+\f1\i0  >> 
+\f3\i Get from Version Control 
+\f1\i0 >> 
+\f3\i Git
+\f1\i0 \
+\'a0\
+A menu 
+\f3\i Git
+\f1\i0 \'a0appears. Click on 
+\f3\i Git
+\f1\i0  >> 
+\f3\i Clone
+\f1\i0  and enter the URL\'a0:\
+\'a0\
+\pard\pardeftab720\qj\partightenfactor0
+{\field{\*\fldinst{HYPERLINK "https://github.com/cmaurel-cerege/PmagAnalysis"}}{\fldrslt \cf3 \ul \ulc3 https://github.com/cmaurel-cerege/PmagAnalysis}}\
+\'a0\
+You have to choose the location where the code will be saved, then open it in a new window. Yay! You can use the codes now (see below).\
+\'a0\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f0\b\fs48 \cf2 3.4. Write local and global updates
+\f1\b0\fs32 \
+\'a0\
+You can modify the code as much as you want locally. If you want to submit a change for every user, you can click on 
+\f3\i Git
+\f1\i0  >> 
+\f3\i Commit
+\f1\i0 , then describe succinctly the changes made and click on 
+\f3\i Push.
+\f1\i0 \
+\pard\pardeftab720\qj\partightenfactor0
+
+\f3\i \cf2 \'a0
+\f1\i0 \
+\pard\pardeftab720\qj\partightenfactor0
+
+\f0\b\fs48 \cf2 3.5. Update the code to use locally
+\f1\b0\fs32 \
+\'a0\
+If changes were made on the global version of the code and you want to get the most up-to-date version, you can click on 
+\f3\i Git
+\f1\i0  >> 
+\f3\i Update Project >> Merge incoming changes into the current branch
+\f1\i0 \
+\pard\pardeftab720\partightenfactor0
+\cf2 \
+\pard\pardeftab720\qj\partightenfactor0
+\cf2 \
+\
+\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f0\b\fs48 \cf2 4. Use PmagAnalysis for 2G, VSM, MFK, Minispin data analysis
+\f1\b0\fs32 \
+\pard\pardeftab720\qj\partightenfactor0
+
+\f0\b \cf2 \'a0
+\f1\b0 \
+To use a script, you can go on the 
+\f3\i Terminal
+\f1\i0  window. The button to access this window is at the bottom of the PyCharm interface. In this 
+\f3\i Terminal 
+\f1\i0 \'a0window, you can simply type:\
+\'a0\
+
+\f0\b python\'a0\'a0 my-script.py\'a0\'a0 path-to-my-files/files
+\f1\b0 \
+\'a0\
+Depending on the script, you may have to enter one or several file names.\
+\pard\pardeftab720\qj\partightenfactor0
+
+\fs34\fsmilli17333 \cf2 \'a0\
+\pard\pardeftab720\qj\partightenfactor0
+
+\fs32 \cf2 \
+\pard\pardeftab720\qj\partightenfactor0
+
+\f0\b\fs48 \cf2 4.1. Main codes 
+\f1\b0\fs32 \
+\'a0\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f2\i\b \cf2 mainAF.py
+\f1\i0\b0 \
+This script can be used to analyze a set of AF demagnetization files. We can choose to only input one file (e.g., a NRM demagnetization file) or a series of files, for example NRM, ARM, IRM for one sample. The code creates different figures (Zijderveld, equal area plots\'85), runs PCA analysis and calculates a paleointensity if necessary.\
+\'a0\
+Warning: the script takes as input files that contains in their names \'93NRM\'94, \'93ARM\'94, or \'93IRM\'94 depending on the file. Otherwise it won\'92t recognize the files. It can be .DAT files from the 2G, or text files (form example when Minispin and 2G files were combined, or when a GRM protocol was applied; see below).\
+\'a0\
+
+\f2\i\b mainTH.py
+\f1\i0\b0 \
+This script allows you to analyze a thermal demagnetization or Thellier-Thellier protocol file. The code creates different figures (Zijderveld, stereonets, etc.), carries out a PCA analysis and other statistical parameters (based on Paterson et al., 2014; link below) and calculates a paleointensity if necessary.\
+\'a0\
+\pard\pardeftab720\qj\partightenfactor0
+{\field{\*\fldinst{HYPERLINK "https://app.paperpile.com/my-library/Paterson-et-al-2014-pyvyv9~hyDl2o07gUiSm0Yg"}}{\fldrslt \cf3 \ul \ulc3 https://app.paperpile.com/my-library/Paterson-et-al-2014-pyvyv9~hyDl2o07gUiSm0Yg}}\
+\'a0\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f2\i\b \cf2 mainVSM.py
+\f1\i0\b0 \
+This script allows you to analyze a batch of VSM files (in CSV format, not corrected on the VSM): hysteresis, back field, MRI acquisition, low temperature hysteresis. The code creates the different associated figures, and returns the corresponding parameters. It also allows you to create a text file with the MRI acquisition data to then use with the MaxUnmix software, and to subsample the points if necessary to reduce noise.\
+\'a0\
+Warning: the script takes as input files containing \'93Hy\'94, \'93Bcr\'94 or \'93IRMacq\'94 in their names depending on the file. Otherwise it won't recognize the files.\
+\'a0\
+
+\f2\i\b mainMFK.py
+\f1\i0\b0 \
+This script allows you to analyze an MFK file (in format provided by the software): ambient temperature (for example when measuring the susceptibility at each thermal demagnetization level), low temperature or high temperature. The code creates the different associated figures.\
+\'a0\
+\'a0\
+
+\f2\i\b mainMultifiles.py
+\f1\i0\b0 \
+This script allows you to plot Zijderveld diagrams, stereonets and intensities decay for several files at once, regardless of whether it is an NRM, ARM, IRM, etc.\
+\
+\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f0\b\fs48 \cf2 4.2. Ancillary codes
+\f1\b0\fs32 \
+\'a0\
+There are plenty of \'93ancillary\'94 scripts which are either called by the main codes (i.e. which cannot be used directly), or to be used directly. Among those, we can find in particular:\
+\'a0\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f2\i\b \cf2 calcAARM.py
+\f1\i0\b0 \
+This script allows you to analyze an ARM anisotropy file acquired with the LDA5. You must have followed the sequences of positions proposed by the LDA5. The code calculates the main directions, the anisotropy parameters and draws the associated figures.\
+\'a0\
+
+\f2\i\b makeGRMfiles.py
+\f1\i0\b0 \
+This script allows you to create two text files: one where the average of the three stages of the GRM protocol per demagnetization stage is calculated, one where only the first stages are kept, i.e. after the first X-Y-Z demagnetization.\
+\'a0\
+
+\f2\i\b minispin2cryo.py
+\f1\i0\b0 \
+This script allows you to combine a Minispin file and a 2G file (typically during a demagnetization where the 2G saturates at the first levels), or to transform a Minispin file to be usable by 
+\f3\i mainAF.py
+\f1\i0 . It creates a combined text file, named after the 2G file.\
+\'a0\
+
+\f2\i\b plotDayDiagram.py
+\f1\i0\b0 \
+This script allows you to create a Day diagram with several samples. It is necessary to give as input the VSM CSV files for hysteresis (the name contains \'93Hy\'94) and back field (the name contains \'93Bcr\'94).\
+\'a0\
+
+\f2\i\b makeVRMtimefile.py
+\f1\i0\b0 \
+This script allows you to create a text file with the times at which the VRM acquisition or decay measurements were made. This file is then used with 
+\f3\i plotVRM.py
+\f1\i0 . The script completes an already existing file or creates a new file if these are the first measurements. In this second case, we do not enter the file name after the script name.\
+\'a0\
+
+\f2\i\b plotVRM.py
+\f1\i0\b0 \
+This script allows you to analyze VRM acquisition and decay data. It takes 2G DAT files and text files created with makeVRMtimefile.py as input. Files must have names with certain attributes as shown at the top of the script. The script plots the associated figures and calculates the acquisition and decay rates, their ratio and the VRM acquired after X years in a field of X \'b5T (default = 10,000 years and 45 \'b5T).\
+}
