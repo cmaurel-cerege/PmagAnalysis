@@ -38,41 +38,49 @@ Mx, My, Mz, Thstep, Thtype = [], [], [], [], []
 for j, line in enumerate(fp):
     if j == 1:
         cols = line.split()
-        Mx.append(float(cols[1]) * 1e-3)
-        My.append(float(cols[2]) * 1e-3)
-        Mz.append(float(cols[3]) * 1e-3)
-        if thellier == 'y':
-            if cols[15] == 'None' and cols[16] == 'NA':
-                Thstep.append(20)
-                Thtype.append('Z')
+        if cols[1] == 'NA': continue
+        else:
+            if thellier == 'y':
+                if cols[15] == 'None' and cols[16] == 'NA':
+                    Thstep.append(20)
+                    Thtype.append('Z')
+                else:
+                    step = cols[17].split('.')
+                    if step[1] == '00': Thtype.append('Z')  ## Z step
+                    elif step[1] == '01': Thtype.append('I')  ## I step
+                    elif step[1] == '02': Thtype.append('C')  ## pTRM check
+                    elif step[1] == '03': Thtype.append('T')  ## pTRM tail check
+                    else: print('Skipping temperature notation '+step[0]+'.'+step[1]); continue
+                    Thstep.append(int(step[0]))
+                    Mx.append(float(cols[1]) * 1e-3)
+                    My.append(float(cols[2]) * 1e-3)
+                    Mz.append(float(cols[3]) * 1e-3)
             else:
+                if cols[15] == 'None' and cols[16] == 'NA': Thstep.append(20)
+                else: Thstep.append(float(cols[17]))
+                Mx.append(float(cols[1]) * 1e-3)
+                My.append(float(cols[2]) * 1e-3)
+                Mz.append(float(cols[3]) * 1e-3)
+    elif j > 1:
+        cols = line.split()
+        if cols[1] == 'NA': continue
+        else:
+            ## Name code to know which step (Z, I, C, T) you're looking at:
+            if thellier == 'y':
                 step = cols[17].split('.')
                 if step[1] == '00': Thtype.append('Z')  ## Z step
                 elif step[1] == '01': Thtype.append('I')  ## I step
                 elif step[1] == '02': Thtype.append('C')  ## pTRM check
                 elif step[1] == '03': Thtype.append('T')  ## pTRM tail check
                 else: print('Skipping temperature notation '+step[0]+'.'+step[1]); continue
-                Thstep.append(int(step[0]))
-        else:
-            if cols[15] == 'None' and cols[16] == 'NA': Thstep.append(20)
-            else: Thstep.append(float(cols[17]))
-    elif j > 1:
-        cols = line.split()
-        if cols[1] == 'NA': continue
-        else:
-            Mx.append(float(cols[1]) * 1e-3)
-            My.append(float(cols[2]) * 1e-3)
-            Mz.append(float(cols[3]) * 1e-3)
-            ## Name code to know which step (Z, I, C, T) you're looking at:
-            if thellier == 'y':
-                step = str(cols[17]).split('.')
-                if step[1] == '00': Thtype.append('Z')  ## Z step
-                elif step[1] == '01': Thtype.append('I')  ## I step
-                elif step[1] == '02': Thtype.append('C')  ## pTRM check
-                elif step[1] == '03': Thtype.append('T')  ## pTRM tail check
-                else: print('Skipping temperature notation '+step[0]+'.'+step[1]); continue
+                Mx.append(float(cols[1]) * 1e-3)
+                My.append(float(cols[2]) * 1e-3)
+                Mz.append(float(cols[3]) * 1e-3)
                 Thstep.append(int(step[0]))
             else:
+                Mx.append(float(cols[1]) * 1e-3)
+                My.append(float(cols[2]) * 1e-3)
+                Mz.append(float(cols[3]) * 1e-3)
                 Thstep.append(float(cols[17]))
 fp.close()
 Mx, My, Mz = np.array(Mx), np.array(My), np.array(Mz)

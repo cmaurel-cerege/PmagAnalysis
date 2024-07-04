@@ -3,13 +3,13 @@ import matplotlib.pyplot as plt
 from scipy import stats
 from PCAZijderveld import *
 
-def get_Thellier_quantities(Mx, My, Mz, Thstep, type):
+def get_Thellier_quantities(Mx, My, Mz, Thstep, Thtype):
 
     ## NRM left (NRM), pTRM gained (pTRM), pTRM check (cH), pTRM tail check (tH), temperatures for Z, I, pTRM check and pTRM tail check steps.
     NRMx, NRMy, NRMz, pTRMx, pTRMy, pTRMz, cHx, cHy, cHz, tHx, tHy, tHz, zStep, iStep, cStep, tStep, izziseq = [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], []
 
-    for k in np.arange(len(type)):
-        if type[k] == 'Z':
+    for k in np.arange(len(Thtype)):
+        if Thtype[k] == 'Z':
             NRMx.append(Mx[k])
             NRMy.append(My[k])
             NRMz.append(Mz[k])
@@ -17,28 +17,31 @@ def get_Thellier_quantities(Mx, My, Mz, Thstep, type):
             if k == 0:
                 izziseq.append('I')
             else:
-                izziseq.append(type[k-1])
-        elif type[k] == 'I':
+                izziseq.append(Thtype[k-1])
+        elif Thtype[k] == 'I':
             pTRMx.append(Mx[k])
             pTRMy.append(My[k])
             pTRMz.append(Mz[k])
             iStep.append(Thstep[k])
-        elif type[k] == 'C':
+        elif Thtype[k] == 'C':
             cHx.append(Mx[k])
             cHy.append(My[k])
             cHz.append(Mz[k])
             cStep.append([Thstep[k], zStep[-1]])
-        elif type[k] == 'T':
+        elif Thtype[k] == 'T':
             tHx.append(Mx[k])
             tHy.append(My[k])
             tHz.append(Mz[k])
             tStep.append(Thstep[k])
 
+    print(NRMx)
+    print(pTRMx)
+
     NRMx, NRMy, NRMz, pTRMx, pTRMy, pTRMz, cHx, cHy, cHz, tHx, tHy, tHz = np.array(NRMx), np.array(NRMy), np.array(NRMz), np.array(pTRMx), np.array(pTRMy), np.array(pTRMz), np.array(cHx), np.array(cHy), np.array(cHz), np.array(tHx), np.array(tHy), np.array(tHz)
 
-    pTRMgainx = np.array([0] + list(pTRMx - NRMx[1:]))
-    pTRMgainy = np.array([0] + list(pTRMy - NRMy[1:]))
-    pTRMgainz = np.array([0] + list(pTRMz - NRMz[1:]))
+    pTRMgainx = np.array([0]+list(pTRMx-NRMx[1:]))
+    pTRMgainy = np.array([0]+list(pTRMy-NRMy[1:]))
+    pTRMgainz = np.array([0]+list(pTRMz-NRMz[1:]))
 
     cHgainx, cHgainy, cHgainz = [], [], []
     for k in np.arange(len(cStep)):
@@ -60,7 +63,8 @@ def get_Thellier_quantities(Mx, My, Mz, Thstep, type):
 
 def Plot_Thellier(Mx, My, Mz, Thstep, type, colors='y'):
 
-    NRMx, NRMy, NRMz, pTRMgainx, pTRMgainy, pTRMgainz, cHgainx, cHgainy, cHgainz, tHgainx, tHgainy, tHgainz, zStep, izziseq, iStep, cStep, tStep = get_Thellier_quantities(Mx, My, Mz, Thstep, type)
+    NRMx, NRMy, NRMz, pTRMgainx, pTRMgainy, pTRMgainz, cHgainx, cHgainy, cHgainz, tHgainx, tHgainy, tHgainz, zStep, izziseq, iStep, cStep, tStep = get_Thellier_quantities(
+        Mx, My, Mz, Thstep, type)
 
     NRM = np.sqrt(NRMx**2 + NRMy**2 + NRMz**2)
     pTRMgain = np.sqrt(pTRMgainx**2 + pTRMgainy**2 + pTRMgainz**2)
@@ -86,7 +90,8 @@ def Plot_Thellier(Mx, My, Mz, Thstep, type, colors='y'):
 
 def Plot_Aray(Mx, My, Mz, Thstep, type, colors='y'):
 
-    NRMx, NRMy, NRMz, pTRMgainx, pTRMgainy, pTRMgainz, cHgainx, cHgainy, cHgainz, tHgainx, tHgainy, tHgainz, zStep, izziseq, iStep, cStep, tStep = get_Thellier_quantities(Mx, My, Mz, Thstep, type)
+    NRMx, NRMy, NRMz, pTRMgainx, pTRMgainy, pTRMgainz, cHgainx, cHgainy, cHgainz, tHgainx, tHgainy, tHgainz, zStep, izziseq, iStep, cStep, tStep = get_Thellier_quantities(
+        Mx, My, Mz, Thstep, type)
 
     NRM = np.sqrt(NRMx**2 + NRMy**2 + NRMz**2)
     pTRMgain = np.sqrt(pTRMgainx**2 + pTRMgainy**2 + pTRMgainz**2)
@@ -159,7 +164,8 @@ def Stat_Thellier(Mx, My, Mz, Thstep, type, field, id_i=[], id_f=[], colors='y')
             id_f.append(idf)
         print('\n')
 
-    NRMx, NRMy, NRMz, pTRMgainx, pTRMgainy, pTRMgainz, cHgainx, cHgainy, cHgainz, tHgainx, tHgainy, tHgainz, zStep, izziseq, iStep, cStep, tStep = get_Thellier_quantities(Mx, My, Mz, Thstep, type)
+    NRMx, NRMy, NRMz, pTRMgainx, pTRMgainy, pTRMgainz, cHgainx, cHgainy, cHgainz, tHgainx, tHgainy, tHgainz, zStep, izziseq, iStep, cStep, tStep = get_Thellier_quantities(
+        Mx, My, Mz, Thstep, type)
 
     NRM = np.sqrt(NRMx**2 + NRMy**2 + NRMz**2)
     pTRMgain = np.sqrt(pTRMgainx**2 + pTRMgainy**2 + pTRMgainz**2)
