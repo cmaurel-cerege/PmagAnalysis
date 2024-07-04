@@ -8,7 +8,7 @@ def Create_color_scale(variable,colormap):
     norm = (variable - variable.min()) / (variable.max() - variable.min())
     cmap = plt.get_cmap(colormap)
     colors = [cmap(tl) for tl in norm]
-    return colors
+    return colors,colormap
 
 def Set_frame_Zijderveld(ax, x1, x2, y1, y2, xlim, ylim):
     # set the x-spine and y-spine
@@ -41,9 +41,9 @@ def Set_frame_Zijderveld(ax, x1, x2, y1, y2, xlim, ylim):
 def Plot_Zijderveld(Mx, My, Mz, AF, xlim=(), ylim=(), unit='', title='', color='k', gui=''):
 
     if color == 'AF':
-        colors = Create_color_scale(np.arange(len(AF)), 'Blues')
+        colors,colormap = Create_color_scale(np.arange(len(AF)), 'Blues')
     elif color == 'TH':
-        colors = Create_color_scale(np.arange(len(AF)), 'Reds')
+        colors,colormap = Create_color_scale(np.arange(len(AF)), 'Reds')
     else:
         colors = color
     ax = plt.subplot()
@@ -51,15 +51,18 @@ def Plot_Zijderveld(Mx, My, Mz, AF, xlim=(), ylim=(), unit='', title='', color='
     ax.plot(My, Mx, 'k-', lw=0.5)
     ax.plot(My, Mz, 'k-', lw=0.5)
     if  color == 'AF' or color == 'TH':
+        sm = plt.cm.ScalarMappable(cmap=colormap)
+        sm.set_clim(vmin=0, vmax=AF[-1])
         ax.scatter(My, Mx, c=colors, marker='o', ec='k', lw=0.25, s=40, zorder=3, label='X-Y')
         ax.scatter(My, Mz, c='w', marker='o', ec=colors, lw=2, s=30, zorder=3, label='Z-Y')
+        ax.figure.colorbar(sm,pad=0.05,orientation='horizontal',location='bottom',shrink=0.4,aspect=15, label='AF step (mT)')
     else:
         ax.scatter(My, Mx, marker='o', ec='k', c=colors, lw=0.5, s=40, zorder=3, label='X-Y')
         ax.scatter(My, Mz, marker='o', ec=colors, c='w', lw=0.5, s=40, zorder=3, label='Z-Y')
 
     plt.text(0.95*xlim[1], 0.02*ylim[1], 'Y ' + r' ('+unit+')', horizontalalignment='left',fontsize=10)
     plt.text(0.01*xlim[1], ylim[1]-0.05*ylim[1], 'X,Z' + r' ('+unit+')', fontsize=10)
-    plt.title(title)
+    plt.title(title,loc='right')
 
     if gui == 'guiX':
         cursor = FollowDotCursor(ax, My, Mz, My, AF, Mx)

@@ -9,7 +9,6 @@ class FollowDotCursor(object):
         y = np.asarray(y, dtype='float')
         mask = ~(np.isnan(x) | np.isnan(y))
         x, y = x[mask], y[mask]
-        self.x0 = np.max([np.max(np.absolute(np.array(x))),np.max(np.absolute(np.array(y)))])
         self._points = np.column_stack((x, y))
         y = y[np.abs(y - y.mean()) <= 3 * y.std()]
         self.scale = x.ptp()
@@ -24,7 +23,7 @@ class FollowDotCursor(object):
         self.dot = ax.scatter([x.min()], [y.min()], s=60, color='green', alpha=0.7, zorder=3)
         self.dot2 = ax.scatter([x.min()], [y2.min()], s=60, color='green', alpha=0.7, zorder=3)
 
-        self.annotation = ax.annotate("", xy=(self.x0, self.x0), xytext=(0,0), textcoords='offset points',ha='left', va='center',bbox=dict(boxstyle='round,pad=0.5', fc='white', alpha=0.5),transform=ax.transAxes)
+        self.annotation = ax.annotate("", xy=(0,0), xytext=(0,0), textcoords='offset points',xycoords='axes fraction',ha='left', va='center',bbox=dict(boxstyle='round,pad=0.5', fc='white', alpha=0.5),transform=ax.transAxes)
 
         self.annotation.set_visible(False)
 
@@ -50,7 +49,6 @@ class FollowDotCursor(object):
             inv = ax.transData.inverted()
             x, y = inv.transform([(event.x, event.y)]).ravel()
         x, y = self.snap(x, y)
-        self.annotation.xy = -self.x0, self.x0
         id = list(l).index(min(l, key=lambda a: abs(a - x)))
         self.annotation.set_text("Index: " + str(id) + "\nLevel: " + str(af[id]))
         self.annotation.set_visible(True)

@@ -110,8 +110,9 @@ else:
 zijd = str(input('Plot Zijderveld? (Y/n)  '))
 if zijd != 'n':
     if len(NRMatAFx) != 0:
-        plt.figure(figsize=(5, 5))
-        Plot_Zijderveld(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep,unit=unit,title='NRM@AF',color='k')
+        fig = plt.figure(figsize=(5, 5))
+        Plot_Zijderveld(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep,unit=unit,title='NRM@AF',color='AF')
+        fig.tight_layout()
         if save == 'y':
             id = type_of_file.index('NRM')
             plt.savefig(path + 'Plots/' + sample_name[id] + '-ZIJD.pdf', format='pdf', dpi=200, bbox_inches="tight")
@@ -133,16 +134,16 @@ eqarea = str(input('Plot equal area? (Y/n)  '))
 if eqarea != 'n':
     if len(NRMatAFx) != 0:
         fig = plt.figure(figsize=(5,5))
-        plot_equal_area_sequence(NRMatAFx,NRMatAFy,NRMatAFz,fig,'NRM@AF',color='k')
+        plot_equal_area_sequence(NRMatAFx,NRMatAFy,NRMatAFz,NRMatAFstep,fig,'NRM@AF',color='AF')
         if save == 'y':
             id = type_of_file.index('NRM')
             plt.savefig(path+'Plots/'+sample_name[id]+'-EQAREA.pdf', format='pdf', dpi=200, bbox_inches="tight")
     if len(ARMatAFx) != 0:
         fig = plt.figure(figsize=(5, 5))
-        plot_equal_area_sequence(ARMatAFx,ARMatAFy,ARMatAFz,fig,'ARM@AF')
+        plot_equal_area_sequence(ARMatAFx,ARMatAFy,ARMatAFz,ARMatAFstep,fig,'ARM@AF')
     if len(IRMatAFx) != 0:
         fig = plt.figure(figsize=(5, 5))
-        plot_equal_area_sequence(IRMatAFx,IRMatAFy,IRMatAFz,fig,'IRM@AF')
+        plot_equal_area_sequence(IRMatAFx,IRMatAFy,IRMatAFz,IRMatAFstep,fig,'IRM@AF')
 plt.show(block=False)
 
 
@@ -153,11 +154,11 @@ intdemag = str(input('Plot intensity demag? (Y/n)  '))
 if intdemag != 'n':
     fig = plt.figure(figsize=(6,3))
     if len(NRMatAFx) != 0:
-        Plot_AF_demag(NRMatAFx,NRMatAFy,NRMatAFz,NRMatAFstep, norm=True, type='NRM', color='r')
+        Plot_AF_demag(NRMatAFx,NRMatAFy,NRMatAFz,NRMatAFstep, norm=True, type='NRM', color='gold')
     if len(ARMatAFx) != 0:
-        Plot_AF_demag(ARMatAFx,ARMatAFy,ARMatAFz,ARMatAFstep, norm=True, type='ARM', color='g')
+        Plot_AF_demag(ARMatAFx,ARMatAFy,ARMatAFz,ARMatAFstep, norm=True, type='ARM', color='violet')
     if len(IRMatAFx) != 0:
-        Plot_AF_demag(IRMatAFx,IRMatAFy,IRMatAFz,IRMatAFstep, norm=True, type='IRM', color='b')
+        Plot_AF_demag(IRMatAFx,IRMatAFy,IRMatAFz,IRMatAFstep, norm=True, type='IRM', color='powderblue')
     if save == 'y':
         id = type_of_file.index('NRM')
         plt.savefig(path + 'Plots/' + sample_name[id][0:-4] + '-AFINT.pdf', format='pdf', dpi=200, bbox_inches="tight")

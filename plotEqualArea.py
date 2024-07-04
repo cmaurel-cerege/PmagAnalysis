@@ -11,7 +11,7 @@ def Create_color_scale(variable,colormap):
     norm = (variable - variable.min()) / (variable.max() - variable.min())
     cmap = plt.get_cmap(colormap)
     colors = [cmap(tl) for tl in norm]
-    return colors
+    return colors,colormap
 
 
 def equal_area_coord_from_cart(cart):
@@ -29,10 +29,10 @@ def equal_area_coord_from_cart(cart):
 
 def plot_frame_equal_area(fig):
 
-    a = fig.gca()
-    a.set_frame_on(False)
-    a.set_xticks([])
-    a.set_yticks([])
+    ax = fig.gca()
+    ax.set_frame_on(False)
+    ax.set_xticks([])
+    ax.set_yticks([])
     plt.axis('off')
     plt.axis('equal')
 
@@ -56,18 +56,16 @@ def plot_frame_equal_area(fig):
 
     plt.annotate('0°', (-0.03, 1.03), fontsize=10, color='gray')
     plt.annotate('90°', (1.03, -0.03), fontsize=10, color='gray')
-    plt.annotate('180°', (-0.08, -1.09), fontsize=10, color='gray')
-    plt.annotate('270°', (-1.109, -0.03), fontsize=10, color='gray')
     plt.annotate('30°', (0.01, 0.72), fontsize=10, color='gray')
     plt.annotate('60°', (0.01, 0.38), fontsize=10, color='gray')
 
-    return
+    return ax
 
 
-def plot_equal_area_sequence(Mx, My, Mz, fig, title='', color='k', ms=6, lw=0.5):
+def plot_equal_area_sequence(Mx, My, Mz, AF, fig, title='', color='k', ms=40, lw=0.5):
 
-    plot_frame_equal_area(fig)
-    plt.title(title)
+    ax = plot_frame_equal_area(fig)
+    plt.title(title,loc='right')
 
     x, y, orient = [], [], []
     for k in arange(len(Mx)):
@@ -76,23 +74,27 @@ def plot_equal_area_sequence(Mx, My, Mz, fig, title='', color='k', ms=6, lw=0.5)
         orient.append(equal_area_coord_from_cart([Mx[k], My[k], Mz[k]])[2])
 
     if color == 'AF':
-        colors = Create_color_scale(np.arange(len(Mx)),'Blues')
+        colors,colormap = Create_color_scale(np.arange(len(AF)),'Blues')
     elif color == 'TH':
-        colors = Create_color_scale(np.arange(len(Mx)), 'Reds')
+        colors,colormap = Create_color_scale(np.arange(len(AF)), 'Reds')
     else: colors = [color]*len(Mx)
     plt.plot(x, y, 'k-', ms=0, lw=lw)
+    x_up = np.array([x[j] for j in np.arange(len(x)) if orient[j] == 1])
+    y_up = np.array([y[j] for j in np.arange(len(y)) if orient[j] == 1])
+    x_down = np.array([x[j] for j in np.arange(len(x)) if orient[j] == -1])
+    y_down = np.array([y[j] for j in np.arange(len(y)) if orient[j] == -1])
+
     if color == 'AF' or color == 'TH':
-        for k in arange(len(x)):
-            if orient[k] == 1:
-                plt.plot(x[k], y[k], marker='o', ms=ms-1, mec=colors[k], mfc='w', lw=0, mew=1.5)
-            else:
-                plt.plot(x[k], y[k], marker='o', ms=ms, mfc=colors[k], mec='k', lw=0, mew=0.5)
+        sm = plt.cm.ScalarMappable(cmap=colormap)
+        sm.set_clim(vmin=0, vmax=AF[-1])
+        plt.scatter(x_up, y_up, marker='o', s=ms, ec=colors, c='w', lw=1.5)
+        plt.scatter(x_down, y_down, marker='o', s=ms, c=colors, ec='k', lw=0.5)
+        cbar = plt.colorbar(sm, pad=0.05, orientation='horizontal', location='bottom', shrink=0.4, aspect=15, label='AF step (mT)')
     else:
-        for k in arange(len(x)):
-            if orient[k] == 1:
-                plt.plot(x[k], y[k], marker='o', ms=ms, mec=colors[k], mfc='w', lw=0, mew=0.5)
-            else:
-                plt.plot(x[k], y[k], marker='o', ms=ms, mfc=colors[k], mec='k', lw=0, mew=0.5)
+        plt.scatter(x_up, y_up, marker='o', s=ms, ec=color, c='w', lw=1.5)
+        plt.scatter(x_down, y_down, marker='o', s=ms, c=color, ec='k', lw=0.5)
+
+    fig.tight_layout()
 
     return
 
