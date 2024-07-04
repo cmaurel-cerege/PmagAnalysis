@@ -104,6 +104,29 @@ def Plot_Aray(Mx, My, Mz, Thstep, type, colors='y'):
     plt.xlim(-0.02, 1.05)
     plt.ylim(-0.02, 1.05)
 
+    if cHgain != []:
+        plt.scatter(-10, -10, s=55, facecolors='none', marker='^', edgecolors=mfcC,zorder=3,label='pTRM check')
+
+        print('pTRM checks:')
+        for k in np.arange(len(cStep)):
+            id1 = zStep.index(cStep[k][1])
+            id2 = zStep.index(cStep[k][0])
+            plt.scatter(cHgain[k]/NRM[0], NRM[id2]/NRM[0], s=55, facecolors='w', marker='^', edgecolors=mfcC, zorder=3)
+            hxmin = cHgain[k]/NRM[0]
+            hxmax = pTRMgain[id1]/NRM[0]
+            vymin = np.min([NRM[id1]/NRM[0],NRM[id2]/NRM[0]])
+            vymax = np.max([NRM[id1]/NRM[0],NRM[id2]/NRM[0]])
+            plt.hlines(y=NRM[id1]/NRM[0], xmin=hxmin, xmax=hxmax, lw=0.75, color=mfcC, ls='-', zorder=0)
+            plt.vlines(x=cHgain[k]/NRM[0], ymin=vymin, ymax=vymax, lw=0.75, color=mfcC, ls='-', zorder=0)
+            print(' * d'+str(cStep[k][0])+','+str(cStep[k][1])+' = '+f'{cHgain[k]/NRM[0]-pTRMgain[id2]/NRM[0]:.3f}')
+    if tHgain != []:
+        plt.scatter(-10, -10, s=50, facecolors='none', marker='s', edgecolors=mfcT,zorder=3,label='pTRM tail check')
+        print('pTRM tail checks:')
+        for k in np.arange(len(tStep)):
+            id = iStep.index(tStep[k])
+            plt.scatter(pTRMgain[id]/NRM[0], tHgain[k]/NRM[0], s=50, facecolors='none', marker='s', edgecolors=mfcT, zorder=3)
+            print(' * d' + str(tStep[k]) + ' = ' + f'{tHgain[k]/NRM[0]:.3f}')
+
     plt.plot(pTRMgain/NRM[0], NRM/NRM[0], color='k', ms=3, lw=0.5)
     NRM_Z = np.array([NRM[k] for k in np.arange(len(NRM)) if izziseq[k] == 'Z'])
     pTRMgain_Z = np.array([pTRMgain[k] for k in np.arange(len(pTRMgain)) if izziseq[k] == 'Z'])
@@ -113,20 +136,10 @@ def Plot_Aray(Mx, My, Mz, Thstep, type, colors='y'):
     plt.plot(pTRMgain_Z/NRM[0], NRM_Z/NRM[0], color='k', marker='o', mfc=mfcZ, mec='k', mew=0.5, ms=6, lw=0,label='After Z step')
     plt.plot(pTRMgain_I/NRM[0], NRM_I/NRM[0], color='k', marker='o', mfc=mfcI, mec='k', mew=0.5, ms=6, lw=0, label='After I step')
 
-    if cHgain != []:
-        plt.scatter(-10, -10, s=55, facecolors='none', marker='^', edgecolors=mfcC,zorder=3,label='pTRM check')
-        for k in np.arange(len(cStep)):
-            id1 = zStep.index(cStep[k][1])
-            id2 = zStep.index(cStep[k][0])
-            plt.scatter(cHgain[k]/NRM[0], NRM[id2]/NRM[0], s=55, facecolors='none', marker='^', edgecolors=mfcC, zorder=3)
-            plt.hlines(y=NRM[id1]/NRM[0], xmin=cHgain[k]/NRM[0], xmax=pTRMgain[id1]/NRM[0], lw=0.75, color=mfcC, ls='-', zorder=0)
-            plt.vlines(x=cHgain[k]/NRM[0], ymin=NRM[id1]/NRM[0], ymax=0.985*NRM[id2]/NRM[0], lw=0.75, color=mfcC, ls='-', zorder=0)
-
-    if tHgain != []:
-         plt.scatter(np.array(tHgain)/NRM[0], NRM/NRM[0], s=60, marker='s', facecolors='none', edgecolors=mfcT, zorder=3, label='pTRM tail check')
-
     if colors == 'y':
         plt.legend()
+
+
 
     return NRMx, NRMy, NRMz, pTRMgainx, pTRMgainy, pTRMgainz, cHgainx, cHgainy, cHgainz, tHgainx, tHgainy, tHgainz, zStep, izziseq, iStep, cStep, tStep
 

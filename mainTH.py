@@ -36,22 +36,44 @@ sample = sys.argv[1].split('/')[-1].split('.')[0]
 
 Mx, My, Mz, Thstep, Thtype = [], [], [], [], []
 for j, line in enumerate(fp):
-    if j > 0:
+    if j == 1:
         cols = line.split()
         Mx.append(float(cols[1]) * 1e-3)
         My.append(float(cols[2]) * 1e-3)
         Mz.append(float(cols[3]) * 1e-3)
-        ## Name code to know which step (Z, I, C, T) you're looking at:
         if thellier == 'y':
-            step = str(cols[17]).split('.')
-            if step[-1] == '00': Thtype.append('Z')  ## Z step
-            elif step[-1] == '01': Thtype.append('I')  ## I step
-            elif step[-1] == '02': Thtype.append('C')  ## pTRM check
-            elif step[-1] == '03': Thtype.append('T')  ## pTRM tail check
-            else: print('Temperature notation problem...'); sys.exit()
-            Thstep.append(int(cols[-8].split('.')[0]))
+            if cols[15] == 'None' and cols[16] == 'NA':
+                Thstep.append(20)
+                Thtype.append('Z')
+            else:
+                step = cols[17].split('.')
+                if step[1] == '00': Thtype.append('Z')  ## Z step
+                elif step[1] == '01': Thtype.append('I')  ## I step
+                elif step[1] == '02': Thtype.append('C')  ## pTRM check
+                elif step[1] == '03': Thtype.append('T')  ## pTRM tail check
+                else: print('Skipping temperature notation '+step[0]+'.'+step[1]); continue
+                Thstep.append(int(step[0]))
         else:
-            Thstep.append(float(cols[17]))
+            if cols[15] == 'None' and cols[16] == 'NA': Thstep.append(20)
+            else: Thstep.append(float(cols[17]))
+    elif j > 1:
+        cols = line.split()
+        if cols[1] == 'NA': continue
+        else:
+            Mx.append(float(cols[1]) * 1e-3)
+            My.append(float(cols[2]) * 1e-3)
+            Mz.append(float(cols[3]) * 1e-3)
+            ## Name code to know which step (Z, I, C, T) you're looking at:
+            if thellier == 'y':
+                step = str(cols[17]).split('.')
+                if step[1] == '00': Thtype.append('Z')  ## Z step
+                elif step[1] == '01': Thtype.append('I')  ## I step
+                elif step[1] == '02': Thtype.append('C')  ## pTRM check
+                elif step[1] == '03': Thtype.append('T')  ## pTRM tail check
+                else: print('Skipping temperature notation '+step[0]+'.'+step[1]); continue
+                Thstep.append(int(step[0]))
+            else:
+                Thstep.append(float(cols[17]))
 fp.close()
 Mx, My, Mz = np.array(Mx), np.array(My), np.array(Mz)
 
@@ -64,16 +86,17 @@ if thellier == 'y':
 
     Plot_Thellier(Mx, My, Mz, Thstep, Thtype)
     if save == 'y':
-        plt.savefig(path + sample + '-Thellier.pdf', format='pdf', dpi=400, bbox_inches="tight")
+        print(path + sample)
+        plt.savefig(path+'Plots/'+sample + '-Thellier.pdf', format='pdf', dpi=200, bbox_inches="tight")
 
     NRMx, NRMy, NRMz, pTRMgainx, pTRMgainy, pTRMgainz, cHgainx, cHgainy, cHgainz, tHgainx, tHgainy, tHgainz, zStep, izziseq, iStep, cStep, tStep = Plot_Aray(Mx, My, Mz, Thstep, Thtype)
     if save == 'y':
-        plt.savefig(path + sample + '-Aray.pdf', format='pdf', dpi=400, bbox_inches="tight")
+        plt.savefig(path+'Plots/'+sample + '-Aray.pdf', format='pdf', dpi=200, bbox_inches="tight")
 
     fig = plt.figure(figsize=(4,4))
     Plot_Zijderveld(NRMx, NRMy, NRMz, zStep, unit='A m2', title='NRM@TH', color='TH')
     if save == 'y':
-        plt.savefig(path + sample + '-Thellier-zijd.pdf', format='pdf', dpi=400, bbox_inches="tight")
+        plt.savefig(path+'Plots/'+sample + '-Thellier-zijd.pdf', format='pdf', dpi=200, bbox_inches="tight")
     plt.show(block=False)
 
     dostats = input('Run PCA and statistical analysis? (Y/n)  ')
@@ -83,7 +106,7 @@ if thellier == 'y':
 
         best_fit_lines, paleoint_mean, paleoint_2se, beta, fvds, q, CDRATprime= Stat_Thellier(Mx, My, Mz, Thstep, Thtype, field, id_i=id_i, id_f=id_f, colors='y')
         if save == 'y':
-                plt.savefig(path + sample + '-Aray-fit.pdf', format='pdf', dpi=200, bbox_inches="tight")
+                plt.savefig(path+'Plots/'+sample + '-Aray-fit.pdf', format='pdf', dpi=200, bbox_inches="tight")
 
 else:
     Plot_thermal_demag(Mx, My, Mz, Thstep, norm=True)
