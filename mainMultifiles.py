@@ -68,7 +68,7 @@ zijd = str(input('Plot Zijderveld? (Y/n)  '))
 if zijd != 'n':
     for k in np.arange(len(MatAFstep)):
         plt.figure(figsize=(5, 5))
-        Plot_Zijderveld(MatAFx[k], MatAFy[k], MatAFz[k], MatAFstep[k],color='AF')
+        Plot_Zijderveld(MatAFx[k], MatAFy[k], MatAFz[k], MatAFstep[k], color='AF')
         if save == 'y':
             plt.savefig(path + 'Plots/' + sample_name[k] + '-ZIJD.pdf', format='pdf', dpi=200, bbox_inches="tight")
 plt.show(block=False)

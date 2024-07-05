@@ -115,7 +115,7 @@ if len(tacq) != 0:
     print('VRM acquired (% NRM): ' + f'{VRMacqprop/NRM*100:.0f}' + ' %')
 
     plt.figure()
-    Plot_Zijderveld(VRMxacq, VRMyacq, VRMzacq, tacq, color='red',unit=unit)
+    Plot_Zijderveld(VRMxacq, VRMyacq, VRMzacq, tacq, unit=unit, color='red')
     if save == 'y':
         plt.savefig(path+sample+'-VRMacqZijd.pdf', format='pdf', dpi=200, bbox_inches="tight")
 

@@ -38,12 +38,14 @@ def Set_frame_Zijderveld(ax, x1, x2, y1, y2, xlim, ylim):
     return xlim, ylim
 
 
-def Plot_Zijderveld(Mx, My, Mz, AF, xlim=(), ylim=(), unit='', title='', color='k', gui=''):
+def Plot_Zijderveld(Mx, My, Mz, step, xlim=(), ylim=(), unit='', title='', color='k', gui=''):
 
     if color == 'AF':
-        colors,colormap = Create_color_scale(np.arange(len(AF)), 'Blues')
+        colors,colormap = Create_color_scale(np.arange(len(step)), 'Blues')
+        label = 'AF step (mT)'
     elif color == 'TH':
-        colors,colormap = Create_color_scale(np.arange(len(AF)), 'Reds')
+        colors,colormap = Create_color_scale(np.arange(len(step)), 'Reds')
+        label = 'Temperature step (°C)'
     else:
         colors = color
     ax = plt.subplot()
@@ -52,10 +54,10 @@ def Plot_Zijderveld(Mx, My, Mz, AF, xlim=(), ylim=(), unit='', title='', color='
     ax.plot(My, Mz, 'k-', lw=0.5)
     if  color == 'AF' or color == 'TH':
         sm = plt.cm.ScalarMappable(cmap=colormap)
-        sm.set_clim(vmin=0, vmax=AF[-1])
+        sm.set_clim(vmin=step[0], vmax=step[-1])
         ax.scatter(My, Mx, c=colors, marker='o', ec='k', lw=0.25, s=40, zorder=3, label='X-Y')
         ax.scatter(My, Mz, c='w', marker='o', ec=colors, lw=2, s=30, zorder=3, label='Z-Y')
-        ax.figure.colorbar(sm,pad=0.05,orientation='horizontal',location='bottom',shrink=0.4,aspect=15, label='AF step (mT)')
+        plt.colorbar(sm,ax=plt.gca(),pad=0.05,orientation='horizontal',location='bottom',shrink=0.4,aspect=15, label=label, ticks=[step[0],int(step[-1]/2),step[-1]])
     else:
         ax.scatter(My, Mx, marker='o', ec='k', c=colors, lw=0.5, s=40, zorder=3, label='X-Y')
         ax.scatter(My, Mz, marker='o', ec=colors, c='w', lw=0.5, s=40, zorder=3, label='Z-Y')
@@ -65,8 +67,8 @@ def Plot_Zijderveld(Mx, My, Mz, AF, xlim=(), ylim=(), unit='', title='', color='
     plt.title(title,loc='right')
 
     if gui == 'guiX':
-        cursor = FollowDotCursor(ax, My, Mz, My, AF, Mx)
+        cursor = FollowDotCursor(ax, My, Mz, My, step, Mx)
     if gui == 'guiZ':
-        cursor = FollowDotCursor(ax, My, Mx, My, AF, Mz)
+        cursor = FollowDotCursor(ax, My, Mx, My, step, Mz)
 
     return

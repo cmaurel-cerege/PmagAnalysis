@@ -62,7 +62,7 @@ def plot_frame_equal_area(fig):
     return ax
 
 
-def plot_equal_area_sequence(Mx, My, Mz, AF, fig, title='', color='k', ms=40, lw=0.5):
+def plot_equal_area_sequence(Mx, My, Mz, step, fig, title='', color='k', ms=40, lw=0.5):
 
     ax = plot_frame_equal_area(fig)
     plt.title(title,loc='right')
@@ -74,9 +74,11 @@ def plot_equal_area_sequence(Mx, My, Mz, AF, fig, title='', color='k', ms=40, lw
         orient.append(equal_area_coord_from_cart([Mx[k], My[k], Mz[k]])[2])
 
     if color == 'AF':
-        colors,colormap = Create_color_scale(np.arange(len(AF)),'Blues')
+        colors,colormap = Create_color_scale(np.arange(len(step)),'Blues')
+        label = 'AF step (mT)'
     elif color == 'TH':
-        colors,colormap = Create_color_scale(np.arange(len(AF)), 'Reds')
+        colors,colormap = Create_color_scale(np.arange(len(step)), 'Reds')
+        label = 'Temperature step (°C)'
     else: colors = [color]*len(Mx)
     plt.plot(x, y, 'k-', ms=0, lw=lw)
     x_up = np.array([x[j] for j in np.arange(len(x)) if orient[j] == 1])
@@ -86,10 +88,10 @@ def plot_equal_area_sequence(Mx, My, Mz, AF, fig, title='', color='k', ms=40, lw
 
     if color == 'AF' or color == 'TH':
         sm = plt.cm.ScalarMappable(cmap=colormap)
-        sm.set_clim(vmin=0, vmax=AF[-1])
+        sm.set_clim(vmin=step[0], vmax=step[-1])
         plt.scatter(x_up, y_up, marker='o', s=ms, ec=colors, c='w', lw=1.5)
         plt.scatter(x_down, y_down, marker='o', s=ms, c=colors, ec='k', lw=0.5)
-        cbar = plt.colorbar(sm, pad=0.05, orientation='horizontal', location='bottom', shrink=0.4, aspect=15, label='AF step (mT)')
+        plt.colorbar(sm,ax=plt.gca(),pad=0.05,orientation='horizontal',location='bottom',shrink=0.4,aspect=15, label=label, ticks=[step[0],int(step[-1]/2),step[-1]])
     else:
         plt.scatter(x_up, y_up, marker='o', s=ms, ec=color, c='w', lw=1.5)
         plt.scatter(x_down, y_down, marker='o', s=ms, c=color, ec='k', lw=0.5)

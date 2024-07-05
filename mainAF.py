@@ -111,19 +111,19 @@ zijd = str(input('Plot Zijderveld? (Y/n)  '))
 if zijd != 'n':
     if len(NRMatAFx) != 0:
         fig = plt.figure(figsize=(5, 5))
-        Plot_Zijderveld(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep,unit=unit,title='NRM@AF',color='AF')
+        Plot_Zijderveld(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, unit=unit, title='NRM@AF', color='AF')
         fig.tight_layout()
         if save == 'y':
             id = type_of_file.index('NRM')
             plt.savefig(path + 'Plots/' + sample_name[id] + '-ZIJD.pdf', format='pdf', dpi=200, bbox_inches="tight")
         plt.figure(figsize=(5, 5))
-        Plot_Zijderveld(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, unit=unit, title='NRM@AF', gui='guiX', color='k')
+        Plot_Zijderveld(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, unit=unit, title='NRM@AF', color='k', gui='guiX')
     if len(ARMatAFx) != 0:
         plt.figure(figsize=(5, 5))
-        Plot_Zijderveld(ARMatAFx,ARMatAFy,ARMatAFz,ARMatAFstep,unit=unit,title='ARM@AF',color='k')
+        Plot_Zijderveld(ARMatAFx, ARMatAFy, ARMatAFz, ARMatAFstep, unit=unit, title='ARM@AF', color='k')
     if len(IRMatAFx) != 0:
         plt.figure(figsize=(5, 5))
-        Plot_Zijderveld(IRMatAFx,IRMatAFy,IRMatAFz,IRMatAFstep,unit=unit,title='IRM@AF',color='k')
+        Plot_Zijderveld(IRMatAFx, IRMatAFy, IRMatAFz, IRMatAFstep, unit=unit, title='IRM@AF', color='k')
 plt.show()
 
 

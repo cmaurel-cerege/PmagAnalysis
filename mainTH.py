@@ -127,9 +127,10 @@ else:
         plt.savefig(path + sample + '-Therm-zijd.pdf', format='pdf', dpi=400, bbox_inches="tight")
 
     fig = plt.figure(figsize=(5, 5))
-    plot_equal_area_sequence(Mx, My, Mz, fig, 'NRM@TH', color='k')
+    plot_equal_area_sequence(Mx, My, Mz, Thstep, fig=fig, title='NRM@TH', color='TH')
     if save == 'y':
         plt.savefig(path + sample + '-Therm-eqarea.pdf', format='pdf', dpi=400, bbox_inches="tight")
+    plt.show(block=False)
 
     dopca = input('Run PCA analysis? (Y/n)  ')
     if dopca != 'n':
