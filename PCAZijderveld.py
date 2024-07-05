@@ -56,7 +56,7 @@ def PCA_analysis(Mx, My, Mz, AF, rem='', remdata=[], mass=1, demag='AF'):
         print('COMPONENT '+str(n+1))
         idi = input('First datapoint?  (default = 0)  ')
         idf = input('Last datapoint?  (default = last of sequence)  ')
-        if idf == '': idi = 0
+        if idi == '': idi = 0
         else: idi = int(eval(idi))
         if idf == '': idf = len(Mx)-1
         else: idf = int(eval(idf))

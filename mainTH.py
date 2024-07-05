@@ -44,6 +44,9 @@ for j, line in enumerate(fp):
                 if cols[15] == 'None' and cols[16] == 'NA':
                     Thstep.append(20)
                     Thtype.append('Z')
+                    Mx.append(float(cols[1]) * 1e-3)
+                    My.append(float(cols[2]) * 1e-3)
+                    Mz.append(float(cols[3]) * 1e-3)
                 else:
                     step = cols[17].split('.')
                     if step[1] == '00': Thtype.append('Z')  ## Z step
@@ -84,6 +87,7 @@ for j, line in enumerate(fp):
                 Thstep.append(float(cols[17]))
 fp.close()
 Mx, My, Mz = np.array(Mx), np.array(My), np.array(Mz)
+print(Thtype)
 
 if thellier == 'y':
     field = input('Applied field intensity? (default = 10 uT)  ')
@@ -94,7 +98,6 @@ if thellier == 'y':
 
     Plot_Thellier(Mx, My, Mz, Thstep, Thtype)
     if save == 'y':
-        print(path + sample)
         plt.savefig(path+'Plots/'+sample + '-Thellier.pdf', format='pdf', dpi=200, bbox_inches="tight")
 
     NRMx, NRMy, NRMz, pTRMgainx, pTRMgainy, pTRMgainz, cHgainx, cHgainy, cHgainz, tHgainx, tHgainy, tHgainz, zStep, izziseq, iStep, cStep, tStep = Plot_Aray(Mx, My, Mz, Thstep, Thtype)
@@ -113,30 +116,31 @@ if thellier == 'y':
         print('\n')
 
         best_fit_lines, paleoint_mean, paleoint_2se, beta, fvds, q, CDRATprime= Stat_Thellier(Mx, My, Mz, Thstep, Thtype, field, id_i=id_i, id_f=id_f, colors='y')
+
         if save == 'y':
-                plt.savefig(path+'Plots/'+sample + '-Aray-fit.pdf', format='pdf', dpi=200, bbox_inches="tight")
+            plt.savefig(path+'Plots/'+sample + '-Aray-fit.pdf', format='pdf', dpi=200, bbox_inches="tight")
 
 else:
     Plot_thermal_demag(Mx, My, Mz, Thstep, norm=True)
     if save == 'y':
-        plt.savefig(path + sample + '-Therm-int.pdf', format='pdf', dpi=400, bbox_inches="tight")
+        plt.savefig(path+'Plots/'+sample + '-Therm-int.pdf', format='pdf', dpi=400, bbox_inches="tight")
 
     fig = plt.figure(figsize=(5,5))
     Plot_Zijderveld(Mx, My, Mz, Thstep, unit='A m2', title='NRM@TH', color='TH')
     if save == 'y':
-        plt.savefig(path + sample + '-Therm-zijd.pdf', format='pdf', dpi=400, bbox_inches="tight")
+        plt.savefig(path+'Plots/'+sample + '-Therm-zijd.pdf', format='pdf', dpi=400, bbox_inches="tight")
 
     fig = plt.figure(figsize=(5, 5))
     plot_equal_area_sequence(Mx, My, Mz, Thstep, fig=fig, title='NRM@TH', color='TH')
     if save == 'y':
-        plt.savefig(path + sample + '-Therm-eqarea.pdf', format='pdf', dpi=400, bbox_inches="tight")
+        plt.savefig(path+'Plots/'+sample + '-Therm-eqarea.pdf', format='pdf', dpi=400, bbox_inches="tight")
     plt.show(block=False)
 
     dopca = input('Run PCA analysis? (Y/n)  ')
     if dopca != 'n':
         Mcx, Mcy, Mcz, Mcd, Mci, Mcmax, MAD, DANG, MAD95, id_i, id_f = pca.PCA_analysis(Mx, My, Mz, Thstep, demag='TH')
         fig = plt.figure(figsize=(5, 5))
-        plot_equal_area_sequence(Mcx, Mcy, Mcz, fig, 'PC@TH', color='k')
+        plot_equal_area_sequence(Mcx, Mcy, Mcz, Thstep, fig=fig, title='PC@TH', color='k')
 
 
 plt.show()

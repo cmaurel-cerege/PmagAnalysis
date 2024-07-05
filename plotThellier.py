@@ -34,9 +34,6 @@ def get_Thellier_quantities(Mx, My, Mz, Thstep, Thtype):
             tHz.append(Mz[k])
             tStep.append(Thstep[k])
 
-    print(NRMx)
-    print(pTRMx)
-
     NRMx, NRMy, NRMz, pTRMx, pTRMy, pTRMz, cHx, cHy, cHz, tHx, tHy, tHz = np.array(NRMx), np.array(NRMy), np.array(NRMz), np.array(pTRMx), np.array(pTRMy), np.array(pTRMz), np.array(cHx), np.array(cHy), np.array(cHz), np.array(tHx), np.array(tHy), np.array(tHz)
 
     pTRMgainx = np.array([0]+list(pTRMx-NRMx[1:]))
@@ -63,8 +60,7 @@ def get_Thellier_quantities(Mx, My, Mz, Thstep, Thtype):
 
 def Plot_Thellier(Mx, My, Mz, Thstep, type, colors='y'):
 
-    NRMx, NRMy, NRMz, pTRMgainx, pTRMgainy, pTRMgainz, cHgainx, cHgainy, cHgainz, tHgainx, tHgainy, tHgainz, zStep, izziseq, iStep, cStep, tStep = get_Thellier_quantities(
-        Mx, My, Mz, Thstep, type)
+    NRMx, NRMy, NRMz, pTRMgainx, pTRMgainy, pTRMgainz, cHgainx, cHgainy, cHgainz, tHgainx, tHgainy, tHgainz, zStep, izziseq, iStep, cStep, tStep = get_Thellier_quantities(Mx, My, Mz, Thstep, type)
 
     NRM = np.sqrt(NRMx**2 + NRMy**2 + NRMz**2)
     pTRMgain = np.sqrt(pTRMgainx**2 + pTRMgainy**2 + pTRMgainz**2)
@@ -79,7 +75,7 @@ def Plot_Thellier(Mx, My, Mz, Thstep, type, colors='y'):
     fig = plt.figure(figsize=(5,4))
     plt.xlabel('Temperature (°C)')
     plt.ylabel('Normalized moment')
-    plt.xlim(10, max(zStep) + 10)
+    plt.xlim(0, max(zStep) + 10)
     plt.ylim(0,1.1)
     plt.plot(zStep,NRM/NRM[0],color='k',marker='o',ms=6,mfc=mfcNRM,mec='k',mew=0.5,lw=0.5,label='Moment remaining')
     plt.plot([zStep[0]]+iStep,pTRMgain/NRM[0],color='k',marker='o',ms=6,mfc=mfcpTRM,mec='k',mew=0.5,lw=0.5,label='pTRM gained')
@@ -88,7 +84,7 @@ def Plot_Thellier(Mx, My, Mz, Thstep, type, colors='y'):
     return NRMx, NRMy, NRMz, pTRMgainx, pTRMgainy, pTRMgainz, cHgainx, cHgainy, cHgainz, tHgainx, tHgainy, tHgainz, zStep, izziseq, iStep, cStep, tStep
 
 
-def Plot_Aray(Mx, My, Mz, Thstep, type, colors='y'):
+def Plot_Aray(Mx, My, Mz, Thstep, type, checks=True, colors='y'):
 
     NRMx, NRMy, NRMz, pTRMgainx, pTRMgainy, pTRMgainz, cHgainx, cHgainy, cHgainz, tHgainx, tHgainy, tHgainz, zStep, izziseq, iStep, cStep, tStep = get_Thellier_quantities(
         Mx, My, Mz, Thstep, type)
@@ -109,28 +105,29 @@ def Plot_Aray(Mx, My, Mz, Thstep, type, colors='y'):
     plt.xlim(-0.02, 1.05)
     plt.ylim(-0.02, 1.05)
 
-    if cHgain != []:
-        plt.scatter(-10, -10, s=55, facecolors='none', marker='^', edgecolors=mfcC,zorder=3,label='pTRM check')
+    if checks == True:
+        if cHgain != []:
+            plt.scatter(-10, -10, s=55, facecolors='none', marker='^', edgecolors=mfcC,zorder=3,label='pTRM check')
 
-        print('pTRM checks:')
-        for k in np.arange(len(cStep)):
-            id1 = zStep.index(cStep[k][1])
-            id2 = zStep.index(cStep[k][0])
-            plt.scatter(cHgain[k]/NRM[0], NRM[id2]/NRM[0], s=55, facecolors='w', marker='^', edgecolors=mfcC, zorder=3)
-            hxmin = cHgain[k]/NRM[0]
-            hxmax = pTRMgain[id1]/NRM[0]
-            vymin = np.min([NRM[id1]/NRM[0],NRM[id2]/NRM[0]])
-            vymax = np.max([NRM[id1]/NRM[0],NRM[id2]/NRM[0]])
-            plt.hlines(y=NRM[id1]/NRM[0], xmin=hxmin, xmax=hxmax, lw=0.75, color=mfcC, ls='-', zorder=0)
-            plt.vlines(x=cHgain[k]/NRM[0], ymin=vymin, ymax=vymax, lw=0.75, color=mfcC, ls='-', zorder=0)
-            print(' * d'+str(cStep[k][0])+','+str(cStep[k][1])+' = '+f'{cHgain[k]/NRM[0]-pTRMgain[id2]/NRM[0]:.3f}')
-    if tHgain != []:
-        plt.scatter(-10, -10, s=50, facecolors='none', marker='s', edgecolors=mfcT,zorder=3,label='pTRM tail check')
-        print('pTRM tail checks:')
-        for k in np.arange(len(tStep)):
-            id = iStep.index(tStep[k])
-            plt.scatter(pTRMgain[id]/NRM[0], tHgain[k]/NRM[0], s=50, facecolors='none', marker='s', edgecolors=mfcT, zorder=3)
-            print(' * d' + str(tStep[k]) + ' = ' + f'{tHgain[k]/NRM[0]:.3f}')
+            print('pTRM checks:')
+            for k in np.arange(len(cStep)):
+                id1 = zStep.index(cStep[k][1])
+                id2 = zStep.index(cStep[k][0])
+                plt.scatter(cHgain[k]/NRM[0], NRM[id2]/NRM[0], s=55, facecolors='w', marker='^', edgecolors=mfcC, zorder=3)
+                hxmin = cHgain[k]/NRM[0]
+                hxmax = pTRMgain[id1]/NRM[0]
+                vymin = np.min([NRM[id1]/NRM[0],NRM[id2]/NRM[0]])
+                vymax = np.max([NRM[id1]/NRM[0],NRM[id2]/NRM[0]])
+                plt.hlines(y=NRM[id1]/NRM[0], xmin=hxmin, xmax=hxmax, lw=0.75, color=mfcC, ls='-', zorder=0)
+                plt.vlines(x=cHgain[k]/NRM[0], ymin=vymin, ymax=vymax, lw=0.75, color=mfcC, ls='-', zorder=0)
+                print(' * d'+str(cStep[k][0])+','+str(cStep[k][1])+' = '+f'{cHgain[k]/NRM[0]-pTRMgain[id2]/NRM[0]:.3f}')
+        if tHgain != []:
+            plt.scatter(-10, -10, s=50, facecolors='none', marker='s', edgecolors=mfcT,zorder=3,label='pTRM tail check')
+            print('pTRM tail checks:')
+            for k in np.arange(len(tStep)):
+                id = iStep.index(tStep[k])
+                plt.scatter(pTRMgain[id]/NRM[0], tHgain[k]/NRM[0], s=50, facecolors='none', marker='s', edgecolors=mfcT, zorder=3)
+                print(' * d' + str(tStep[k]) + ' = ' + f'{tHgain[k]/NRM[0]:.3f}')
 
     plt.plot(pTRMgain/NRM[0], NRM/NRM[0], color='k', ms=3, lw=0.5)
     NRM_Z = np.array([NRM[k] for k in np.arange(len(NRM)) if izziseq[k] == 'Z'])
@@ -164,8 +161,7 @@ def Stat_Thellier(Mx, My, Mz, Thstep, type, field, id_i=[], id_f=[], colors='y')
             id_f.append(idf)
         print('\n')
 
-    NRMx, NRMy, NRMz, pTRMgainx, pTRMgainy, pTRMgainz, cHgainx, cHgainy, cHgainz, tHgainx, tHgainy, tHgainz, zStep, izziseq, iStep, cStep, tStep = get_Thellier_quantities(
-        Mx, My, Mz, Thstep, type)
+    NRMx, NRMy, NRMz, pTRMgainx, pTRMgainy, pTRMgainz, cHgainx, cHgainy, cHgainz, tHgainx, tHgainy, tHgainz, zStep, izziseq, iStep, cStep, tStep = get_Thellier_quantities(Mx, My, Mz, Thstep, type)
 
     NRM = np.sqrt(NRMx**2 + NRMy**2 + NRMz**2)
     pTRMgain = np.sqrt(pTRMgainx**2 + pTRMgainy**2 + pTRMgainz**2)
@@ -177,7 +173,7 @@ def Stat_Thellier(Mx, My, Mz, Thstep, type, field, id_i=[], id_f=[], colors='y')
     else:
         mfcZ, mfcI, mfcC, mfcT = 'k', 'k', 'k', 'k'
 
-        fig = plt.figure(figsize=(5,4))
+    fig = plt.figure(figsize=(5,4))
     plt.xlabel('Normalized pTRM gained')
     plt.ylabel('Normalized NRM')
     plt.xlim(-0.02, 1.05)
@@ -191,15 +187,6 @@ def Stat_Thellier(Mx, My, Mz, Thstep, type, field, id_i=[], id_f=[], colors='y')
 
     plt.plot(pTRMgain_Z/NRM[0], NRM_Z/NRM[0], color='k', marker='o', mfc=mfcZ, mec='k', mew=0.5, ms=6, lw=0,label='After Z step')
     plt.plot(pTRMgain_I/NRM[0], NRM_I/NRM[0], color='k', marker='o', mfc=mfcI, mec='k', mew=0.5, ms=6, lw=0, label='After I step')
-
-    if cHgain != []:
-        plt.scatter(-10, -10, s=55, facecolors='none', marker='^', edgecolors=mfcC,zorder=3,label='pTRM check')
-        for k in np.arange(len(cStep)):
-            id1 = zStep.index(cStep[k][1])
-            id2 = zStep.index(cStep[k][0])
-            plt.scatter(cHgain[k]/NRM[0], NRM[id2]/NRM[0], s=55, facecolors='none', marker='^', edgecolors=mfcC, zorder=3)
-            plt.hlines(y=NRM[id1]/NRM[0], xmin=cHgain[k]/NRM[0], xmax=pTRMgain[id1]/NRM[0], lw=0.75, color=mfcC, ls='-', zorder=0)
-            plt.vlines(x=cHgain[k]/NRM[0], ymin=NRM[id1]/NRM[0], ymax=0.985*NRM[id2]/NRM[0], lw=0.75, color=mfcC, ls='-', zorder=0)
 
     if colors == 'y':
         plt.legend()
@@ -216,10 +203,11 @@ def Stat_Thellier(Mx, My, Mz, Thstep, type, field, id_i=[], id_f=[], colors='y')
 
         NRMc = NRM[id_i[k]:id_f[k]+1]
         pTRMgainc = pTRMgain[id_i[k]:id_f[k]+1]
+        X = np.linspace(np.min(pTRMgainc),np.max(pTRMgainc),20)
 
         res = stats.linregress(pTRMgainc, NRMc)
         best_fit_lines.append(res)
-        plt.plot(pTRMgainc/NRM[0], (res.slope*pTRMgainc+res.intercept)/NRM[0], color='darkgray', ls='--', lw=1)
+        plt.plot(X/NRM[0], (res.slope*X+res.intercept)/NRM[0], color='gray', ls='--', lw=2,zorder=3)
         paleoint_mean.append(-field*res.slope)
         paleoint_2se.append(2*field*res.stderr)
 
