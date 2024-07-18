@@ -65,11 +65,11 @@ if thellier == 'y':
         if dopca != 'n':
             MAD, DANG, vec, MAD95, Mcmax, id1, id2 = pca.PCA_analysis(NRMx, NRMy, NRMz,,
 else:
-    Plot_thermal_demag(Mx, My, Mz, Thstep, line=0)
+            Plot_TH_demag(Mx, My, Mz, Thstep)
     if save == 'y':
         plt.savefig(path + sample + '-ThDemag.pdf', format='pdf', dpi=400, bbox_inches="tight")
     M0 = np.sqrt(Mx[0] ** 2 + My[0] ** 2 + Mz[0] ** 2)
-    Plot_thermal_demag(Mx/M0, My/M0, Mz/M0, Thstep, norm=True, line=0)
+            Plot_TH_demag(Mx / M0, My / M0, Mz / M0, Thstep, norm=True)
     if save == 'y':
         plt.savefig(path + sample + '-ThDemagNormalized.pdf', format='pdf', dpi=400, bbox_inches="tight")
     Plot_Zijderveld(Mx, My, Mz, Thstep, unit='mom',newfig='y',color='k')

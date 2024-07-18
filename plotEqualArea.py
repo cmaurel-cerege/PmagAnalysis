@@ -62,7 +62,7 @@ def plot_frame_equal_area(fig):
     return ax
 
 
-def plot_equal_area_sequence(Mx, My, Mz, step, fig, title='', color='k', ms=40, lw=0.5):
+def plot_equal_area_sequence(Mx, My, Mz, step, fig, title='', color='k', ms=7, lw=0.5):
 
     ax = plot_frame_equal_area(fig)
     plt.title(title,loc='right')
@@ -81,20 +81,18 @@ def plot_equal_area_sequence(Mx, My, Mz, step, fig, title='', color='k', ms=40, 
         label = 'Temperature step (°C)'
     else: colors = [color]*len(Mx)
     plt.plot(x, y, 'k-', ms=0, lw=lw)
-    x_up = np.array([x[j] for j in np.arange(len(x)) if orient[j] == 1])
-    y_up = np.array([y[j] for j in np.arange(len(y)) if orient[j] == 1])
-    x_down = np.array([x[j] for j in np.arange(len(x)) if orient[j] == -1])
-    y_down = np.array([y[j] for j in np.arange(len(y)) if orient[j] == -1])
-
     if color == 'AF' or color == 'TH':
-        sm = plt.cm.ScalarMappable(cmap=colormap)
-        sm.set_clim(vmin=step[0], vmax=step[-1])
-        plt.scatter(x_up, y_up, marker='o', s=ms, ec=colors, c='w', lw=1.5)
-        plt.scatter(x_down, y_down, marker='o', s=ms, c=colors, ec='k', lw=0.5)
-        plt.colorbar(sm,ax=plt.gca(),pad=0.05,orientation='horizontal',location='bottom',shrink=0.4,aspect=15, label=label, ticks=[step[0],int(step[-1]/2),step[-1]])
+        for k in arange(len(x)):
+            if orient[k] == 1:
+                plt.plot(x[k], y[k], marker='o', ms=ms-1, mec=colors[k], mfc='w', lw=0, mew=1.5)
+            else:
+                plt.plot(x[k], y[k], marker='o', ms=ms, mfc=colors[k], mec='k', lw=0, mew=0.5)
     else:
-        plt.scatter(x_up, y_up, marker='o', s=ms, ec=color, c='w', lw=1.5)
-        plt.scatter(x_down, y_down, marker='o', s=ms, c=color, ec='k', lw=0.5)
+        for k in arange(len(x)):
+            if orient[k] == 1:
+                plt.plot(x[k], y[k], marker='o', ms=ms, mec=colors[k], mfc='w', lw=0, mew=0.5)
+            else:
+                plt.plot(x[k], y[k], marker='o', ms=ms, mfc=colors[k], mec='k', lw=0, mew=0.5)
 
     fig.tight_layout()
 

@@ -87,7 +87,6 @@ for j, line in enumerate(fp):
                 Thstep.append(float(cols[17]))
 fp.close()
 Mx, My, Mz = np.array(Mx), np.array(My), np.array(Mz)
-print(Thtype)
 
 if thellier == 'y':
     field = input('Applied field intensity? (default = 10 uT)  ')
@@ -121,7 +120,8 @@ if thellier == 'y':
             plt.savefig(path+'Plots/'+sample + '-Aray-fit.pdf', format='pdf', dpi=200, bbox_inches="tight")
 
 else:
-    Plot_thermal_demag(Mx, My, Mz, Thstep, norm=True)
+    fig = plt.figure(figsize=(6,3))
+    Plot_TH_demag(Mx, My, Mz, Thstep, norm=True)
     if save == 'y':
         plt.savefig(path+'Plots/'+sample + '-Therm-int.pdf', format='pdf', dpi=400, bbox_inches="tight")
 
@@ -131,7 +131,7 @@ else:
         plt.savefig(path+'Plots/'+sample + '-Therm-zijd.pdf', format='pdf', dpi=400, bbox_inches="tight")
 
     fig = plt.figure(figsize=(5, 5))
-    plot_equal_area_sequence(Mx, My, Mz, Thstep, fig=fig, title='NRM@TH', color='TH')
+    plot_equal_area_sequence(Mx, My, Mz, Thstep, fig=fig, title='NRM@TH', color='k')
     if save == 'y':
         plt.savefig(path+'Plots/'+sample + '-Therm-eqarea.pdf', format='pdf', dpi=400, bbox_inches="tight")
     plt.show(block=False)

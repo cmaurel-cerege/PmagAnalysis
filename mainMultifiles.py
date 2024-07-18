@@ -12,7 +12,10 @@ colors = ['r','g','b','m','c','gray','violet','gold','saddlebrown','lighsteelblu
 def Get_closest_id(L,value):
     return list(L).index(min(L, key=lambda x:abs(x-value)))
 
-MatAFx, MatAFy, MatAFz, MatAFstep = [], [], [], []
+MatAFx, MatAFy, MatAFz, Mstep = [], [], [], []
+
+AFTH = input('AF or TH files? (default = AF)  ')
+if AFTH != 'TH': AFTH = 'AF'
 
 save = input('Save the figures? (y/N)')
 
@@ -45,30 +48,41 @@ for file in files:
         Mx, My, Mz = np.array(Mx), np.array(My), np.array(Mz)
 
     else:
-        for j, line in enumerate(fp):
-            ## This assumes moment in emu, field in G
-            if j > 0:
-                cols = line.split()
-                Mx.append(float(cols[1])*1e-3)
-                My.append(float(cols[2])*1e-3)
-                Mz.append(float(cols[3])*1e-3)
-                step.append(int(cols[-1])*0.1)
-        fp.close()
+        if AFTH == 'AF':
+            for j, line in enumerate(fp):
+                ## This assumes moment in emu, field in G
+                if j > 0:
+                    cols = line.split()
+                    Mx.append(float(cols[1])*1e-3)
+                    My.append(float(cols[2])*1e-3)
+                    Mz.append(float(cols[3])*1e-3)
+                    step.append(int(cols[-1])*0.1)
+            fp.close()
+        elif AFTH == 'TH':
+            for j, line in enumerate(fp):
+                ## This assumes moment in emu
+                if j > 0:
+                    cols = line.split()
+                    step.append(float(cols[17]))
+                    Mx.append(float(cols[1])*1e-3)
+                    My.append(float(cols[2])*1e-3)
+                    Mz.append(float(cols[3])*1e-3)
+
         Mx, My, Mz = np.array(Mx), np.array(My), np.array(Mz)
 
     MatAFx.append(Mx)
     MatAFy.append(My)
     MatAFz.append(Mz)
-    MatAFstep.append(step)
+    Mstep.append(step)
 
 ########################
 ## Zijderveld Diagram ##
 ########################
 zijd = str(input('Plot Zijderveld? (Y/n)  '))
 if zijd != 'n':
-    for k in np.arange(len(MatAFstep)):
+    for k in np.arange(len(Mstep)):
         plt.figure(figsize=(5, 5))
-        Plot_Zijderveld(MatAFx[k], MatAFy[k], MatAFz[k], MatAFstep[k], unit='A m2', color='AF')
+        Plot_Zijderveld(MatAFx[k], MatAFy[k], MatAFz[k], Mstep[k], unit='A m2', color=AFTH)
         if save == 'y':
             plt.savefig(path + 'Plots/' + sample_name[k] + '-ZIJD.pdf', format='pdf', dpi=200, bbox_inches="tight")
 plt.show(block=False)
@@ -79,9 +93,9 @@ plt.show(block=False)
 ######################
 eqarea = str(input('Plot equal area? (Y/n)  '))
 if eqarea != 'n':
-    for k in np.arange(len(MatAFstep)):
+    for k in np.arange(len(Mstep)):
         fig = plt.figure(figsize=(5, 5))
-        plot_equal_area_sequence(MatAFx[k], MatAFy[k], MatAFz[k], MatAFstep[k], fig=fig,  color='AF')
+        plot_equal_area_sequence(MatAFx[k], MatAFy[k], MatAFz[k], Mstep[k], fig=fig, color=AFTH)
         if save == 'y':
             plt.savefig(path + 'Plots/' + sample_name[k] + '-EQAREA.pdf', format='pdf', dpi=200, bbox_inches="tight")
 plt.show(block=False)
@@ -95,24 +109,23 @@ if intdemag != 'n':
     normalize = input('Normalize moment? (Y/n)  ')
     if normalize == 'n':
         plt.figure(figsize=(6, 3))
-        for k in np.arange(len(MatAFstep)):
-            Plot_AF_demag(MatAFx[k], MatAFy[k], MatAFz[k], MatAFstep[k], sample_name[k], norm=False,color=colors[k])
+        if AFTH == 'AF':
+            for k in np.arange(len(Mstep)):
+                Plot_AF_demag(MatAFx[k], MatAFy[k], MatAFz[k], Mstep[k], sample_name[k], norm=False, color=colors[k])
+        elif AFTH == 'TH':
+            for k in np.arange(len(Mstep)):
+                Plot_TH_demag(MatAFx[k], MatAFy[k], MatAFz[k], Mstep[k],label=sample_name[k], norm=False, color=colors[k])
     else:
         plt.figure(figsize=(6, 3))
-        for k in np.arange(len(MatAFstep)):
-            Plot_AF_demag(MatAFx[k], MatAFy[k], MatAFz[k], MatAFstep[k], sample_name[k], norm=True, color=colors[k])
+        if AFTH == 'AF':
+            for k in np.arange(len(Mstep)):
+                Plot_AF_demag(MatAFx[k], MatAFy[k], MatAFz[k], Mstep[k], sample_name[k], norm=True, color=colors[k])
+        elif AFTH == 'TH':
+            for k in np.arange(len(Mstep)):
+                Plot_TH_demag(MatAFx[k], MatAFy[k], MatAFz[k], Mstep[k], label=sample_name[k], norm=True, color=colors[k])
     if save == 'y':
         plt.savefig(path + 'Plots/' + sample_name[k][0:-4] + '-AFINT.pdf', format='pdf', dpi=200, bbox_inches="tight")
 plt.show()
-
-
-##############################
-## Median destructive field ##
-##############################
-for k in np.arange(len(MatAFstep)):
-    NRMatAF = np.sqrt(MatAFx[k]**2+MatAFy[k]**2+MatAFz[k]**2)
-    MDF_NRM = MatAFstep[k][Get_closest_id(NRMatAF,NRMatAF[0]/2)]
-    print('\n * MDF '+sample_name[k]+' = '+str(MDF_NRM) + ' mT')
 
 
 

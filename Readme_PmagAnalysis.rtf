@@ -81,16 +81,31 @@ Vous pouvez modifier \'e0 loisir le code en local. Si vous souhaitez proposer un
 \f0\b\fs48 1.5. Mettre \'e0 jour le code utilis\'e9 localement
 \f1\b0\fs32 \
 \'a0\
-Si des changement ont \'e9t\'e9 apport\'e9s en global et que vous voulez mettre \'e0 jour le code en local, il suffit de cliquer sur 
+Si des changement ont \'e9t\'e9 apport\'e9s en global et que vous voulez mettre \'e0 jour le code en local, il est mieux de passer par le terminal de PyCharm, et \'e9crire :\
+\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f3\i \cf2 git checkout master\
+git remote add upstream https://github.com/cmaurel-cerege/PmagAnalysis\
+git fetch upstream\
+git reset --hard upstream/master
+\f1\i0 \
+\
+Pour nettoyer vos modifications (si elles ont \'e9t\'e9 incorpor\'e9es dans le nouveau code, par exemple), rajouter :\
+\
+
+\f3\i git clean -fd
+\f1\i0 \
+\
+Note : il semble que cliquer sur 
 \f3\i Git
 \f1\i0  >> 
-\f3\i Update Project >> Merge incoming changes into the current branch
-\f1\i0 \
+\f3\i Update Project >> Merge incoming changes into the current branch 
+\f1\i0 ne marche pas \'e0 tous les coups.\
 \pard\pardeftab720\partightenfactor0
 \cf2 \
 \pard\pardeftab720\qj\partightenfactor0
 \cf2 \
-\
 \
 \pard\pardeftab720\qj\partightenfactor0
 
@@ -202,11 +217,13 @@ Ce script permet d\'92analyser les donn\'e9es d\'92acquisition et d\'e9croissanc
 \f0\b\fs48 \cf2 3. Download PmagAnalysis for 2G, VSM, MFK, Minispin data analysis
 \f1\b0\fs32 \
 \'a0\
+\pard\pardeftab720\qj\partightenfactor0
 
-\f0\b\fs34\fsmilli17333 \'a0
+\f0\b\fs34\fsmilli17333 \cf2 \'a0
 \f1\b0\fs32 \
+\pard\pardeftab720\qj\partightenfactor0
 
-\f0\b\fs48 3.1. Download PyCharm Community Edition
+\f0\b\fs48 \cf2 3.1. Download PyCharm Community Edition
 \f1\b0\fs32 \
 \'a0\
 \pard\pardeftab720\qj\partightenfactor0

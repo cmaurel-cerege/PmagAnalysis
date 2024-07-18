@@ -7,9 +7,9 @@ import random
 def Merge_AF_lists(NRMx,NRMy,NRMz,NRMAF,Mx,My,Mz,MAF):
 
     NRMAF, MAF = sorted(NRMAF), sorted(MAF)
-    AF = list(set(NRMAF)&set(MAF))
+    AF = sorted(list(set(NRMAF)&set(MAF)))
 
-    NRMx = [NRMx[k] for k in np.arange(1,len(NRMx)) if (NRMAF[k] in AF and NRMAF[k] not in NRMAF[0:k])]
+    NRMx = [NRMx[k] for k in np.arange(len(NRMx)) if (NRMAF[k] in AF and NRMAF[k] not in NRMAF[0:k])]
     NRMy = [NRMy[k] for k in np.arange(len(NRMy)) if (NRMAF[k] in AF and NRMAF[k] not in NRMAF[0:k])]
     NRMz = [NRMz[k] for k in np.arange(len(NRMz)) if (NRMAF[k] in AF and NRMAF[k] not in NRMAF[0:k])]
     Mx = [Mx[k] for k in np.arange(len(Mx)) if (MAF[k] in AF and MAF[k] not in MAF[0:k])]
@@ -29,12 +29,19 @@ def calc_Mlost(Mx,My,Mz,AFM,id1,id2,delta):
 def plot_Mlost(NRMx, NRMy, NRMz, Mx, My, Mz, AF, type, mass=1, annot=False):
 
     ## Recording the different components and completing the sequence if needed
-    nb_comp = int(eval(input('Number of components?  ')))
+    nb_comp = input('Number of components? (default = 1)  ')
+    if nb_comp == '':
+        nb_comp = 1
+    else:
+        nb_comp = int(eval(nb_comp))
+
     id_i, id_f = [], []
     for n in np.arange(nb_comp):
         print('Component '+str(n+1))
-        idi = int(eval(input('First datapoint?  ')))
-        idf = input('Last datapoint?  (None = last of sequence)  ')
+        idi = input('First datapoint? (default = 0)  ')
+        if idi == '': idi = 0
+        else: idi = int(eval(idi))
+        idf = input('Last datapoint?  (default = last of sequence)  ')
         if idf == '': idf = len(NRMx)-1
         else: idf = int(eval(idf))
         id_i.append(idi)
@@ -128,23 +135,46 @@ def calc_paleointensity(NRMx, NRMy, NRMz, Mx, My, Mz, AF, type, tcrm, mineral, d
 
             paleointensity = []
             for k in np.arange(10000):
-                logEF = np.random.normal(mulogEmpiricalFactor, sdlogEmpiricalFactor, 1)[0]
-                EF = np.exp(logEF)
+                EF = np.random.lognormal(mulogEmpiricalFactor, sdlogEmpiricalFactor, 1)[0]
                 slope = np.random.normal(REMp_mean[-1], REMp_sd[-1], 1)[0]
                 if type == 'IRM':
                     paleointensity.append(EF*slope)
                 elif type == 'ARM':
-                    paleointensity.append(biasfield/EF*slope)
+                    paleointensity.append(biasfield*slope/EF)
 
             min95 = sorted(paleointensity)[249]
             max95 = sorted(paleointensity)[9750]
             print(' * Mean paleointensity = '+f'{(min95+max95)/2:.0f}'+' uT')
             print(' * 95% confidence interval = ['+f'{min95:.0f}'+' uT, '+f'{max95:.0f}'+' uT]')
 
-    return paleointensity
+    return paleointensity, id_i, id_f
 
 
-def plot_REMp(NRMx, NRMy, NRMz, Mx, My, Mz, AF, annot=False):
+def plot_REMp(NRMx, NRMy, NRMz, Mx, My, Mz, AF, id1, id2, frac=0.0, annot=False):
+
+    # NRM = np.sqrt(NRMx[0]**2+NRMy[0]**2+NRMz[0]**2)
+    # print(NRM)
+    # f = 1
+    # dNRM, dM, dAF, REMp = [], [], [], []
+    # for k in np.arange(len(NRMx)):
+    #     diffNRM = np.sqrt((NRMx[k+f]-NRMx[k])**2 + (NRMy[k+f]-NRMy[k])**2 + (NRMz[k+f]-NRMz[k])**2)
+    #     diffM = np.sqrt((Mx[k + f] - Mx[k]) ** 2 + (My[k + f] - My[k]) ** 2 + (Mz[k + f] - Mz[k]) ** 2)
+    #     if f > 1:
+    #         f -= 1
+    #         continue
+    #     while diffNRM <= frac*NRM:
+    #         if k+f == len(NRMx)-1:
+    #             break
+    #         else:
+    #             f += 1
+    #     dAF.append(AF[k + f])
+    #     dNRM.append(diffNRM)
+    #     dM.append(diffM)
+    #     REMp.append(diffNRM/diffM)
+    #
+    #     print(dAF)
+    #     print(REMp)
+
 
     NRM = np.array([np.sqrt((NRMx[k+1]-NRMx[k])**2+(NRMy[k+1]-NRMy[k])**2+(NRMz[k+1]-NRMz[k])**2) for k in np.arange(len(NRMx)-1)])
     M = np.array([np.sqrt((Mx[k+1]-Mx[k])**2+(My[k+1]-My[k])**2+(Mz[k+1]-Mz[k])**2) for k in np.arange(len(Mx)-1)])

@@ -23,16 +23,21 @@ def Plot_AF_demag(Mx, My, Mz, AF, type, norm=True, color='lightgray', marker='o'
     return
 
 
-def Plot_thermal_demag(Mx, My, Mz, T, norm=False, color='lightgray', marker='o'):
+def Plot_TH_demag(Mx, My, Mz, T, label='', norm=False, color='lightgray', marker='o'):
 
     Mx, My, Mz = np.array(Mx), np.array(My), np.array(Mz)
-    NRM = np.sqrt(Mx**2 + My**2 + Mz**2)
+    M = np.sqrt(Mx ** 2 + My ** 2 + Mz ** 2)
 
-    fig = plt.figure(figsize=(6,3))
     plt.xlabel('Temperature (°C)')
-    plt.ylabel('Normalized moment')
-    plt.xlim(0, np.max(T)+10)
-    plt.ylim(0, 1.1)
-    plt.plot(T,NRM/NRM[0],color='k',marker=marker,mec='k',mfc=color,ms=6,lw=0.5,mew=0.5)
+    plt.xlim(0, np.max(T) + 10)
+    if norm == False:
+        plt.ylabel('Moment (A m2)')
+        plt.ylim(0, 1.1 * np.max(M))
+        plt.plot(T, M, color='k', marker=marker, mec='k', mfc=color, ms=6, lw=0.5, mew=0.5,label=label)
+    elif norm == True:
+        plt.ylabel('Normalized moment')
+        plt.ylim(0, 1.1)
+        plt.plot(T, M / M[0], color='k', marker=marker, mec='k', mfc=color, ms=6, lw=0.5, mew=0.5, label=label)
+    plt.legend()
 
     return

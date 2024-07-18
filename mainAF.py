@@ -104,6 +104,19 @@ else:
         else:
             IRMatAFx, IRMatAFy, IRMatAFz = IRMatAFx/massNRM, IRMatAFy/massNRM, IRMatAFz/massNRM
 
+# normNRM = np.sqrt(NRMatAFx**2+NRMatAFy**2+NRMatAFz**2)
+# print((normNRM[-12]-normNRM[-11])/normNRM[-12])
+# if len(ARMatAFx) != 0:
+#     normARM = np.sqrt(ARMatAFx**2+ARMatAFy**2+ARMatAFz**2)
+#     print((normARM[-12]-normARM[-11])/normARM[-12])
+# if len(IRMatAFx) != 0:
+#     normIRM = np.sqrt(IRMatAFx**2+IRMatAFy**2+IRMatAFz**2)
+#     print((normIRM[-12]-normIRM[-11])/normIRM[-12])
+
+
+
+
+
 ########################
 ## Zijderveld Diagram ##
 ########################
@@ -117,13 +130,13 @@ if zijd != 'n':
             id = type_of_file.index('NRM')
             plt.savefig(path + 'Plots/' + sample_name[id] + '-ZIJD.pdf', format='pdf', dpi=200, bbox_inches="tight")
         plt.figure(figsize=(5, 5))
-        Plot_Zijderveld(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, unit=unit, title='NRM@AF', color='k', gui='guiX')
-    if len(ARMatAFx) != 0:
-        plt.figure(figsize=(5, 5))
-        Plot_Zijderveld(ARMatAFx, ARMatAFy, ARMatAFz, ARMatAFstep, unit=unit, title='ARM@AF', color='k')
-    if len(IRMatAFx) != 0:
-        plt.figure(figsize=(5, 5))
-        Plot_Zijderveld(IRMatAFx, IRMatAFy, IRMatAFz, IRMatAFstep, unit=unit, title='IRM@AF', color='k')
+        Plot_Zijderveld(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, unit=unit, title='NRM@AF', color='k', gui='guiZ')
+    # if len(ARMatAFx) != 0:
+    #     plt.figure(figsize=(5, 5))
+    #     Plot_Zijderveld(ARMatAFx, ARMatAFy, ARMatAFz, ARMatAFstep, unit=unit, title='ARM@AF', color='k')
+    # if len(IRMatAFx) != 0:
+    #     plt.figure(figsize=(5, 5))
+    #     Plot_Zijderveld(IRMatAFx, IRMatAFy, IRMatAFz, IRMatAFstep, unit=unit, title='IRM@AF', color='k')
 plt.show()
 
 
@@ -134,16 +147,10 @@ eqarea = str(input('Plot equal area? (Y/n)  '))
 if eqarea != 'n':
     if len(NRMatAFx) != 0:
         fig = plt.figure(figsize=(5,5))
-        plot_equal_area_sequence(NRMatAFx,NRMatAFy,NRMatAFz,NRMatAFstep,fig,'NRM@AF',color='AF')
+        plot_equal_area_sequence(NRMatAFx,NRMatAFy,NRMatAFz,NRMatAFstep,fig,title='NRM@AF',color='AF')
         if save == 'y':
             id = type_of_file.index('NRM')
             plt.savefig(path+'Plots/'+sample_name[id]+'-EQAREA.pdf', format='pdf', dpi=200, bbox_inches="tight")
-    if len(ARMatAFx) != 0:
-        fig = plt.figure(figsize=(5, 5))
-        plot_equal_area_sequence(ARMatAFx,ARMatAFy,ARMatAFz,ARMatAFstep,fig,'ARM@AF')
-    if len(IRMatAFx) != 0:
-        fig = plt.figure(figsize=(5, 5))
-        plot_equal_area_sequence(IRMatAFx,IRMatAFy,IRMatAFz,IRMatAFstep,fig,'IRM@AF')
 plt.show(block=False)
 
 
@@ -162,7 +169,6 @@ if intdemag != 'n':
     if save == 'y':
         id = type_of_file.index('NRM')
         plt.savefig(path + 'Plots/' + sample_name[id][0:-4] + '-AFINT.pdf', format='pdf', dpi=200, bbox_inches="tight")
-
 plt.show(block=False)
 
 
@@ -210,9 +216,11 @@ if nrmlost != 'n':
     if mineral == '': mineral = 'm'
     domain = input('SD, PSD, MD? (default = SD/PSD)  ')
     if domain == '': domain = 'SD/PSD'
-    ARMbiasfield = input('ARM bias field? (default = 100 mT)  ')
-    if ARMbiasfield == '': ARMbiasfield = 100
-    else: ARMbiasfield = int(eval(ARMbiasfield))
+    if len(ARMatAFx) != 0:
+        ARMbiasfield = input('ARM bias field? (default = 100 uT)  ')
+        if ARMbiasfield == '': ARMbiasfield = 100
+        else: ARMbiasfield = int(eval(ARMbiasfield))
+    print('\n')
 
     paleointensityARM = []
     if len(NRMatAFx) != 0 and len(ARMatAFx) != 0:
@@ -221,7 +229,7 @@ if nrmlost != 'n':
 
         NRMatAFx, NRMatAFy, NRMatAFz, ARMatAFx, ARMatAFy, ARMatAFz, AFARM = Merge_AF_lists(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, ARMatAFx, ARMatAFy, ARMatAFz, ARMatAFstep)
 
-        paleointensityARM = calc_paleointensity(NRMatAFx, NRMatAFy, NRMatAFz, ARMatAFx, ARMatAFy, ARMatAFz, AFARM, type='ARM', tcrm=tcrm, mineral=mineral, domain=domain, biasfield=ARMbiasfield, mass=massNRM)
+        paleointensityARM, id_i, id_f = calc_paleointensity(NRMatAFx, NRMatAFy, NRMatAFz, ARMatAFx, ARMatAFy, ARMatAFz, AFARM, type='ARM', tcrm=tcrm, mineral=mineral, domain=domain, biasfield=ARMbiasfield, mass=massNRM)
         if save == 'y':
             id = type_of_file.index('NRM')
             plt.savefig(path + 'Plots/' + sample_name[id] + '-VS-ARM-lost.pdf', format='pdf', dpi=200, bbox_inches="tight")
@@ -230,18 +238,20 @@ if nrmlost != 'n':
     if len(NRMatAFx) != 0 and len(IRMatAFx) != 0:
 
         print('** IRM PALEOINTENSITIES **')
+        if len(ARMatAFx) != 0:
+            NRMatAFx, NRMatAFy, NRMatAFz, IRMatAFx, IRMatAFy, IRMatAFz, AFIRM = Merge_AF_lists(NRMatAFx, NRMatAFy, NRMatAFz, AFARM, IRMatAFx, IRMatAFy, IRMatAFz, IRMatAFstep)
+        else:
+            NRMatAFx, NRMatAFy, NRMatAFz, IRMatAFx, IRMatAFy, IRMatAFz, AFIRM = Merge_AF_lists(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, IRMatAFx, IRMatAFy, IRMatAFz, IRMatAFstep)
 
-        NRMatAFx, NRMatAFy, NRMatAFz, IRMatAFx, IRMatAFy, IRMatAFz, AFIRM = Merge_AF_lists(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, IRMatAFx, IRMatAFy, IRMatAFz, IRMatAFstep)
-
-        plot_REMp(NRMatAFx, NRMatAFy, NRMatAFz, IRMatAFx, IRMatAFy, IRMatAFz, AFIRM, annot=False)
-        if save == 'y':
-            id = type_of_file.index('NRM')
-            plt.savefig(path + 'Plots/' + sample_name[id] + '_REMp.pdf', format='pdf', dpi=200, bbox_inches="tight")
-
-        paleointensityIRM = calc_paleointensity(NRMatAFx, NRMatAFy, NRMatAFz, IRMatAFx, IRMatAFy, IRMatAFz, AFIRM, type='IRM', tcrm=tcrm, mineral=mineral, domain=domain, mass=massIRM)
+        paleointensityIRM, id_i, id_f = calc_paleointensity(NRMatAFx, NRMatAFy, NRMatAFz, IRMatAFx, IRMatAFy, IRMatAFz, AFIRM, type='IRM', tcrm=tcrm, mineral=mineral, domain=domain, mass=massIRM)
         if save == 'y':
             id = type_of_file.index('NRM')
             plt.savefig(path + 'Plots/' + sample_name[id] + '-VS-IRM-lost.pdf', format='pdf', dpi=200, bbox_inches="tight")
+
+        plot_REMp(NRMatAFx, NRMatAFy, NRMatAFz, IRMatAFx, IRMatAFy, IRMatAFz, AFIRM, id_i, id_f, frac=0.01, annot=False)
+        if save == 'y':
+            id = type_of_file.index('NRM')
+            plt.savefig(path + 'Plots/' + sample_name[id] + '_REMp.pdf', format='pdf', dpi=200, bbox_inches="tight")
 
         plt.figure(figsize=(6, 3))
         plt.xlabel('Paleointensity (uT)')
