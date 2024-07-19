@@ -2,6 +2,9 @@ import numpy as np
 from cart2dir import *
 from numpy.linalg import *
 
+def Get_closest_id(L,value):
+    return list(L).index(min(L, key=lambda x:abs(x-value)))
+
 def Calc_PCA(Mx, My, Mz, anc='free'):
 
     if anc == 'anc':
@@ -54,12 +57,12 @@ def PCA_analysis(Mx, My, Mz, AF, rem='', remdata=[], mass=1, demag='AF'):
     id_i, id_f = [], []
     for n in np.arange(nb_comp):
         print('COMPONENT '+str(n+1))
-        idi = input('First datapoint?  (default = 0)  ')
-        idf = input('Last datapoint?  (default = last of sequence)  ')
-        if idi == '': idi = 0
-        else: idi = int(eval(idi))
-        if idf == '': idf = len(Mx)-1
-        else: idf = int(eval(idf))
+        stepi = input('First AF step?  (default = 0 mT)  ')
+        stepf = input('Last AF step?  (default = last of sequence)  ')
+        if stepi == '': idi = 0
+        else: idi = Get_closest_id(AF,int(eval(stepi)))
+        if stepf == '': idf = len(AF)-1
+        else: idf = Get_closest_id(AF,int(eval(stepf)))
         id_i.append(idi)
         id_f.append(idf)
     print('\n')

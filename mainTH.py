@@ -17,6 +17,7 @@ from plotZijderveld import *
 from plotEqualArea import *
 import PCAZijderveld as pca
 from calcPaleointensities import *
+from builtins import *
 
 save = input('Save the figures? (y/N)')
 thellier = input('Thellier-Thellier? (y/N)')

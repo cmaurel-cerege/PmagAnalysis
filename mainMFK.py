@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 from scipy import interpolate
+from builtins import *
 
 type = input('RT, LT, HT measurements? (r/l/h)  ')
 mass = input('Mass of the sample (g)?  ')

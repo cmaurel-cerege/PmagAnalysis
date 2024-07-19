@@ -4,6 +4,8 @@ from scipy import stats
 from returnEmpiricalFactors import *
 import random
 
+def Get_closest_id(L,value):
+    return list(L).index(min(L, key=lambda x:abs(x-value)))
 def Merge_AF_lists(NRMx,NRMy,NRMz,NRMAF,Mx,My,Mz,MAF):
 
     NRMAF, MAF = sorted(NRMAF), sorted(MAF)
@@ -38,12 +40,12 @@ def plot_Mlost(NRMx, NRMy, NRMz, Mx, My, Mz, AF, type, mass=1, annot=False):
     id_i, id_f = [], []
     for n in np.arange(nb_comp):
         print('Component '+str(n+1))
-        idi = input('First datapoint? (default = 0)  ')
-        if idi == '': idi = 0
-        else: idi = int(eval(idi))
-        idf = input('Last datapoint?  (default = last of sequence)  ')
-        if idf == '': idf = len(NRMx)-1
-        else: idf = int(eval(idf))
+        stepi = input('First AF step?  (default = 0 mT)  ')
+        stepf = input('Last AF step?  (default = last of sequence)  ')
+        if stepi == '': idi = 0
+        else: idi = Get_closest_id(AF,int(eval(stepi)))
+        if stepf == '': idf = len(AF)-1
+        else: idf = Get_closest_id(AF,int(eval(stepf)))
         id_i.append(idi)
         id_f.append(idf)
     id_i_full, id_f_full, show_comp = [], [], []
@@ -144,8 +146,8 @@ def calc_paleointensity(NRMx, NRMy, NRMz, Mx, My, Mz, AF, type, tcrm, mineral, d
 
             min95 = sorted(paleointensity)[249]
             max95 = sorted(paleointensity)[9750]
-            print(' * Mean paleointensity = '+f'{(min95+max95)/2:.0f}'+' uT')
-            print(' * 95% confidence interval = ['+f'{min95:.0f}'+' uT, '+f'{max95:.0f}'+' uT]')
+            print(' * Mean paleointensity = '+f'{np.median(paleointensity):.1f}'+' uT')
+            print(' * 95% confidence interval = ['+f'{min95:.1f}'+' uT, '+f'{max95:.1f}'+' uT]')
 
     return paleointensity, id_i, id_f
 
@@ -185,7 +187,7 @@ def plot_REMp(NRMx, NRMy, NRMz, Mx, My, Mz, AF, id1, id2, frac=0.0, annot=False)
     plt.yscale("log")
     plt.xlabel('AF step (mT)')
     plt.ylabel('REM prime')
-    plt.ylim(1e-4,1)
+    #plt.ylim(1e-4,1)
     plt.scatter(AF[1:], REMp, s=45, c='lightgray', marker='o', edgecolor='k', linewidths=0.5)
     if annot == True:
         for i in np.arange(len(REMp)):

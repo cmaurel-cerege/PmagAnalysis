@@ -62,11 +62,51 @@ Un onglet \'ab\'a0
 {\field{\*\fldinst{HYPERLINK "https://github.com/cmaurel-cerege/PmagAnalysis"}}{\fldrslt \cf3 \ul \ulc3 https://github.com/cmaurel-cerege/PmagAnalysis}}\
 \'a0\
 Il faut choisir l\'92emplacement o\'f9 le code sera sauvegard\'e9, puis l\'92ouvrir dans une nouvelle fen\'eatre.\
-Et voil\'e0, vous pouvez utiliser les codes (voir ci-dessous).\
-\'a0\
+\
 \pard\pardeftab720\qj\partightenfactor0
 
-\f0\b\fs48 \cf2 1.4. Faire des modifications locales et globales
+\f0\b\fs48 \cf2 1.4. T\'e9l\'e9charger les packages n\'e9cessaires
+\f1\b0\fs32 \
+\
+Le code tourne en python 3, il faut a priori accepter 
+\f3\i l\'92interpreter 
+\f1\i0 par d\'e9faut que PyCharm propose (en v\'e9rifiant que c\'92est bien python 3, sinon s\'e9lectionner un 
+\f3\i interpreter 
+\f1\i0 manuellement).\
+\
+Il faudra peut-\'eatre t\'e9l\'e9charger les packages n\'e9cessaire au bon fonctionnement du code. Pour cela, il faut d\'92abord v\'e9rifier si vous utilisez 
+\f3\i Anaconda
+\f1\i0 . En bas \'e0 droite de la fen\'eatre il y a un bouton avec la version de python choisie. Cliquer dessus puis sur 
+\f3\i Interpreter settings
+\f1\i0  et v\'e9rifier si votre interpreter est dans un dossier anaconda ou non puis 
+\f3\i Cancel
+\f1\i0 .\
+\
+Dans les fen\'eatres en bas \'e0 gauche, ouvrez un 
+\f3\i Terminal
+\f1\i0 . \
+Si anaconda, tapez :\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f3\i \cf2 conda install numpy\
+conda install scipy\
+conda install openpyxl\
+conda install matplotlib
+\f1\i0 \
+\
+Sinon, tapez :\
+
+\f3\i pip install numpy\
+pip install scipy\
+pip install openpyxl\
+pip install matplotlib
+\f1\i0 \
+\'a0\
+Le code est pr\'eat \'e0 \'eatre utilis\'e9.\
+\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f0\b\fs48 \cf2 1.5. Faire des modifications locales et globales
 \f1\b0\fs32 \
 \'a0\
 Vous pouvez modifier \'e0 loisir le code en local. Si vous souhaitez proposer une modification du code pour tout le monde, il suffit de cliquer sur 
@@ -78,7 +118,7 @@ Vous pouvez modifier \'e0 loisir le code en local. Si vous souhaitez proposer un
 \f1\i0 .\
 \'a0\
 
-\f0\b\fs48 1.5. Mettre \'e0 jour le code utilis\'e9 localement
+\f0\b\fs48 1.6. Mettre \'e0 jour le code utilis\'e9 localement
 \f1\b0\fs32 \
 \'a0\
 Si des changement ont \'e9t\'e9 apport\'e9s en global et que vous voulez mettre \'e0 jour le code en local, il est mieux de passer par le terminal de PyCharm, et \'e9crire :\
@@ -127,7 +167,7 @@ Selon le script, vous pourrez avoir \'e0 entrer un ou plusieurs noms de fichiers
 \
 \pard\pardeftab720\qj\partightenfactor0
 
-\f0\b\fs48 \cf2 1. Codes principaux
+\f0\b\fs48 \cf2 2.1. Codes principaux
 \f1\b0\fs32 \
 \'a0\
 \pard\pardeftab720\qj\partightenfactor0
@@ -167,7 +207,7 @@ Ce script permet de tracer des Zijderveld, st\'e9r\'e9onets et intensit\'e9s pou
 \
 \pard\pardeftab720\qj\partightenfactor0
 
-\f0\b\fs48 \cf2 2. Codes secondaires
+\f0\b\fs48 \cf2 2.2. Codes secondaires
 \f1\b0\fs32 \
 \'a0\
 Il y a plein de scripts \'ab\'a0annexes\'a0\'bb qui sont soit appel\'e9s par les codes principaux (c-\'e0-d qui ne peuvent pas s\'92utiliser directement), soit \'e0 utiliser directement. Parmi ces derniers, on trouve\'a0en particulier :\
@@ -271,10 +311,57 @@ A menu
 {\field{\*\fldinst{HYPERLINK "https://github.com/cmaurel-cerege/PmagAnalysis"}}{\fldrslt \cf3 \ul \ulc3 https://github.com/cmaurel-cerege/PmagAnalysis}}\
 \'a0\
 You have to choose the location where the code will be saved, then open it in a new window. Yay! You can use the codes now (see below).\
+\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f0\b\fs48 \cf2 3.4. T\'e9l\'e9charger les packages n\'e9cessaires
+\f1\b0\fs32 \
+\
+The code runs in Python 3, you must accept the default 
+\f3\i interpreter
+\f1\i0  that PyCharm offers (checking that it is indeed Python 3, otherwise select an 
+\f3\i interpreter
+\f1\i0  manually).\
+\
+You may need to download the packages necessary for the code to work properly. To do this, you must first check if you are using 
+\f3\i Anaconda
+\f1\i0 . At the bottom right of the window there is a button with the chosen python version. Click on it then on 
+\f3\i Interpreter
+\f1\i0  
+\f3\i settings
+\f1\i0  and check if your interpreter is in an 
+\f3\i anaconda
+\f1\i0  folder or not, then 
+\f3\i Cancel
+\f1\i0 .\
+\
+Open a 
+\f3\i Terminal
+\f1\i0  (window buttons, bottom left).\
+If Anaconda, type:\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f3\i \cf2 conda install numpy\
+conda install scipy\
+conda install openpyxl\
+conda install matplotlib\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f1\i0 \cf2 \
+Else, type:\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f3\i \cf2 pip install numpy\
+pip install scipy\
+pip install openpyxl\
+pip install matplotlib
+\f1\i0 \
+\'a0\
+The code is ready to be used!\
 \'a0\
 \pard\pardeftab720\qj\partightenfactor0
 
-\f0\b\fs48 \cf2 3.4. Write local and global updates
+\f0\b\fs48 \cf2 3.5. Write local and global updates
 \f1\b0\fs32 \
 \'a0\
 You can modify the code as much as you want locally. If you want to submit a change for every user, you can click on 
@@ -290,19 +377,38 @@ You can modify the code as much as you want locally. If you want to submit a cha
 \f1\i0 \
 \pard\pardeftab720\qj\partightenfactor0
 
-\f0\b\fs48 \cf2 3.5. Update the code to use locally
+\f0\b\fs48 \cf2 3.6. Update the code to use locally
 \f1\b0\fs32 \
-\'a0\
-If changes were made on the global version of the code and you want to get the most up-to-date version, you can click on 
-\f3\i Git
-\f1\i0  >> 
-\f3\i Update Project >> Merge incoming changes into the current branch
+\
+If changes have been made globally and you want to update the code locally, it is better to use the 
+\f3\i PyCharm terminal
+\f1\i0 , and write:\
+\
+\pard\pardeftab720\qj\partightenfactor0
+
+\f3\i \cf2 git checkout master\
+git remote add upstream https://github.com/cmaurel-cerege/PmagAnalysis\
+git fetch upstream\
+git reset --hard upstream/master
 \f1\i0 \
+\
+To clean up your changes (if they have been incorporated into the new code, for example), add:\
+\
+git clean -fd\
+\
+Note: it seems that clicking on 
+\f3\i Git 
+\f1\i0 >> 
+\f3\i Update Project
+\f1\i0  >> 
+\f3\i Merge
+\f1\i0  
+\f3\i incoming changes into the current branch 
+\f1\i0 does not work every time.\
 \pard\pardeftab720\partightenfactor0
 \cf2 \
 \pard\pardeftab720\qj\partightenfactor0
 \cf2 \
-\
 \
 \pard\pardeftab720\qj\partightenfactor0
 
