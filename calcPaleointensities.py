@@ -1,8 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import stats
+from scipy import interpolate
 from returnEmpiricalFactors import *
 import random
+
 
 def Get_closest_id(L,value):
     return list(L).index(min(L, key=lambda x:abs(x-value)))
@@ -177,21 +179,59 @@ def plot_REMp(NRMx, NRMy, NRMz, Mx, My, Mz, AF, id1, id2, frac=0.0, annot=False)
     #     print(dAF)
     #     print(REMp)
 
+    NRMlost,AF = calc_Mlost(NRMx,NRMy,NRMz,AF,0,len(NRMx),0)
+    Mlost, AF = calc_Mlost(Mx,My,Mz,AF,0,len(Mx),0)
+    NRMcut, Mcut,AFcut = [],[],[]
+    # for k in np.arange(1,len(Mlost)):
+    #     if Mlost[k] > Mlost[k-1]:
+    #         Mcut.append(Mlost[k])
+    #         NRMcut.append(NRMlost[k])
+    #         AFcut.append(AF[k])
+
+    #cs = interpolate.CubicSpline(Mcut, NRMcut)
+    #tkt = interpolate.splrep(Mcut, NRMcut, s=0)
+    #cs = interpolate.splev(Mcut, tkt, der=1)
+
+    def smooth(y, box_pts):
+        box = np.ones(box_pts) / box_pts
+        y_smooth = np.convolve(y, box, mode='same')
+        return y_smooth
+
+    Mcut = Mlost[:-1]
+    NRMcut = smooth(NRMlost, 6)[:-1]
+
+    window = 4
+    hw = int(window / 2)
+    AFREMp,REMpS = [], []
+    for k in np.arange(hw,len(NRMcut)-hw):
+        nn = NRMcut[k-hw:k+hw]
+        mm = Mcut[k-hw:k+hw]
+        REMpS.append(stats.linregress(mm,nn).slope)
+        print(REMpS[-1])
+        AFREMp.append(AF[k])
+
 
     NRM = np.array([np.sqrt((NRMx[k+1]-NRMx[k])**2+(NRMy[k+1]-NRMy[k])**2+(NRMz[k+1]-NRMz[k])**2) for k in np.arange(len(NRMx)-1)])
     M = np.array([np.sqrt((Mx[k+1]-Mx[k])**2+(My[k+1]-My[k])**2+(Mz[k+1]-Mz[k])**2) for k in np.arange(len(Mx)-1)])
 
     REMp = NRM/M
 
-    fig = plt.figure(figsize=(6,3))
+    fig = plt.figure(figsize=(6, 3))
     plt.yscale("log")
     plt.xlabel('AF step (mT)')
     plt.ylabel('REM prime')
-    #plt.ylim(1e-4,1)
+    plt.xlim(AF[0], AF[-1])
+    plt.ylim(1e-4,1e-1)
+    plt.scatter(AFREMp, REMpS, s=45, c='violet', marker='o', edgecolor='k', linewidths=0.5)
     plt.scatter(AF[1:], REMp, s=45, c='lightgray', marker='o', edgecolor='k', linewidths=0.5)
     if annot == True:
         for i in np.arange(len(REMp)):
             plt.text(AF[i], REMp[i], str(i), fontsize=8)
+
+    fig = plt.figure(figsize=(6, 3))
+    plt.scatter(Mlost, NRMlost, s=45, c='lightgray', marker='o', edgecolor='k', linewidths=0.5)
+    plt.plot(Mcut, NRMcut, 'g-', lw=2)
+
 
     return
 

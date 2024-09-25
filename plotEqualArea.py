@@ -181,9 +181,9 @@ def plot_confidence_ellipse_indiv(Mx, My, Mz, alpha, beta, fig, color, label='')
     plt.plot(ma.masked_where(above, xe), ma.masked_where(above, ye), color=color, ls='-')
 
     if sign(M[2]) >= 0.0:
-        plt.plot([equal_area_coord_from_cart(Mmean)[0]], [equal_area_coord_from_cart(Mmean)[1]], marker='*', ms=7, lw=0, mew=1.5, mfc='w', mec=color, label=label)
+        plt.plot([equal_area_coord_from_cart(M)[0]], [equal_area_coord_from_cart(M)[1]], marker='*', ms=7, lw=0, mew=1.5, mfc='w', mec=color, label=label)
     else:
-        plt.plot([equal_area_coord_from_cart(Mmean)[0]], [equal_area_coord_from_cart(Mmean)[1]], marker='*', ms=7, lw=0, mew=1.5, mfc=color, mec=color, label=label)
+        plt.plot([equal_area_coord_from_cart(M)[0]], [equal_area_coord_from_cart(M)[1]], marker='*', ms=7, lw=0, mew=1.5, mfc=color, mec=color, label=label)
     plt.legend(loc=3, scatterpoints=1)
 
     return
