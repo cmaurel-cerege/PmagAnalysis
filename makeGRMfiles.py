@@ -40,10 +40,13 @@ Mznogrm = Mz[:id_start]+[Mz[k] for k in np.arange(id_start,len(Mz)-2,3)]
 stepnogrm = step[:id_start]+[step[k] for k in np.arange(id_start,len(step)-2,3)]
 
 fpwgrm = open(path+name+'_GRMavg.txt', 'w')
-fpwnogrm = open(path+name+'_noGRM.txt', 'w')
+#fpwnogrm = open(path+name+'_noGRM.txt', 'w')
 for j in np.arange(len(Mxgrm)):
-    fpwgrm.write(str(int(stepgrm[j]))+' '+str(Mxgrm[j])+' '+str(Mygrm[j])+' '+str(Mzgrm[j])+' '+'\n')
+    if j != len(Mxgrm)-1:
+        fpwgrm.write(str(int(stepgrm[j]))+', '+f'{Mxgrm[j]:.4e}'+', '+f'{Mygrm[j]:.4e}'+', '+f'{Mzgrm[j]:.4e}'+'\n')
+    else:
+        fpwgrm.write(str(int(stepgrm[j]))+', '+f'{Mxgrm[j]:.4e}'+', '+f'{Mygrm[j]:.4e}'+', '+f'{Mzgrm[j]:.4e}')
 fpwgrm.close()
-for j in np.arange(len(Mxnogrm)):
-    fpwnogrm.write(str(int(stepnogrm[j]))+' '+str(Mxnogrm[j])+' '+str(Mynogrm[j])+' '+str(Mznogrm[j])+' '+'\n')
-fpwnogrm.close()
+# for j in np.arange(len(Mxnogrm)):
+#     fpwnogrm.write(str(int(stepnogrm[j]))+' '+str(Mxnogrm[j])+' '+str(Mynogrm[j])+' '+str(Mznogrm[j])+' '+'\n')
+# fpwnogrm.close()

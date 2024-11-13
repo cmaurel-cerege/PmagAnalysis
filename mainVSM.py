@@ -20,18 +20,19 @@ for fp in files:
     path = ''
     for k in np.arange(len(fp.split('/')) - 1):
         path += str(fp.split('/')[k]) + '/'
-    sample = fp.split('/')[-1].split('_')[0]
+    sample = fp.split('/')[-1].split('-')[0]
+    type = fp.split('/')[-1].split('-')[-1]
 
-    if 'IRMacq' in fp:
+    if 'IRMacq' in type:
         fp_irm = open(fp,'r',encoding="utf8", errors='ignore')
         fp_bcr, fp_hyst, fp_LT = None, None, None
-    elif 'Hy' in fp:
+    elif 'Hy' in type:
         fp_hyst = open(fp,'r',encoding="utf8", errors='ignore')
         fp_irm, fp_bcr, fp_LT = None, None, None
-    elif 'Bcr' in fp:
+    elif 'Bcr' in type:
         fp_bcr = open(fp,'r',encoding="utf8", errors='ignore')
         fp_irm, fp_hyst, fp_LT = None, None, None
-    elif 'LT' in fp:
+    elif 'LT' in type:
         fp_LT = open(fp,'r',encoding="utf8", errors='ignore')
         fp_irm, fp_bcr, fp_hyst = None, None, None
 
@@ -108,7 +109,7 @@ for fp in files:
                     Bhyst.append(float(cols[3]))
                     Mhyst.append(float(cols[4]))
 
-        mass = input("Mass of the sample ? (default = 1)  ")
+        mass = input("Mass of the sample (kg)? (default = 1)  ")
         if mass != '':
             mass = float(eval(mass))
         else:
@@ -138,7 +139,7 @@ for fp in files:
         fp_irm.close()
 
     if fp_bcr != None:
-        print(' * Bcr = '+f'{Bcr*1000:.0f}'+' mT')
+        print(' * Bcr = '+f'{Bcr*1000:.1f}'+' mT')
         fp_bcr.close()
 
     if fp_hyst != None:

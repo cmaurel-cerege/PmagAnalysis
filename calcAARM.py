@@ -218,17 +218,29 @@ else:
 
     ## 95% confidence ellipses on eigenvectors
     ## F29 is the quantile of a F distribution of 2 and 9 DoF with probability 95%.
+
+    ### I am not sure how to calculate the confidence angle for the eigenvectors. Not super clear in the paper.
+
     F29 = 4.26
-    e1_2 = np.arctan2(S*np.sqrt(2*F29),2*np.absolute(alpha1-alpha2))*180/np.pi
-    e1_3 = np.arctan2(S*np.sqrt(2*F29),2*np.absolute(alpha1-alpha3))*180/np.pi
+    # e1_2 = np.arctan(S*np.sqrt(2*F29),2*np.absolute(alpha1-alpha2))*180/np.pi
+    # e1_3 = np.arctan2(S*np.sqrt(2*F29),2*np.absolute(alpha1-alpha3))*180/np.pi
+    # e1 = np.min([e1_2,e1_3])
+    e1_2 = np.arctan(S*np.sqrt(2*F29)*2*np.absolute(alpha1-alpha2))*180/np.pi
+    e1_3 = np.arctan(S*np.sqrt(2*F29)*2*np.absolute(alpha1-alpha3))*180/np.pi
     e1 = np.min([e1_2,e1_3])
 
-    e2_1 = np.arctan2(S*np.sqrt(2*F29),2*np.absolute(alpha1-alpha2))*180/np.pi
-    e2_3 = np.arctan2(S*np.sqrt(2*F29),2*np.absolute(alpha2-alpha3))*180/np.pi
+    # e2_1 = np.arctan2(S*np.sqrt(2*F29),2*np.absolute(alpha1-alpha2))*180/np.pi
+    # e2_3 = np.arctan2(S*np.sqrt(2*F29),2*np.absolute(alpha2-alpha3))*180/np.pi
+    # e2 = np.min([e2_1, e2_3])
+    e2_1 = np.arctan(S*np.sqrt(2*F29)*2*np.absolute(alpha1-alpha2))*180/np.pi
+    e2_3 = np.arctan(S*np.sqrt(2*F29)*2*np.absolute(alpha2-alpha3))*180/np.pi
     e2 = np.min([e2_1, e2_3])
 
-    e3_1 = np.arctan2(S*np.sqrt(2*F29),2*np.absolute(alpha1-alpha3))*180/np.pi
-    e3_2 = np.arctan2(S*np.sqrt(2*F29),2*np.absolute(alpha2-alpha3))*180/np.pi
+    # e3_1 = np.arctan2(S*np.sqrt(2*F29),2*np.absolute(alpha1-alpha3))*180/np.pi
+    # e3_2 = np.arctan2(S*np.sqrt(2*F29),2*np.absolute(alpha2-alpha3))*180/np.pi
+    # e3 = np.min([e3_1, e3_2])
+    e3_1 = np.arctan(S*np.sqrt(2*F29)*2*np.absolute(alpha1-alpha3))*180/np.pi
+    e3_2 = np.arctan(S*np.sqrt(2*F29)*2*np.absolute(alpha2-alpha3))*180/np.pi
     e3 = np.min([e3_1, e3_2])
 
     print('Eigenvalues (normalized):')
@@ -245,13 +257,10 @@ else:
     print(f'{T:.3f}'+'\n')
 
     fig = plt.figure()
-    plot_indiv_confidence_ellipse(eigvecs[0][0], eigvecs[0][1], eigvecs[0][2], e1, e1, 'r', fig,'E1')
-    plot_indiv_confidence_ellipse(eigvecs[1][0], eigvecs[1][1], eigvecs[1][2], e2, e2, 'g', fig,'E2')
-    plot_indiv_confidence_ellipse(eigvecs[2][0], eigvecs[2][1], eigvecs[2][2], e3, e3, 'b', fig,'E3')
+    plot_confidence_ellipse_indiv(eigvecs[0][0],eigvecs[0][1],eigvecs[0][2],e1,e1,fig,'r','E1')
+    plot_confidence_ellipse_indiv(eigvecs[1][0],eigvecs[1][1],eigvecs[1][2],e2,e2,fig,'g','E2')
+    plot_confidence_ellipse_indiv(eigvecs[2][0],eigvecs[2][1],eigvecs[2][2],e3,e3,fig,'b','E3')
     if save == 'y':
         plt.savefig(path+name+'.pdf', format='pdf', dpi=200, bbox_inches='tight')
-
-
-
 
 plt.show()

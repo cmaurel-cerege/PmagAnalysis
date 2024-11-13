@@ -192,23 +192,23 @@ def plot_REMp(NRMx, NRMy, NRMz, Mx, My, Mz, AF, id1, id2, frac=0.0, annot=False)
     #tkt = interpolate.splrep(Mcut, NRMcut, s=0)
     #cs = interpolate.splev(Mcut, tkt, der=1)
 
-    def smooth(y, box_pts):
-        box = np.ones(box_pts) / box_pts
-        y_smooth = np.convolve(y, box, mode='same')
-        return y_smooth
-
-    Mcut = Mlost[:-1]
-    NRMcut = smooth(NRMlost, 6)[:-1]
-
-    window = 4
-    hw = int(window / 2)
-    AFREMp,REMpS = [], []
-    for k in np.arange(hw,len(NRMcut)-hw):
-        nn = NRMcut[k-hw:k+hw]
-        mm = Mcut[k-hw:k+hw]
-        REMpS.append(stats.linregress(mm,nn).slope)
-        print(REMpS[-1])
-        AFREMp.append(AF[k])
+    # def smooth(y, box_pts):
+    #     box = np.ones(box_pts) / box_pts
+    #     y_smooth = np.convolve(y, box, mode='same')
+    #     return y_smooth
+    #
+    # Mcut = Mlost[:-1]
+    # NRMcut = smooth(NRMlost, 6)[:-1]
+    #
+    # window = 4
+    # hw = int(window / 2)
+    # AFREMp,REMpS = [], []
+    # for k in np.arange(hw,len(NRMcut)-hw):
+    #     nn = NRMcut[k-hw:k+hw]
+    #     mm = Mcut[k-hw:k+hw]
+    #     REMpS.append(stats.linregress(mm,nn).slope)
+    #     print(REMpS[-1])
+    #     AFREMp.append(AF[k])
 
 
     NRM = np.array([np.sqrt((NRMx[k+1]-NRMx[k])**2+(NRMy[k+1]-NRMy[k])**2+(NRMz[k+1]-NRMz[k])**2) for k in np.arange(len(NRMx)-1)])
@@ -222,15 +222,15 @@ def plot_REMp(NRMx, NRMy, NRMz, Mx, My, Mz, AF, id1, id2, frac=0.0, annot=False)
     plt.ylabel('REM prime')
     plt.xlim(AF[0], AF[-1])
     plt.ylim(1e-4,1e-1)
-    plt.scatter(AFREMp, REMpS, s=45, c='violet', marker='o', edgecolor='k', linewidths=0.5)
+    #plt.scatter(AFREMp, REMpS, s=45, c='violet', marker='o', edgecolor='k', linewidths=0.5)
     plt.scatter(AF[1:], REMp, s=45, c='lightgray', marker='o', edgecolor='k', linewidths=0.5)
     if annot == True:
         for i in np.arange(len(REMp)):
             plt.text(AF[i], REMp[i], str(i), fontsize=8)
-
-    fig = plt.figure(figsize=(6, 3))
-    plt.scatter(Mlost, NRMlost, s=45, c='lightgray', marker='o', edgecolor='k', linewidths=0.5)
-    plt.plot(Mcut, NRMcut, 'g-', lw=2)
+    #
+    # fig = plt.figure(figsize=(6, 3))
+    # plt.scatter(Mlost, NRMlost, s=45, c='lightgray', marker='o', edgecolor='k', linewidths=0.5)
+    # plt.plot(Mcut, NRMcut, 'g-', lw=2)
 
 
     return

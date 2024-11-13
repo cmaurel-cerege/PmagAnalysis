@@ -37,7 +37,7 @@ def Calc_PCA(Mx, My, Mz, anc='free'):
     return vals, vecs
 
 
-def PCA_analysis(Mx, My, Mz, AF, rem='', remdata=[], mass=1, demag='AF'):
+def PCA_analysis(Mx, My, Mz, AF, rem1='', remdata1=[], rem2='', remdata2=[], mass=1, demag='AF'):
 
     if mass == 1:
         unit = 'A m2'
@@ -48,7 +48,7 @@ def PCA_analysis(Mx, My, Mz, AF, rem='', remdata=[], mass=1, demag='AF'):
     elif demag == 'TH':
         dem = '°C'
 
-    nb_comp = input('Number of components?  (default = 1)')
+    nb_comp = input('Number of components?  (default = 1)  ')
     if nb_comp == '':
         nb_comp = 1
     else:
@@ -110,8 +110,10 @@ def PCA_analysis(Mx, My, Mz, AF, rem='', remdata=[], mass=1, demag='AF'):
         DANG.append(np.arccos(np.dot(Mcvec,CoM)/(norm(CoM)*norm(Mcvec)))*180/np.pi)
         print(" * DANG = " + f'{DANG[-1]:.2f}'+'°')
 
-        if rem != '':
-            print(' * REM '+rem+': '+f'{norm(Mcmax[-1])/remdata[id_i[k]]:.5f}\n')
+        if rem1 != '':
+            print(' * REM '+rem1+': '+f'{norm(Mcmax[-1])/remdata1[id_i[k]]:.5f}')
+        if rem2 != '':
+            print(' * REM '+rem2+': '+f'{norm(Mcmax[-1])/remdata2[id_i[k]]:.5f}')
 
     return Mcx, Mcy, Mcz, Mcd, Mci, Mcmax, MAD, DANG, MAD95, id_i, id_f
 

@@ -197,10 +197,12 @@ print('\n')
 dopca = str(input('Run PCA analysis? (Y/n)  '))
 if dopca != 'n':
 
-    if len(NRMatAFx) != 0 and len(ARMatAFx) != 0:
-        Mcx, Mcy, Mcz, Mcd, Mci, Mcmax, MAD, DANG, MAD95, id_i, id_f = pca.PCA_analysis(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, rem='ARM', remdata=ARMatAF, mass=massNRM)
-    elif len(NRMatAFx) != 0 and len(IRMatAFx) != 0:
-        Mcx, Mcy, Mcz, Mcd, Mci, Mcmax, MAD, DANG, MAD95, id_i, id_f = pca.PCA_analysis(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, rem='IRM', remdata=IRMatAF, mass=massNRM)
+    if len(NRMatAFx) != 0 and len(ARMatAFx) != 0 and len(IRMatAFx) != 0:
+        Mcx, Mcy, Mcz, Mcd, Mci, Mcmax, MAD, DANG, MAD95, id_i, id_f = pca.PCA_analysis(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, rem1='ARM', remdata1=ARMatAF, rem2='IRM', remdata2=IRMatAF,mass=massNRM)
+    elif len(NRMatAFx) != 0 and len(ARMatAFx) != 0 and len(IRMatAFx) == 0:
+        Mcx, Mcy, Mcz, Mcd, Mci, Mcmax, MAD, DANG, MAD95, id_i, id_f = pca.PCA_analysis(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, rem1='ARM', remdata1=ARMatAF, mass=massNRM)
+    elif len(NRMatAFx) != 0 and len(ARMatAFx) == 0 and len(IRMatAFx) != 0:
+        Mcx, Mcy, Mcz, Mcd, Mci, Mcmax, MAD, DANG, MAD95, id_i, id_f = pca.PCA_analysis(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, rem1='IRM', remdata1=IRMatAF, mass=massNRM)
     else:
         Mcx, Mcy, Mcz, Mcd, Mci, Mcmax, MAD, DANG, MAD95, id_i, id_f = pca.PCA_analysis(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, mass=massNRM)
 
@@ -230,7 +232,7 @@ if nrmlost != 'n':
 
         NRMatAFx, NRMatAFy, NRMatAFz, ARMatAFx, ARMatAFy, ARMatAFz, AFARM = Merge_AF_lists(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, ARMatAFx, ARMatAFy, ARMatAFz, ARMatAFstep)
 
-        paleointensityARM, id_i, id_f = calc_paleointensity(NRMatAFx, NRMatAFy, NRMatAFz, ARMatAFx, ARMatAFy, ARMatAFz, AFARM, type='ARM', tcrm=tcrm, mineral=mineral, domain=domain, biasfield=ARMbiasfield, mass=massNRM)
+        paleointensityARM, id_i, id_f = calc_paleointensity(NRMatAFx, NRMatAFy, NRMatAFz, ARMatAFx, ARMatAFy, ARMatAFz, AFARM, type='ARM', tcrm=tcrm, mineral=mineral, domain=domain, biasfield=ARMbiasfield, mass=massNRM,annot=True)
         if save == 'y':
             id = type_of_file.index('NRM')
             plt.savefig(path + 'Plots/' + sample_name[id] + '-VS-ARM-lost.pdf', format='pdf', dpi=200, bbox_inches="tight")

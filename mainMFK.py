@@ -124,6 +124,8 @@ if type == 'l' or type == 'h':
             if save == 'y':
                 plt.savefig(path + sample + '_suscLT.pdf', format='pdf', dpi=200, bbox_inches="tight")
         if plotderivative != 'n' and plotderivativeonfig == 'n':
+            if save == 'y':
+                plt.savefig(path + sample + '_suscLT.pdf', format='pdf', dpi=200, bbox_inches="tight")
             fig = plt.figure()
             plt.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
             plt.xlabel('Temperature (K)')
@@ -131,6 +133,9 @@ if type == 'l' or type == 'h':
             plt.ylim(1.1*np.min(K_LT_corr_prime), 1.1*np.max(K_LT_corr_prime))
             plt.plot(T_LT_interp+273.15, K_LT_corr_prime, 'k-', marker='o', ms='4', lw=0.5)
             fig.tight_layout()
+            if save == 'y':
+                plt.savefig(path + sample + '_suscLTder.pdf', format='pdf', dpi=200, bbox_inches="tight")
+        else:
             if save == 'y':
                 plt.savefig(path + sample + '_suscLT.pdf', format='pdf', dpi=200, bbox_inches="tight")
 
