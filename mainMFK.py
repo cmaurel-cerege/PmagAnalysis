@@ -5,7 +5,7 @@ from scipy import interpolate
 from builtins import *
 
 type = input('RT, LT, HT measurements? (r/l/h)  ')
-mass = input('Mass of the sample (g)?  ')
+mass = input('Mass of the sample (g; default = 1)?  ')
 if mass != '':
     mass = float(eval(mass))
 else:
@@ -13,7 +13,7 @@ else:
 
 fp = open(sys.argv[1],'r',encoding="utf8",errors='ignore')
 
-save = input('Save the figures? (y/N)')
+save = input('Save the figures? (y/N)  ')
 path = ''
 for k in np.arange(len(sys.argv[1].split('/')) - 1):
     path += str(sys.argv[1].split('/')[k]) + '/'
@@ -32,7 +32,7 @@ if type == 'r':
     fp.close()
     Tstep, K = np.array(Tstep), np.array(K)
 
-    normsus = input('Normalize susceptibility? (Y/n)')
+    normsus = input('Normalize susceptibility? (Y/n)  ')
     fig = plt.figure(figsize=(6,4))
     plt.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
     plt.xlabel('Temperature (C)')
@@ -93,7 +93,7 @@ if type == 'l' or type == 'h':
                 K_LTpe.append(Kpe[k])
         K_LT, T_LT, K_LTpe, T_LTpe = np.array(K_LT), np.array(T_LT), np.array(K_LTpe), np.array(T_LTpe)
 
-        T_LT_interp = np.linspace(-194, 0, 80)
+        T_LT_interp = np.linspace(int(T_LT[0]), 0, 80)
         tck = interpolate.splrep(T_LT, K_LT, s=0)
         tckpe = interpolate.splrep(T_LTpe, K_LTpe, s=0)
         K_LT_interp = interpolate.splev(T_LT_interp, tck, der=0)
@@ -103,15 +103,16 @@ if type == 'l' or type == 'h':
         tckprime = interpolate.splrep(T_LT_interp, K_LT_corr, s=0)
         K_LT_corr_prime = interpolate.splev(T_LT_interp, tckprime, der=1)
 
-        plotderivative = input('Plot derivative? (Y/n)')
+        plotderivative = input('Plot derivative? (Y/n)  ')
         if plotderivative != 'n':
-            plotderivativeonfig = input('On the same figure? (Y/n)')
+            plotderivativeonfig = input('On the same figure? (Y/n)  ')
         else:
             plotderivativeonfig = 'n'
 
         fig, ax1 = plt.subplots(1,1,figsize=(6,4))
         plt.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
         plt.xlabel('Temperature (K)')
+        ax1.set_xlim(75, 275)
         ax1.set_ylabel('Susceptibility (m3 kg-1)')
         ax1.set_ylim(0, 1.1*np.max(K_LT_corr))
         ax1.plot(T_LT_interp+273.15, K_LT_corr, 'k-', marker='.', ms='0', lw=1.5)
@@ -129,6 +130,7 @@ if type == 'l' or type == 'h':
             fig = plt.figure()
             plt.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
             plt.xlabel('Temperature (K)')
+            ax1.set_xlim(75, 275)
             plt.ylabel('Derivative of susceptibility (m3 kg-1 K-1)')
             plt.ylim(1.1*np.min(K_LT_corr_prime), 1.1*np.max(K_LT_corr_prime))
             plt.plot(T_LT_interp+273.15, K_LT_corr_prime, 'k-', marker='o', ms='4', lw=0.5)
