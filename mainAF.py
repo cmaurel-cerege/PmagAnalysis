@@ -131,10 +131,13 @@ if zijd != 'n':
             id = type_of_file.index('NRM')
             plt.savefig(path + 'Plots/' + sample_name[id] + '-ZIJD.pdf', format='pdf', dpi=200, bbox_inches="tight")
         plt.figure(figsize=(5, 5))
-        Plot_Zijderveld(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, unit=unit, title='NRM@AF', color='k', gui='guiZ')
-    # if len(ARMatAFx) != 0:
-    #     plt.figure(figsize=(5, 5))
-    #     Plot_Zijderveld(ARMatAFx, ARMatAFy, ARMatAFz, ARMatAFstep, unit=unit, title='ARM@AF', color='k')
+        Plot_Zijderveld(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, unit=unit, title='NRM@AF', color='k', gui='guiX')
+    if len(ARMatAFx) != 0:
+        plt.figure(figsize=(5, 5))
+        Plot_Zijderveld(ARMatAFx, ARMatAFy, ARMatAFz, ARMatAFstep, unit=unit, title='ARM@AF', color='k')
+        if save == 'y':
+            id = type_of_file.index('ARM')
+            plt.savefig(path + 'Plots/' + sample_name[id] + '-ZIJD.pdf', format='pdf', dpi=200, bbox_inches="tight")
     # if len(IRMatAFx) != 0:
     #     plt.figure(figsize=(5, 5))
     #     Plot_Zijderveld(IRMatAFx, IRMatAFy, IRMatAFz, IRMatAFstep, unit=unit, title='IRM@AF', color='k')
@@ -162,11 +165,11 @@ intdemag = str(input('Plot intensity demag? (Y/n)  '))
 if intdemag != 'n':
     fig = plt.figure(figsize=(6,3))
     if len(NRMatAFx) != 0:
-        Plot_AF_demag(NRMatAFx,NRMatAFy,NRMatAFz,NRMatAFstep, norm=True, type='NRM', color='gold')
+        Plot_AF_demag(NRMatAFx,NRMatAFy,NRMatAFz,NRMatAFstep, norm=False, type='NRM', color='gold')
     if len(ARMatAFx) != 0:
-        Plot_AF_demag(ARMatAFx,ARMatAFy,ARMatAFz,ARMatAFstep, norm=True, type='ARM', color='violet')
+        Plot_AF_demag(ARMatAFx,ARMatAFy,ARMatAFz,ARMatAFstep, norm=False, type='ARM', color='violet')
     if len(IRMatAFx) != 0:
-        Plot_AF_demag(IRMatAFx,IRMatAFy,IRMatAFz,IRMatAFstep, norm=True, type='IRM', color='powderblue')
+        Plot_AF_demag(IRMatAFx,IRMatAFy,IRMatAFz,IRMatAFstep, norm=False, type='IRM', color='powderblue')
     if save == 'y':
         id = type_of_file.index('NRM')
         plt.savefig(path + 'Plots/' + sample_name[id][0:-4] + '-AFINT.pdf', format='pdf', dpi=200, bbox_inches="tight")

@@ -50,7 +50,7 @@ class FollowDotCursor(object):
             x, y = inv.transform([(event.x, event.y)]).ravel()
         x, y = self.snap(x, y)
         id = list(l).index(min(l, key=lambda a: abs(a - x)))
-        self.annotation.set_text("Index: " + str(id) + "\nLevel: " + str(af[id]))
+        self.annotation.set_text("Index: " + str(id) + "\nField: " + str(af[id]) + " mT")
         self.annotation.set_visible(True)
         event.canvas.draw()
 

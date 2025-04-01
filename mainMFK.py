@@ -4,14 +4,23 @@ import sys
 from scipy import interpolate
 from builtins import *
 
-type = input('RT, LT, HT measurements? (r/l/h)  ')
-mass = input('Mass of the sample (g; default = 1)?  ')
+mass = input('Mass of the sample (in mg; default = 1)?  ')
 if mass != '':
-    mass = float(eval(mass))
+    mass = float(eval(mass))*1e-6
 else:
     mass = 1
 
 fp = open(sys.argv[1],'r',encoding="utf8",errors='ignore')
+ext = sys.argv[1].split('/')[-1].split('.')[1]
+if ext == 'sus':
+    type = 'r'
+    print('Room temperature susceptibility')
+elif ext == 'clw':
+    type = 'l'
+    print('Low temperature susceptibility')
+elif ext == 'cur':
+    type = 'h'
+    print('High temperature susceptibility')
 
 save = input('Save the figures? (y/N)  ')
 path = ''
@@ -28,7 +37,7 @@ if type == 'r':
         cols = [c for c in cc if c != '']
         if j > 0:
             Tstep.append(float(cols[0]))
-            K.append(float(cols[6])*1e-5/(mass*1e-3))
+            K.append(float(cols[6])*1e-5/mass)
     fp.close()
     Tstep, K = np.array(Tstep), np.array(K)
 
@@ -48,9 +57,9 @@ if type == 'r':
 
     if save == 'y':
         if normsus == 'N':
-            plt.savefig(path + sample + '_susc.pdf', format='pdf', dpi=200, bbox_inches="tight")
+            plt.savefig(path + sample + '-X.pdf', format='pdf', dpi=200, bbox_inches="tight")
         else:
-            plt.savefig(path + sample + '_normsusc.pdf', format='pdf', dpi=200, bbox_inches="tight")
+            plt.savefig(path + sample + '-normX.pdf', format='pdf', dpi=200, bbox_inches="tight")
 
 ## Measurements conducted in the MFK at low or high temperatures:
 if type == 'l' or type == 'h':
@@ -61,7 +70,7 @@ if type == 'l' or type == 'h':
         cols = [c for c in cc if c != '']
         if j > 0:
             T.append(float(cols[0]))
-            K.append(float(cols[1]))
+            K.append(float(cols[1])*1e-6)
     fp.close()
 
     ## If sample holder correction:
@@ -73,11 +82,12 @@ if type == 'l' or type == 'h':
             cols = [c for c in cc if c != '']
             if j > 0:
                 Tpe.append(float(cols[0]))
-                Kpe.append(float(cols[1]))
+                Kpe.append(float(cols[1])*1e-6)
         fppe.close()
     else:
-        input('No sample holder file...')
-        sys.exit()
+        Tpe, Kpe = [], []
+        print('No sample holder file.')
+        #sys.exit()
 
     if type == 'l':
 
@@ -86,47 +96,52 @@ if type == 'l' or type == 'h':
             if T[k] > T[k-1]:
                 T_LT.append(T[k])
                 K_LT.append(K[k])
-        T_LTpe, K_LTpe = [], []
-        for k in np.arange(1, len(Tpe)):
-            if Tpe[k] != Tpe[k-1]:
-                T_LTpe.append(Tpe[k])
-                K_LTpe.append(Kpe[k])
-        K_LT, T_LT, K_LTpe, T_LTpe = np.array(K_LT), np.array(T_LT), np.array(K_LTpe), np.array(T_LTpe)
+        K_LT, T_LT = np.array(K_LT), np.array(T_LT)
+        if len(sys.argv) > 2:
+            T_LTpe, K_LTpe = [], []
+            for k in np.arange(1, len(Tpe)):
+                if Tpe[k] != Tpe[k-1]:
+                    T_LTpe.append(Tpe[k])
+                    K_LTpe.append(Kpe[k])
+            K_LTpe, T_LTpe = np.array(K_LTpe), np.array(T_LTpe)
 
-        T_LT_interp = np.linspace(int(T_LT[0]), 0, 80)
+        T_LT_interp = np.linspace(int(T_LT[0]), int(T_LT[-1]), 80)
         tck = interpolate.splrep(T_LT, K_LT, s=0)
-        tckpe = interpolate.splrep(T_LTpe, K_LTpe, s=0)
         K_LT_interp = interpolate.splev(T_LT_interp, tck, der=0)
-        K_LTpe_interp = interpolate.splev(T_LT_interp, tckpe, der=0)
-        K_LT_corr = (K_LT_interp-K_LTpe_interp)*1e-5/(mass*1e-3)
+        if len(sys.argv) > 2:
+            tckpe = interpolate.splrep(T_LTpe, K_LTpe, s=0)
+            K_LTpe_interp = interpolate.splev(T_LT_interp, tckpe, der=0)
+            K_LT_corr = (K_LT_interp-K_LTpe_interp)*1e-5/mass
+        else:
+            K_LT_corr = K_LT_interp*1e-5/mass
 
         tckprime = interpolate.splrep(T_LT_interp, K_LT_corr, s=0)
         K_LT_corr_prime = interpolate.splev(T_LT_interp, tckprime, der=1)
 
-        plotderivative = input('Plot derivative? (Y/n)  ')
-        if plotderivative != 'n':
-            plotderivativeonfig = input('On the same figure? (Y/n)  ')
+        plotderivative = input('Plot derivative? (y/N)  ')
+        if plotderivative == 'y':
+            plotderivativeonfig = input('On the same figure? (y/N)  ')
         else:
             plotderivativeonfig = 'n'
 
         fig, ax1 = plt.subplots(1,1,figsize=(6,4))
         plt.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
         plt.xlabel('Temperature (K)')
-        ax1.set_xlim(75, 275)
+        ax1.set_xlim(85, 275)
         ax1.set_ylabel('Susceptibility (m3 kg-1)')
         ax1.set_ylim(0, 1.1*np.max(K_LT_corr))
         ax1.plot(T_LT_interp+273.15, K_LT_corr, 'k-', marker='.', ms='0', lw=1.5)
-        if plotderivative != 'n' and plotderivativeonfig != 'n':
+        if plotderivative == 'y' and plotderivativeonfig == 'y':
             ax2 = ax1.twinx()
             ax2.set_ylabel('Derivative of susceptibility (m3 kg-1 K-1)')
             ax2.set_ylim(1.1*np.min(K_LT_corr_prime), 1.1*np.max(K_LT_corr_prime))
             ax2.plot(T_LT_interp+273.15, K_LT_corr_prime, 'r-', marker='.', ms='0', lw=1.5)
             fig.tight_layout()
             if save == 'y':
-                plt.savefig(path + sample + '_suscLT.pdf', format='pdf', dpi=200, bbox_inches="tight")
-        if plotderivative != 'n' and plotderivativeonfig == 'n':
+                plt.savefig(path + sample + '-XLT.pdf', format='pdf', dpi=200, bbox_inches="tight")
+        if plotderivative == 'y' and plotderivativeonfig == 'n':
             if save == 'y':
-                plt.savefig(path + sample + '_suscLT.pdf', format='pdf', dpi=200, bbox_inches="tight")
+                plt.savefig(path + sample + '-XLT.pdf', format='pdf', dpi=200, bbox_inches="tight")
             fig = plt.figure()
             plt.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
             plt.xlabel('Temperature (K)')
@@ -136,10 +151,10 @@ if type == 'l' or type == 'h':
             plt.plot(T_LT_interp+273.15, K_LT_corr_prime, 'k-', marker='o', ms='4', lw=0.5)
             fig.tight_layout()
             if save == 'y':
-                plt.savefig(path + sample + '_suscLTder.pdf', format='pdf', dpi=200, bbox_inches="tight")
+                plt.savefig(path + sample + '-XLTder.pdf', format='pdf', dpi=200, bbox_inches="tight")
         else:
             if save == 'y':
-                plt.savefig(path + sample + '_suscLT.pdf', format='pdf', dpi=200, bbox_inches="tight")
+                plt.savefig(path + sample + '-XLT.pdf', format='pdf', dpi=200, bbox_inches="tight")
 
     if type == 'h':
 
@@ -165,8 +180,8 @@ if type == 'l' or type == 'h':
         K_HTc_interp = interpolate.splev(T_LT_interp, tckc, der=0)
         K_HTcpe_interp = interpolate.splev(T_LT_interp, tckcpe, der=0)
 
-        K_HTh_corr = (K_HTh_interp-K_HThpe_interp)*1e-5/(mass*1e-3)
-        K_HTc_corr = (K_HTc_interp-K_HTcpe_interp)*1e-5/(mass*1e-3)
+        K_HTh_corr = (K_HTh_interp-K_HThpe_interp)*1e-5/mass
+        K_HTc_corr = (K_HTc_interp-K_HTcpe_interp)*1e-5/mass
 
         fig = plt.figure(figsize=(6,4))
         plt.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))

@@ -56,7 +56,7 @@ def Plot_Zijderveld(Mx, My, Mz, step, xlim=(), ylim=(), unit='', title='', color
         sm = plt.cm.ScalarMappable(cmap=colormap)
         sm.set_clim(vmin=step[0], vmax=step[-1])
         ax.scatter(My, Mx, c=colors, marker='o', ec='k', lw=0.25, s=40, zorder=3, label='X-Y')
-        ax.scatter(My, Mz, c='w', marker='o', ec=colors, lw=2, s=30, zorder=3, label='Z-Y')
+        ax.scatter(My, Mz, c='w', marker='o', ec=colors, lw=1, s=30, zorder=3, label='Z-Y')
         plt.colorbar(sm,ax=plt.gca(),pad=0.05,orientation='horizontal',location='bottom',shrink=0.4,aspect=15, label=label, ticks=[step[0],int(step[-1]/2),step[-1]])
     else:
         ax.scatter(My, Mx, marker='o', ec='k', c=colors, lw=0.5, s=40, zorder=3, label='X-Y')

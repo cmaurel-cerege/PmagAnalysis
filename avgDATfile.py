@@ -47,8 +47,8 @@ for k in np.arange(len(step)-1):
             Mzavg.append(Mz[k])
             id += 1
 
-fpwavg = open(path+name+'_avg.txt', 'w')
-fpwfirst = open(path+name+'_first.txt', 'w')
+fpwavg = open(path+name+'-AVG.txt', 'w')
+fpwfirst = open(path+name+'-FIRST.txt', 'w')
 for j in np.arange(len(Mxavg)):
     fpwavg.write(str(int(stepavg[j]))+', '+f'{Mxavg[j]:.4e}'+', '+f'{Myavg[j]:.4e}'+', '+f'{Mzavg[j]:.4e}')
     if j != len(Mxavg)-1: fpwavg.write('\n')

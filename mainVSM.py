@@ -41,15 +41,17 @@ for fp in files:
         if 'txt' in fp_irm.name:
             for j,line in enumerate(fp_irm):
                 cols = line.split(',')
-                Birm.append(float(cols[0])*1e-3) ## field in T for plotting
-                Mirm.append(float(cols[1]))
+                if float(cols[0]) > 1:
+                    Birm.append(float(cols[0])*1e-3) ## field in T for plotting
+                    Mirm.append(float(cols[1]))
         else:
             for j,line in enumerate(fp_irm):
                 cols = line.split(',')
                 if len(cols) > 1:
                     if cols[1] == '0':
-                        Birm.append(float(cols[3]))
-                        Mirm.append(float(cols[4]))
+                        if float(cols[3]) > 1e-3:
+                            Birm.append(float(cols[3]))
+                            Mirm.append(float(cols[4]))
 
         simp = input('Simplify file? (y/N)  ')
         if simp == 'y':
@@ -164,8 +166,7 @@ for fp in files:
                 print(' * Ms = ' + f'{Ms/mass:.3e}'+' '+unit)
                 print(' * Mrs = ' + f'{Mrs/mass:.3e}'+' '+unit)
                 print(' * Bc = ' + f'{Bc*1000:.1f}'+' mT')
-                print(' * HF slope = ' + f'{sHF:.2e}'+' A m2 T-1')
-                print(' * HF slope = ' + f'{kHF/mass:.2e}'+' '+unitHF)
+                print(' * HF slope = ' + f'{sHF:.2e}'+' A m2 T-1 / ' + f'{kHF/mass:.2e}'+' '+unitHF)
         fp_hyst.close()
 
     if fp_LT != None:
