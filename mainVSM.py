@@ -82,7 +82,7 @@ for fp in files:
                     fpw.write(f'{Birm[k]*1e3:.3e}' + ',' + f'{Mirm[k]:.3e}' + '\n')
                 fpw.close()
 
-        IRMacq, Bvalue = plotIRMacq(Birm, Mirm, Bvalue=150, ylim=())
+        IRMacq, Bvalue = plotIRMacq(Birm, Mirm, Bvalue=10, ylim=())
         plt.show(block=False)
 
         if save == 'y':

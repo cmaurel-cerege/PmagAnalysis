@@ -1,4 +1,3 @@
-
 #### /!\ IMPORTANT NOTE /!\ ####
 
 # For the code to work flawlessly:
@@ -165,11 +164,11 @@ intdemag = str(input('Plot intensity demag? (Y/n)  '))
 if intdemag != 'n':
     fig = plt.figure(figsize=(6,3))
     if len(NRMatAFx) != 0:
-        Plot_AF_demag(NRMatAFx,NRMatAFy,NRMatAFz,NRMatAFstep, norm=False, type='NRM', color='gold')
+        Plot_AF_demag(NRMatAFx,NRMatAFy,NRMatAFz,NRMatAFstep, norm=True, type='NRM', color='gold')
     if len(ARMatAFx) != 0:
-        Plot_AF_demag(ARMatAFx,ARMatAFy,ARMatAFz,ARMatAFstep, norm=False, type='ARM', color='violet')
+        Plot_AF_demag(ARMatAFx,ARMatAFy,ARMatAFz,ARMatAFstep, norm=True, type='ARM', color='violet')
     if len(IRMatAFx) != 0:
-        Plot_AF_demag(IRMatAFx,IRMatAFy,IRMatAFz,IRMatAFstep, norm=False, type='IRM', color='powderblue')
+        Plot_AF_demag(IRMatAFx,IRMatAFy,IRMatAFz,IRMatAFstep, norm=True, type='IRM', color='powderblue')
     if save == 'y':
         id = type_of_file.index('NRM')
         plt.savefig(path + 'Plots/' + sample_name[id][0:-4] + '-AFINT.pdf', format='pdf', dpi=200, bbox_inches="tight")
@@ -235,7 +234,7 @@ if nrmlost != 'n':
 
         NRMatAFx, NRMatAFy, NRMatAFz, ARMatAFx, ARMatAFy, ARMatAFz, AFARM = Merge_AF_lists(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, ARMatAFx, ARMatAFy, ARMatAFz, ARMatAFstep)
 
-        paleointensityARM, id_i, id_f = calc_paleointensity(NRMatAFx, NRMatAFy, NRMatAFz, ARMatAFx, ARMatAFy, ARMatAFz, AFARM, type='ARM', tcrm=tcrm, mineral=mineral, domain=domain, biasfield=ARMbiasfield, mass=massNRM,annot=True)
+        paleointensityARM, id_i, id_f = calc_paleointensity(NRMatAFx, NRMatAFy, NRMatAFz, ARMatAFx, ARMatAFy, ARMatAFz, AFARM, type='ARM', tcrm=tcrm, mineral=mineral, domain=domain, biasfield=ARMbiasfield, mass=massNRM)
         if save == 'y':
             id = type_of_file.index('NRM')
             plt.savefig(path + 'Plots/' + sample_name[id] + '-VS-ARM-lost.pdf', format='pdf', dpi=200, bbox_inches="tight")
