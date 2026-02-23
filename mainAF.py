@@ -234,7 +234,7 @@ if nrmlost != 'n':
 
         NRMatAFx, NRMatAFy, NRMatAFz, ARMatAFx, ARMatAFy, ARMatAFz, AFARM = Merge_AF_lists(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, ARMatAFx, ARMatAFy, ARMatAFz, ARMatAFstep)
 
-        paleointensityARM, id_i, id_f = calc_paleointensity(NRMatAFx, NRMatAFy, NRMatAFz, ARMatAFx, ARMatAFy, ARMatAFz, AFARM, type='ARM', tcrm=tcrm, mineral=mineral, domain=domain, biasfield=ARMbiasfield, mass=massNRM)
+        paleointensityARM, id_i, id_f = calc_paleointensity(NRMatAFx, NRMatAFy, NRMatAFz, ARMatAFx, ARMatAFy, ARMatAFz, AFARM, type='ARM', tcrm=tcrm, mineral=mineral, domain=domain, biasfield=ARMbiasfield, mass=massNRM, annot=True)
         if save == 'y':
             id = type_of_file.index('NRM')
             plt.savefig(path + 'Plots/' + sample_name[id] + '-VS-ARM-lost.pdf', format='pdf', dpi=200, bbox_inches="tight")

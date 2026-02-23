@@ -11,8 +11,8 @@ class FollowDotCursor(object):
         x, y = x[mask], y[mask]
         self._points = np.column_stack((x, y))
         y = y[np.abs(y - y.mean()) <= 3 * y.std()]
-        self.scale = x.ptp()
-        self.scale = y.ptp() / self.scale if self.scale else 1
+        self.scale = np.ptp(x)
+        self.scale = np.ptp(y) / self.scale if self.scale else 1
         self.tree = spatial.cKDTree(self.scaled(self._points))
         self.ax = ax
         self.fig = ax.figure

@@ -149,6 +149,7 @@ def calc_paleointensity(NRMx, NRMy, NRMz, Mx, My, Mz, AF, type, tcrm, mineral, d
             min95 = sorted(paleointensity)[249]
             max95 = sorted(paleointensity)[9750]
             print(' * Median paleointensity = '+f'{np.median(paleointensity):.1f}'+' uT')
+            print(' * 2 s.e. without factor error = ' + f'{np.median(paleointensity)*(REMp_2se[-1]/REMp_mean[-1]):.1f}' + ' uT')
             print(' * 95% confidence interval = ['+f'{min95:.1f}'+' uT, '+f'{max95:.1f}'+' uT]')
 
     return paleointensity, id_i, id_f

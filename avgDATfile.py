@@ -31,7 +31,12 @@ for k in np.arange(len(step)-1):
         Myfirst.append(My[k])
         Mzfirst.append(Mz[k])
         if step[k] == step[k+1]:
-            if step[k] == step[k+2]:
+            if k+1 == len(step)-1:
+                Mxavg.append((Mx[k]+Mx[k+1])/2)
+                Myavg.append((My[k]+My[k+1])/2)
+                Mzavg.append((Mz[k]+Mz[k+1])/2)
+                id += 2
+            elif step[k] == step[k+2]:
                 Mxavg.append((Mx[k]+Mx[k+1]+Mx[k+2])/3)
                 Myavg.append((My[k]+My[k+1]+My[k+2])/3)
                 Mzavg.append((Mz[k]+Mz[k+1]+Mz[k+2])/3)

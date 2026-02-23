@@ -127,10 +127,15 @@ if type == 'l' or type == 'h':
         fig, ax1 = plt.subplots(1,1,figsize=(6,4))
         plt.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
         plt.xlabel('Temperature (K)')
-        ax1.set_xlim(85, 275)
-        ax1.set_ylabel('Susceptibility (m3 kg-1)')
-        ax1.set_ylim(0, 1.1*np.max(K_LT_corr))
-        ax1.plot(T_LT_interp+273.15, K_LT_corr, 'k-', marker='.', ms='0', lw=1.5)
+        ax1.set_xlim(100, 250)
+        if mass == 1:
+            ax1.set_ylabel('Normalized susceptibility')
+            ax1.set_ylim(0, 1.5)#1.1*np.max( K_LT_corr/K_LT_corr[-1]))
+            ax1.plot(T_LT_interp+273.15, K_LT_corr/K_LT_corr[-1], 'k-', marker='.', ms='0', lw=1.5)
+        else:
+            ax1.set_ylabel('Susceptibility (m3 kg-1)')
+            ax1.set_ylim(0, 1.1*np.max(K_LT_corr))
+            ax1.plot(T_LT_interp+273.15, K_LT_corr, 'k-', marker='.', ms='0', lw=1.5)
         if plotderivative == 'y' and plotderivativeonfig == 'y':
             ax2 = ax1.twinx()
             ax2.set_ylabel('Derivative of susceptibility (m3 kg-1 K-1)')
