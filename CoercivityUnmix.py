@@ -3,7 +3,6 @@ import pandas as pd
 import numpy as np
 from IPython.core.display import Markdown
 from IPython.core.display_functions import display
-from numpy import exp, loadtxt, pi, sqrt
 import csv
 
 import matplotlib
@@ -13,15 +12,12 @@ from matplotlib.ticker import FuncFormatter
 from matplotlib.widgets import Slider
 import matplotlib.gridspec as gridspec
 
-import scipy
 from scipy.optimize import curve_fit, minimize, minimize_scalar, brentq
 from scipy.special import erf, owens_t
 from scipy.integrate import cumulative_trapezoid, simpson
 from scipy.interpolate import interp1d
 import os
 import sys
-
-
 
 # ==============================================================
 # Plot Format Selection
@@ -159,7 +155,7 @@ def find_right_intersection(x, comp1, comp2, mode1, mode2, buffer=0.1):
 data = pd.read_csv(datafile)
 
 # Get the base name without extension
-base_name = (os.path.splitext(os.path.basename(datafile))[0]).split('-')[0]+'-'+(os.path.splitext(os.path.basename(datafile))[0]).split('-')[1]
+base_name = (os.path.splitext(os.path.basename(datafile))[0]).split('mg')[0]+'mg'
 folder_name = os.path.dirname(os.path.abspath(datafile))
 
 x = data['B (mT)'].to_numpy(dtype=float)    # Field value must be in mT
@@ -204,6 +200,7 @@ plt.axhline(0, color='black', linestyle='--', linewidth=1)
 plt.xlabel(r'log$B$ (mT)', fontsize=14)
 plt.ylabel(r"PDF ($dM$ / $d$log$B$)", fontsize=14)
 plt.show()
+
 
 # ==============================================================
 # Skewed Gaussian PDF Model
@@ -718,12 +715,11 @@ optimized_params_cdf = mean_params.copy()
 # PDF Plot 3
 
 fig, (ax1, ax2) = plt.subplots(
-    2, 1, figsize=(6, 4), dpi=150, sharex=True,
+    2, 1, figsize=(6, 4), dpi=200, sharex=True,
     gridspec_kw={'height_ratios': [3, 1]}
 )
 
 x_log_mT = x_log_uT - 3    # Convert to log10(mT) for plotting
-print(x_log_mT)
 # Use Tableau colors (skipping tab:blue)
 component_colors = list(plt.cm.tab10.colors[1:])
 
@@ -815,8 +811,8 @@ for ax in [ax1, ax2]:
 # ==============================================================
 fig.tight_layout()
 
-fig_name = f"{base_name}-coerfit-pdf.{save_format}"
-plt.savefig(folder_name+'/'+fig_name, dpi=300, bbox_inches='tight')
+fig_name = f"{base_name}-coerfit.{save_format}"
+plt.savefig(folder_name+'/'+fig_name, dpi=200, bbox_inches='tight')
 
 plt.show()
 
@@ -917,4 +913,3 @@ for i, intersection in enumerate(intersections_log_uT):
         if save_csv:
             writer.writerow([f"Between {i + 1}–{i + 2}", "None", "None"])
         display(Markdown(f"**Intersection {i + 1}–{i + 2}:** None"))
-
