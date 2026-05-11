@@ -77,7 +77,8 @@ for fp in files:
                     fpw.write(f'{dsBirm[k]*1e3:.3e}' + ',' + f'{dsMirm[k]:.3e}' + '\n')
                 fpw.close()
             else:
-                fpw = open(fp_irm.name[:-4]+'.txt', 'w')
+                fpw = open(fp_irm.name[:-4]+'-unmix.csv', 'w')
+                fpw.write('B (mT),M (Am2)\n')
                 for k in np.arange(1,len(Birm)):
                     fpw.write(f'{Birm[k]*1e3:.3e}' + ',' + f'{Mirm[k]:.3e}' + '\n')
                 fpw.close()
