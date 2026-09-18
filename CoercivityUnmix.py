@@ -1,4 +1,3 @@
-import np
 import pandas as pd
 import numpy as np
 from IPython.core.display import Markdown
@@ -197,7 +196,7 @@ plt.figure(figsize=(10, 5))
 plt.scatter(x_log_uT, pdf, color='tab:gray', alpha=0.75, label='data (gradient)')
 plt.legend(loc='best', fontsize=7, frameon=True)
 plt.axhline(0, color='black', linestyle='--', linewidth=1)
-plt.xlabel(r'log$B$ (mT)', fontsize=14)
+plt.xlabel(r'log$B$ (µT)', fontsize=14)
 plt.ylabel(r"PDF ($dM$ / $d$log$B$)", fontsize=14)
 plt.show()
 
@@ -321,7 +320,7 @@ def interactive_guess_matplotlib(n_components):
         (0.05, 1.0),  # Sigma
         (-5.0, 5.0)  # Skew
     ]
-
+    print(amp_scale)
     sliders = []
     for i in range(n_components):
         component_color = component_colors[i % len(component_colors)]
@@ -712,7 +711,9 @@ expected_len = 4 * n_active_components
 assert mean_params.size == expected_len, f"mean_params length {mean_params.size} != {expected_len}"
 optimized_params_cdf = mean_params.copy()
 
-# PDF Plot 3
+# =====================================================
+# PDF Plot
+# =====================================================
 
 fig, (ax1, ax2) = plt.subplots(
     2, 1, figsize=(6, 4), dpi=200, sharex=True,
@@ -723,11 +724,8 @@ x_log_mT = x_log_uT - 3    # Convert to log10(mT) for plotting
 # Use Tableau colors (skipping tab:blue)
 component_colors = list(plt.cm.tab10.colors[1:])
 
-# =====================================================
-# PDF Plot
-# =====================================================
 ax1.scatter(x_log_mT, pdf, color='tab:gray', s=5, alpha=0.5, label=f"{base_name}")
-ax1.plot(x_fine_log_mT, mean_pdf_fit_fine, '-', linewidth=1.5, color='tab:blue', label=r'Mean fit, 2-$\sigma$ band')
+ax1.plot(x_fine_log_mT, mean_pdf_fit_fine, '-', linewidth=1.5, color='tab:blue', label=r'Mean fit')
 ax1.fill_between(x_fine_log_mT, mean_pdf_fit_fine - 2 * std_pdf_fit_fine, mean_pdf_fit_fine + 2 * std_pdf_fit_fine,
                  color='tab:blue', alpha=0.25)
 
@@ -754,7 +752,7 @@ for i, intersection in enumerate(intersections_log_uT):
         intersection_log_mT_r = round(intersection - 3, 3)
         intersection_mT_r = round(10**intersection_log_mT_r, 1)
 
-        #ax1.axvline(intersection_log_mT_r, color='gray', linestyle='--', linewidth=0.75)
+       # ax1.axvline(intersection_log_mT_r, color='gray', linestyle='--', linewidth=0.75)
         #ax1.text(intersection_log_mT_r, ax1.get_ylim()[1]*0.95, f'{intersection_mT_r:.1f} mT',
         # rotation=90, fontsize=6, color='gray', ha='right', va='top')
 
@@ -786,7 +784,7 @@ ax2.scatter(x_log_mT, pdf_residuals, color='tab:gray', s=5, alpha=0.5, label='PD
 ax2.axhline(0, color='black', linestyle='--', linewidth=0.75)
 ax2.legend(loc='best', fontsize=7, frameon=True)
 ax2.set_ylabel('Residuals', fontsize=10)
-ax2.set_xlabel(r'$B$ (mT)', fontsize=10)
+ax2.set_xlabel(r'log$B$ (mT)', fontsize=10)
 
 # =====================================================
 # Apply consistent formatting to all subplots
@@ -814,7 +812,122 @@ fig.tight_layout()
 fig_name = f"{base_name}-coerfit.{save_format}"
 plt.savefig(folder_name+'/'+fig_name, dpi=200, bbox_inches='tight')
 
+
+
+
+# =====================================================
+# CDF Plot
+# =====================================================
+
+fig, (ax1, ax2) = plt.subplots(
+    2, 1, figsize=(6, 4), dpi=150, sharex=True,
+    gridspec_kw={'height_ratios': [3, 1]}
+)
+
+x_log_mT = x_log_uT - 3    # Convert to log10(mT) for plotting
+
+# Use Tableau colors (skipping tab:blue)
+component_colors = list(plt.cm.tab10.colors[1:])
+
+ax1.scatter(x_log_mT, cdf, color='tab:gray', s=5, alpha=0.5, label=f"{base_name} Data")
+ax1.plot(x_fine_log_mT, mean_cdf_fit_fine, '-', color='tab:blue', linewidth=1.5, label='Fitted CDF')
+ax1.fill_between(x_fine_log_mT, mean_cdf_fit_fine - std_cdf_fit_fine, mean_cdf_fit_fine + std_cdf_fit_fine,
+                 color='tab:blue', alpha=0.25)
+ax1.set_ylabel(r'CDF (Am$^2$/kg)', fontsize=10)
+
+# Plot each CDF component
+for i in range(n_active_components):
+    amp, cen, sig, skw = optimized_params_cdf[i*4:i*4+4]
+
+    # Round log BEFORE converting to mT for consistency
+    center_log_mT_r = round(cen - 3, 3)
+    center_mT_r = round(10**center_log_mT_r, 1)
+
+    color = component_colors[i % len(component_colors)]
+    ax1.plot(x_fine_log_mT, mean_cdf_comps_fine[i], color=color,
+             label=f'Skewed Gaussian #{i+1}, Center: {center_mT_r:.1f} mT')
+    ax1.fill_between(x_fine_log_mT,
+                     mean_cdf_comps_fine[i] - std_cdf_comps_fine[i],
+                     mean_cdf_comps_fine[i] + std_cdf_comps_fine[i],
+                     color=color, alpha=0.25)
+
+ax1.legend(loc='best', fontsize=7, frameon=True)
+ax1.axhline(0, color='black', linestyle='--', linewidth=0.75)
+
+# =====================================================
+# CDF Residuals Plot
+# =====================================================
+ax2.scatter(x_log_mT, cdf_residuals, color='tab:gray', s=5, alpha=0.5, label='CDF Residuals')
+ax2.set_ylabel('Residuals', fontsize=10)
+ax2.legend(loc='best', fontsize=7, frameon=True)
+ax2.axhline(0, color='black', linestyle='--', linewidth=0.75)
+
+# =====================================================
+# Apply consistent formatting to all subplots
+# =====================================================
+for ax in [ax1, ax2]:
+    ax.minorticks_on()
+    ax.tick_params(which='both', labelsize=8, top=True, right=True, direction='in')
+    ax.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
+    ax.yaxis.get_offset_text().set_fontsize(8)
+
+# === Tidy up X-axis (log labels) ===
+def log_formatter(x, pos):
+    if np.isclose(x, round(x), atol=1e-6):
+        return f'$10^{{{int(x)}}}$'
+    else:
+        return ''
+for ax in [ax1, ax2]:
+    ax.xaxis.set_major_formatter(FuncFormatter(log_formatter))
+
+# ==============================================================
+# Final layout and Save
+# ==============================================================
+fig.tight_layout()
+
+fig_name = f"{base_name}-coerfit-cdf.{save_format}"
+plt.savefig(folder_name+'/'+fig_name, dpi=200, bbox_inches='tight')
+
+
+
+
+# # =====================================================
+# # CDF DEMAG Plot - test
+# # =====================================================
+#
+# def Get_closest_id(L,value):
+#     return list(L).index(min(L, key=lambda x:abs(x-value)))
+#
+# fig, (ax1) = plt.subplots(1, 1, figsize=(6, 4), dpi=150)
+# x_log_mT = x_log_uT - 3    # Convert to log10(mT) for plotting
+# ax1.set_ylabel(r'Normalized IRM *demag*', fontsize=10)
+# # Use Tableau colors (skipping tab:blue)
+# component_colors = list(plt.cm.tab10.colors[1:])
+#
+# # Plot each CDF component
+# for i in range(n_active_components):
+#     amp, cen, sig, skw = optimized_params_cdf[i*4:i*4+4]
+#
+#     # Round log BEFORE converting to mT for consistency
+#     center_log_mT_r = round(cen - 3, 3)
+#     center_mT_r = round(10**center_log_mT_r, 1)
+#
+#     color = component_colors[i % len(component_colors)]
+#     delta = 1-(mean_cdf_comps_fine[i][-1]-mean_cdf_comps_fine[i][::-1])/mean_cdf_comps_fine[i][-1]
+#
+#     id200 = Get_closest_id(x_fine_log_mT, np.log10(200))
+#     ax1.plot(x_fine_log_mT[:id200], delta[:id200], color=color)
+#
+# ax1.axhline(0, color='black', linestyle='--', linewidth=0.75)
+#
+# # ==============================================================
+# # Final layout and Save
+# # ==============================================================
+# fig.tight_layout()
+
+
 plt.show()
+
 
 # ==============================================================
 # Save and Print Final Fit Summary

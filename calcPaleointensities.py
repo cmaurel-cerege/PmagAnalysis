@@ -8,6 +8,7 @@ import random
 
 def Get_closest_id(L,value):
     return list(L).index(min(L, key=lambda x:abs(x-value)))
+
 def Merge_AF_lists(NRMx,NRMy,NRMz,NRMAF,Mx,My,Mz,MAF):
 
     NRMAF, MAF = sorted(NRMAF), sorted(MAF)
@@ -68,6 +69,11 @@ def plot_Mlost(NRMx, NRMy, NRMz, Mx, My, Mz, AF, type, mass=1, annot=False):
         id_f_full.append(id_f[k])
         show_comp.append(True)
 
+    if id_f[-1] != len(AF)-1:
+        id_i_full.append(id_f[-1]+1)
+        id_f_full.append(len(AF)-1)
+        show_comp.append(False)
+
     id_i, id_f = id_i_full, id_f_full
 
     NRMlost = calc_Mlost(NRMx, NRMy, NRMz, AF, id_i[0], id_f[0], 0)[0]
@@ -118,6 +124,7 @@ def calc_paleointensity(NRMx, NRMy, NRMz, Mx, My, Mz, AF, type, tcrm, mineral, d
     print('* Geometric SD = ' + f'{np.exp(sdlogEmpiricalFactor):.2f}\n')
 
     NRMlost, Mlost, AFlost, id_i, id_f, show_comp = plot_Mlost(NRMx, NRMy, NRMz, Mx, My, Mz, AF, type, mass, annot)
+
     plt.draw()
     plt.show(block=False)
 

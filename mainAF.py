@@ -15,6 +15,7 @@ from plotEqualArea import *
 import PCAZijderveld as pca
 from calcPaleointensities import *
 from builtins import *
+import pandas as pd
 
 
 def Get_closest_id(L,value):
@@ -37,7 +38,9 @@ if not os.path.exists(path+'Plots'):
     os.makedirs(path+'Plots')
 
 sample_name, type_of_file = [], []
+count = 0
 for file in files:
+    count += 1
     sample_name.append(file.split('/')[-1].split('.')[0])
 
     if (('ARM' not in file) and ('IRM' not in file)) or 'NRM' in file:
@@ -47,28 +50,27 @@ for file in files:
     elif 'IRM' in file:
         type_of_file.append('IRM')
 
-    fp = open(str(file),'r')
-    Mx, My, Mz, step = [], [], [], []
-    if file[len(file)-3:] == 'txt':
-        ## This assumes moment in A m2, field in mT
-        for j, line in enumerate(fp):
-            cols = line.split(',')
-            Mx.append(float(cols[1]))
-            My.append(float(cols[2]))
-            Mz.append(float(cols[3]))
-            step.append(int(cols[0]))
-        fp.close()
-
+    step, Mx, My, Mz =  [], [], [], []
+    if file[len(file) - 3:] == 'DAT':
+        unit = 1e-3
+        field = 0.1
+        df = pd.read_csv(file, sep='\t', header=0, usecols=[1,2,3,21], names=["Mx", "My", "Mz", "step"], engine="python")
     else:
-        for j, line in enumerate(fp):
-            ## This assumes moment in emu, field in G
-            if j > 0:
-                cols = line.split()
-                Mx.append(float(cols[1])*1e-3)
-                My.append(float(cols[2])*1e-3)
-                Mz.append(float(cols[3])*1e-3)
-                step.append(int(cols[-1])*0.1)
-        fp.close()
+        df = pd.read_csv(file, sep=None, names=["step", "Mx", "My", "Mz"], engine="python")
+        if count == 1:
+            unit = input('Moment unit = A m2? (y/N) ')
+            if unit == 'y': unit = 1
+            else: unit = 1e-3
+            field  = input('Field unit = mT? (y/N) ')
+            if field == 'y': field = 1
+            else: field = 0.1
+            print('\nFirst line starts with: ' + str(df.step[0]) + '\n')
+            header = input('Header? (y/N) ')
+            if header == 'y': header = 0
+            else: header = 'infer'
+        df = pd.read_csv(file, sep=None, header=header, usecols=[0, 1, 2, 3], names=["step", "Mx", "My", "Mz"], engine="python", encoding='utf-8-sig')
+
+    step, Mx, My, Mz = np.array(df.step)*field, np.array(df.Mx)*unit, np.array(df.My)*unit, np.array(df.Mz)*unit
 
     if type_of_file[-1] == 'NRM':
         NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep = np.array(Mx), np.array(My), np.array(Mz), np.array(step)
@@ -77,45 +79,14 @@ for file in files:
     if type_of_file[-1] == 'IRM':
         IRMatAFx, IRMatAFy, IRMatAFz, IRMatAFstep = np.array(Mx), np.array(My), np.array(Mz), np.array(step)
 
-########################
-## Mass normalization ##
-########################
-normalize_by_mass = input('Mass normalize? (y/N)')
-if normalize_by_mass != 'y':
-    unit = 'A m2'
-    massNRM, massIRM = 1, 1
-else:
-    unit = 'A m2 kg-1'
-    massNRM = float(eval(input('Mass of the NRM sample (g) ?')))*1e-3
-    if len(NRMatAFx) != 0:
-        NRMatAFx, NRMatAFy, NRMatAFz = NRMatAFx/massNRM, NRMatAFy/massNRM, NRMatAFz/massNRM
-    if len(ARMatAFx) != 0:
-        massARM = input('Mass of the ARM sample (g) ? (default = same as NRM)')
-        if massARM != '':
-            massARM = float(eval(massARM))*1e-3
-            ARMatAFx, ARMatAFy, ARMatAFz = ARMatAFx/massARM, ARMatAFy/massARM, ARMatAFz/massARM
-        else:
-            ARMatAFx, ARMatAFy, ARMatAFz = ARMatAFx/massNRM, ARMatAFy/massNRM, ARMatAFz/massNRM
-    if len(IRMatAFx) != 0:
-        massIRM = input('Mass of the IRM sample (g) ? (default = same as NRM)')
-        if massIRM != '':
-            massIRM = float(eval(massIRM))*1e-3
-            IRMatAFx, IRMatAFy, IRMatAFz = IRMatAFx/massIRM, IRMatAFy/massIRM, IRMatAFz/massIRM
-        else:
-            IRMatAFx, IRMatAFy, IRMatAFz = IRMatAFx/massNRM, IRMatAFy/massNRM, IRMatAFz/massNRM
-
-# normNRM = np.sqrt(NRMatAFx**2+NRMatAFy**2+NRMatAFz**2)
-# print((normNRM[-12]-normNRM[-11])/normNRM[-12])
-# if len(ARMatAFx) != 0:
-#     normARM = np.sqrt(ARMatAFx**2+ARMatAFy**2+ARMatAFz**2)
-#     print((normARM[-12]-normARM[-11])/normARM[-12])
-# if len(IRMatAFx) != 0:
-#     normIRM = np.sqrt(IRMatAFx**2+IRMatAFy**2+IRMatAFz**2)
-#     print((normIRM[-12]-normIRM[-11])/normIRM[-12])
-
-
-
-
+NRM = np.sqrt(NRMatAFx[0]**2+NRMatAFy[0]**2+NRMatAFz[0]**2)
+print("\n* NRM = "+f'{NRM:.2e}'+" A m2")
+if len(ARMatAFx) != 0:
+    ARM = np.sqrt(ARMatAFx[0]**2+ARMatAFy[0]**2+ARMatAFz[0]**2)
+    print("* ARM = "+f'{ARM:.2e}'+" A m2")
+if len(IRMatAFx) != 0:
+    IRM = np.sqrt(IRMatAFx[0]**2+IRMatAFy[0]**2+IRMatAFz[0]**2)
+    print("* IRM = "+f'{IRM:.2e}'+" A m2\n")
 
 ########################
 ## Zijderveld Diagram ##
@@ -123,24 +94,15 @@ else:
 zijd = str(input('Plot Zijderveld? (Y/n)  '))
 if zijd != 'n':
     if len(NRMatAFx) != 0:
-        fig = plt.figure(figsize=(5, 5))
-        Plot_Zijderveld(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, unit=unit, title='NRM@AF', color='AF')
+        fig = plt.figure(figsize=(8, 8))
+        Plot_Zijderveld(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, xlim=(), ylim=(), unit='', title='NRM@AF', color='k')
         fig.tight_layout()
         if save == 'y':
             id = type_of_file.index('NRM')
             plt.savefig(path + 'Plots/' + sample_name[id] + '-ZIJD.pdf', format='pdf', dpi=200, bbox_inches="tight")
-        plt.figure(figsize=(5, 5))
-        Plot_Zijderveld(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, unit=unit, title='NRM@AF', color='k', gui='guiX')
-    if len(ARMatAFx) != 0:
-        plt.figure(figsize=(5, 5))
-        Plot_Zijderveld(ARMatAFx, ARMatAFy, ARMatAFz, ARMatAFstep, unit=unit, title='ARM@AF', color='k')
-        if save == 'y':
-            id = type_of_file.index('ARM')
-            plt.savefig(path + 'Plots/' + sample_name[id] + '-ZIJD.pdf', format='pdf', dpi=200, bbox_inches="tight")
-    # if len(IRMatAFx) != 0:
-    #     plt.figure(figsize=(5, 5))
-    #     Plot_Zijderveld(IRMatAFx, IRMatAFy, IRMatAFz, IRMatAFstep, unit=unit, title='IRM@AF', color='k')
-plt.show()
+        plt.figure(figsize=(7, 7))
+        Plot_Zijderveld(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, unit='', title='NRM@AF', color='k', gui='guiX')
+plt.show(block=False)
 
 
 ######################
@@ -200,13 +162,41 @@ dopca = str(input('Run PCA analysis? (Y/n)  '))
 if dopca != 'n':
 
     if len(NRMatAFx) != 0 and len(ARMatAFx) != 0 and len(IRMatAFx) != 0:
-        Mcx, Mcy, Mcz, Mcd, Mci, Mcmax, MAD, DANG, MAD95, id_i, id_f = pca.PCA_analysis(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, rem1='ARM', remdata1=ARMatAF, rem2='IRM', remdata2=IRMatAF,mass=massNRM)
+        Mcx, Mcy, Mcz, Mcd, Mci, Mcmax, MAD, DANG, MAD95, id_i, id_f = pca.PCA_analysis(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, rem1='ARM', remdata1=ARMatAF, rem2='IRM', remdata2=IRMatAF, mass=1)
     elif len(NRMatAFx) != 0 and len(ARMatAFx) != 0 and len(IRMatAFx) == 0:
-        Mcx, Mcy, Mcz, Mcd, Mci, Mcmax, MAD, DANG, MAD95, id_i, id_f = pca.PCA_analysis(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, rem1='ARM', remdata1=ARMatAF, mass=massNRM)
+        Mcx, Mcy, Mcz, Mcd, Mci, Mcmax, MAD, DANG, MAD95, id_i, id_f = pca.PCA_analysis(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, rem1='ARM', remdata1=ARMatAF, mass=1)
     elif len(NRMatAFx) != 0 and len(ARMatAFx) == 0 and len(IRMatAFx) != 0:
-        Mcx, Mcy, Mcz, Mcd, Mci, Mcmax, MAD, DANG, MAD95, id_i, id_f = pca.PCA_analysis(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, rem1='IRM', remdata1=IRMatAF, mass=massNRM)
+        Mcx, Mcy, Mcz, Mcd, Mci, Mcmax, MAD, DANG, MAD95, id_i, id_f = pca.PCA_analysis(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, rem1='IRM', remdata1=IRMatAF, mass=1)
     else:
-        Mcx, Mcy, Mcz, Mcd, Mci, Mcmax, MAD, DANG, MAD95, id_i, id_f = pca.PCA_analysis(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, mass=massNRM)
+        Mcx, Mcy, Mcz, Mcd, Mci, Mcmax, MAD, DANG, MAD95, id_i, id_f = pca.PCA_analysis(NRMatAFx, NRMatAFy, NRMatAFz, NRMatAFstep, mass=1)
+
+
+########################
+## Mass normalization ##
+########################
+normalize_by_mass = input('\nMass normalize? (y/N)')
+if normalize_by_mass != 'y':
+    unit = 'A m2'
+    massNRM, massIRM = 1, 1
+else:
+    unit = 'A m2 kg-1'
+    massNRM = float(eval(input('Mass of the NRM sample (mg) ?')))*1e-6
+    if len(NRMatAFx) != 0:
+        NRMatAFx, NRMatAFy, NRMatAFz = NRMatAFx/massNRM, NRMatAFy/massNRM, NRMatAFz/massNRM
+    if len(ARMatAFx) != 0:
+        massARM = input('Mass of the ARM sample (mg) ? (default = same as NRM)')
+        if massARM != '':
+            massARM = float(eval(massARM))*1e-6
+            ARMatAFx, ARMatAFy, ARMatAFz = ARMatAFx/massARM, ARMatAFy/massARM, ARMatAFz/massARM
+        else:
+            ARMatAFx, ARMatAFy, ARMatAFz = ARMatAFx/massNRM, ARMatAFy/massNRM, ARMatAFz/massNRM
+    if len(IRMatAFx) != 0:
+        massIRM = input('Mass of the IRM sample (mg) ? (default = same as NRM)')
+        if massIRM != '':
+            massIRM = float(eval(massIRM))*1e-6
+            IRMatAFx, IRMatAFy, IRMatAFz = IRMatAFx/massIRM, IRMatAFy/massIRM, IRMatAFz/massIRM
+        else:
+            IRMatAFx, IRMatAFy, IRMatAFz = IRMatAFx/massNRM, IRMatAFy/massNRM, IRMatAFz/massNRM
 
 
 ####################
@@ -242,7 +232,7 @@ if nrmlost != 'n':
     paleointensityIRM = []
     if len(NRMatAFx) != 0 and len(IRMatAFx) != 0:
 
-        print('** IRM PALEOINTENSITIES **')
+        print('\n** IRM PALEOINTENSITIES **')
         if len(ARMatAFx) != 0:
             NRMatAFx, NRMatAFy, NRMatAFz, IRMatAFx, IRMatAFy, IRMatAFz, AFIRM = Merge_AF_lists(NRMatAFx, NRMatAFy, NRMatAFz, AFARM, IRMatAFx, IRMatAFy, IRMatAFz, IRMatAFstep)
         else:

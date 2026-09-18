@@ -34,26 +34,28 @@ def get_Thellier_quantities(Mx, My, Mz, Thstep, Thtype):
             tHz.append(Mz[k])
             tStep.append(Thstep[k])
 
-    NRMx, NRMy, NRMz, pTRMx, pTRMy, pTRMz, cHx, cHy, cHz, tHx, tHy, tHz = np.array(NRMx), np.array(NRMy), np.array(NRMz), np.array(pTRMx), np.array(pTRMy), np.array(pTRMz), np.array(cHx), np.array(cHy), np.array(cHz), np.array(tHx), np.array(tHy), np.array(tHz)
+    NRMx, NRMy, NRMz, pTRMx, pTRMy, pTRMz, cHx, cHy, cHz, tHx, tHy, tHz = np.array(NRMx), np.array(NRMy), np.array(
+        NRMz), np.array(pTRMx), np.array(pTRMy), np.array(pTRMz), np.array(cHx), np.array(cHy), np.array(
+        cHz), np.array(tHx), np.array(tHy), np.array(tHz)
 
-    pTRMgainx = np.array([0]+list(pTRMx-NRMx[1:]))
-    pTRMgainy = np.array([0]+list(pTRMy-NRMy[1:]))
-    pTRMgainz = np.array([0]+list(pTRMz-NRMz[1:]))
+    pTRMgainx = np.array([0] + list(pTRMx - NRMx[1:]))
+    pTRMgainy = np.array([0] + list(pTRMy - NRMy[1:]))
+    pTRMgainz = np.array([0] + list(pTRMz - NRMz[1:]))
 
     cHgainx, cHgainy, cHgainz = [], [], []
     for k in np.arange(len(cStep)):
         id = zStep.index(cStep[k][1])
-        cHgainx.append(cHx[k]-NRMx[id])
-        cHgainy.append(cHy[k]-NRMy[id])
-        cHgainz.append(cHz[k]-NRMz[id])
+        cHgainx.append(cHx[k] - NRMx[id])
+        cHgainy.append(cHy[k] - NRMy[id])
+        cHgainz.append(cHz[k] - NRMz[id])
     cHgainx, cHgainy, cHgainz = np.array(cHgainx), np.array(cHgainy), np.array(cHgainz)
 
     tHgainx, tHgainy, tHgainz = [], [], []
     for k in np.arange(len(tStep)):
         id = zStep.index(tStep[k])
-        tHgainx.append(tHx[k]-NRMx[id])
-        tHgainy.append(tHy[k]-NRMy[id])
-        tHgainz.append(tHz[k]-NRMz[id])
+        tHgainx.append(tHx[k] - NRMx[id])
+        tHgainy.append(tHy[k] - NRMy[id])
+        tHgainz.append(tHz[k] - NRMz[id])
     tHgainx, tHgainy, tHgainz = np.array(tHgainx), np.array(tHgainy), np.array(tHgainz)
 
     return NRMx, NRMy, NRMz, pTRMgainx, pTRMgainy, pTRMgainz, cHgainx, cHgainy, cHgainz, tHgainx, tHgainy, tHgainz, zStep, izziseq, iStep, cStep, tStep
@@ -106,22 +108,23 @@ def Plot_Aray(Mx, My, Mz, Thstep, type, checks=True, colors='y'):
     plt.ylim(-0.02, 1.05)
 
     if checks == True:
-        if cHgain != []:
+        if len(cHgain) != 0:
             plt.scatter(-10, -10, s=55, facecolors='none', marker='^', edgecolors=mfcC,zorder=3,label='pTRM check')
 
             print('pTRM checks:')
             for k in np.arange(len(cStep)):
-                id1 = zStep.index(cStep[k][1])
-                id2 = zStep.index(cStep[k][0])
-                plt.scatter(cHgain[k]/NRM[0], NRM[id2]/NRM[0], s=55, facecolors='w', marker='^', edgecolors=mfcC, zorder=3)
-                hxmin = cHgain[k]/NRM[0]
-                hxmax = pTRMgain[id1]/NRM[0]
-                vymin = np.min([NRM[id1]/NRM[0],NRM[id2]/NRM[0]])
-                vymax = np.max([NRM[id1]/NRM[0],NRM[id2]/NRM[0]])
-                plt.hlines(y=NRM[id1]/NRM[0], xmin=hxmin, xmax=hxmax, lw=0.75, color=mfcC, ls='-', zorder=0)
-                plt.vlines(x=cHgain[k]/NRM[0], ymin=vymin, ymax=vymax, lw=0.75, color=mfcC, ls='-', zorder=0)
-                print(' * d'+str(cStep[k][0])+','+str(cStep[k][1])+' = '+f'{cHgain[k]/NRM[0]-pTRMgain[id2]/NRM[0]:.3f}')
-        if tHgain != []:
+                if cStep[k][0] in zStep and cStep[k][1] in zStep:
+                    id1 = zStep.index(cStep[k][1])
+                    id2 = zStep.index(cStep[k][0])
+                    plt.scatter(cHgain[k]/NRM[0], NRM[id2]/NRM[0], s=55, facecolors='w', marker='^', edgecolors=mfcC, zorder=3)
+                    hxmin = cHgain[k]/NRM[0]
+                    hxmax = pTRMgain[id1]/NRM[0]
+                    vymin = np.min([NRM[id1]/NRM[0],NRM[id2]/NRM[0]])
+                    vymax = np.max([NRM[id1]/NRM[0],NRM[id2]/NRM[0]])
+                    plt.hlines(y=NRM[id1]/NRM[0], xmin=hxmin, xmax=hxmax, lw=0.75, color=mfcC, ls='-', zorder=0)
+                    plt.vlines(x=cHgain[k]/NRM[0], ymin=vymin, ymax=vymax, lw=0.75, color=mfcC, ls='-', zorder=0)
+                    print(' * d'+str(cStep[k][0])+','+str(cStep[k][1])+' = '+f'{cHgain[k]/NRM[0]-pTRMgain[id2]/NRM[0]:.3f}')
+        if len(tHgain) != 0:
             plt.scatter(-10, -10, s=50, facecolors='none', marker='s', edgecolors=mfcT,zorder=3,label='pTRM tail check')
             print('pTRM tail checks:')
             for k in np.arange(len(tStep)):
@@ -236,7 +239,7 @@ def Stat_Thellier(Mx, My, Mz, Thstep, type, field, id_i=[], id_f=[], colors='y')
     q = f*g/beta
 
     ## CDRATprime
-    if cHgain != []:
+    if len(cHgain) != 0:
         dpTRM = [cHgain[j]-pTRMgain[zStep.index(cStep[j][1])] for j in np.arange(len(cStep))]
         CDRAT = np.absolute(np.sum(dpTRM))/np.sqrt(dxprime**2+dyprime**2)*100
 
@@ -245,7 +248,7 @@ def Stat_Thellier(Mx, My, Mz, Thstep, type, field, id_i=[], id_f=[], colors='y')
     print(" * Scatter statistics; beta = " + f'{beta:.3f}')
     print(" * VDS of NRM fraction; f_vds = " + f'{fvds:.3f}')
     print(" * Quality factor; q = " + f'{q:.1f}')
-    if cHgain != []:
+    if len(cHgain) != 0:
         print(" * CDRAT = "+f'{CDRAT:.1f}')
 
     return best_fit_lines, paleoint_mean, paleoint_2se, beta, fvds, q, CDRAT

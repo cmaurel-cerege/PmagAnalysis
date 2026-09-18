@@ -62,7 +62,7 @@ def plot_frame_equal_area(fig):
     return ax
 
 
-def plot_equal_area_sequence(Mx, My, Mz, step, fig, title='', color='k', ms=7, lw=0.5):
+def plot_equal_area_sequence(Mx, My, Mz, step, fig, title='', color='k', ms=7, lw=0.5, gui=True):
 
     ax = plot_frame_equal_area(fig)
     plt.title(title,loc='right')
@@ -94,6 +94,10 @@ def plot_equal_area_sequence(Mx, My, Mz, step, fig, title='', color='k', ms=7, l
             else:
                 plt.plot(x[k], y[k], marker='o', ms=ms, mfc=colors[k], mec='k', lw=0, mew=0.5)
 
+    if gui == True:
+        x, y = np.array(x), np.array(y)
+        cursor = FollowDotCursor(ax, x, y, x, step)
+
     fig.tight_layout()
 
     return
@@ -102,10 +106,21 @@ def calculate_alpha95(Mx, My, Mz):
 
     Mx, My, Mz = np.array(Mx), np.array(My), np.array(Mz)
 
+    M = [[Mx[k],My[k],Mz[k]] for k in np.arange(len(Mx))]
+    Mxunit,Myunit,Mzunit= [],[],[]
+    for k in np.arange(len(M)):
+        Munit = dir2cart([cart2dir(M[k])[0], cart2dir(M[k])[1], np.sign(cart2dir(M[k])[1])])
+        Mxunit.append(Munit[0])
+        Myunit.append(Munit[1])
+        Mzunit.append(Munit[2])
+    Mxunit, Myunit, Mzunit = np.array(Mxunit), np.array(Myunit), np.array(Mzunit)
+
+
     N = len(Mx)
-    R = np.sqrt(np.sum(Mx)**2+np.sum(My)**2+np.sum(Mz)**2)
+    R = np.sqrt(np.sum(Mxunit)**2+np.sum(Myunit)**2+np.sum(Mzunit)**2)
 
     Mxmean, Mymean, Mzmean = 1/R*np.sum(Mx), 1/R*np.sum(My), 1/R*np.sum(Mz)
+
     alpha95 = 180/np.pi*np.arccos(1-(N-R)/R*((1/0.05)**(1/(N-1))-1))
 
     return [Mxmean, Mymean, Mzmean], alpha95
@@ -136,12 +151,12 @@ def create_confidence_ellipse(Mmean, alpha, beta):
     return Ellipse
 
 
-def plot_confidence_ellipse(Mx, My, Mz, fig, color):
+def plot_confidence_ellipse(Mx, My, Mz, step, fig='', color='k'):
 
     Mmean, alpha95 = calculate_alpha95(Mx, My, Mz)
     Ellipse = create_confidence_ellipse(Mmean,alpha95,alpha95)
 
-    plot_equal_area_sequence(Mx, My, Mz, fig, color=color, ms=2)
+    plot_equal_area_sequence(Mx, My, Mz, step, fig=fig, color=color, ms=2)
 
     xe, ye, ze = [], [], []
     for k in arange(len(Ellipse)):
@@ -158,6 +173,7 @@ def plot_confidence_ellipse(Mx, My, Mz, fig, color):
         plt.plot([equal_area_coord_from_cart(Mmean)[0]], [equal_area_coord_from_cart(Mmean)[1]], marker='*', ms=7, lw=0, mew=1.5, mfc='w', mec=color)
     else:
         plt.plot([equal_area_coord_from_cart(Mmean)[0]], [equal_area_coord_from_cart(Mmean)[1]], marker='*', ms=7, lw=0, mew=1.5, mfc=color, mec=color)
+
     plt.legend(loc=3, scatterpoints=1)
 
     return

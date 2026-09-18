@@ -82,6 +82,8 @@ def PCA_analysis(Mx, My, Mz, AF, rem1='', remdata1=[], rem2='', remdata2=[], mas
         print(" * Magnetic moment: "+f'{np.linalg.norm(Mcmax[-1]):.3e}'+r' '+unit)
 
         vals, vecs = Calc_PCA(Cx, Cy, Cz)
+        vecs = np.real(vecs)
+        vals = np.real(vals)
         Mcx.append(vecs[0][0])
         Mcy.append(vecs[0][1])
         Mcz.append(vecs[0][2])
@@ -89,26 +91,26 @@ def PCA_analysis(Mx, My, Mz, AF, rem1='', remdata1=[], rem2='', remdata2=[], mas
         Mci.append(cart2dir(vecs[0])[1])
 
         print(" * PCx, PCy, PCz = " + f'{Mcx[-1]:.3f}' + ", " + f'{Mcy[-1]:.3f}' + ", " + f'{Mcz[-1]:.3f}')
-        print(" * PCd, PCi = "+f'{Mcd[-1]:.1f}'+"°  "+f'{Mci[-1]:.1f}'+'°')
+        print(" * PCd (°), PCi (°) = "+f'{Mcd[-1]:.1f}'+" "+f'{Mci[-1]:.1f}')
 
         MAD.append(np.arctan2(np.sqrt(vals[1]+vals[2]), np.sqrt(vals[0]))*180.0/np.pi)
-        print(" * MAD = "+f'{MAD[-1]:.2f}'+'°')
+        print(" * MAD (°) = "+f'{MAD[-1]:.1f}')
 
-        lenCx = [3,4,5,6,7,8,9,10,11,12,13,14,15,16]
-        CMADS = [7.69,3.9,3.18,2.88,2.71,2.63,2.57,2.54,2.48,2.46,2.44,2.43,2.43]
-        for i in np.arange(len(lenCx)):
-            if len(Cx) == lenCx[i]:
-                CMAD = CMADS[i]
-            elif len(Cx) > lenCx[i]:
-                CMAD = 2.37
+        # lenCx = [3,4,5,6,7,8,9,10,11,12,13,14,15,16]
+        # CMADS = [7.69,3.9,3.18,2.88,2.71,2.63,2.57,2.54,2.48,2.46,2.44,2.43,2.43]
+        # for i in np.arange(len(lenCx)):
+        #     if len(Cx) == lenCx[i]:
+        #         CMAD = CMADS[i]
+        #     elif len(Cx) > lenCx[i]:
+        #         CMAD = 2.37
 
-        MAD95.append(CMAD*MAD[-1])
+        #MAD95.append(CMAD*MAD[-1])
         #print(" * alpha 95 = CMAD*MAD = " + f'{MAD95[-1]:.2f}')
 
         Mcvec = np.array([Mcx[-1], Mcy[-1], Mcz[-1]])
         CoM = np.array([np.mean(Mx), np.mean(My), np.mean(Mz)])
         DANG.append(np.arccos(np.dot(Mcvec,CoM)/(norm(CoM)*norm(Mcvec)))*180/np.pi)
-        print(" * DANG = " + f'{DANG[-1]:.2f}'+'°')
+        print(" * DANG (°) = " + f'{DANG[-1]:.1f}')
 
         if rem1 != '':
             print(' * REM '+rem1+': '+f'{norm(Mcmax[-1])/remdata1[id_i[k]]:.5f}')
@@ -117,3 +119,31 @@ def PCA_analysis(Mx, My, Mz, AF, rem1='', remdata1=[], rem2='', remdata2=[], mas
 
     return Mcx, Mcy, Mcz, Mcd, Mci, Mcmax, MAD, DANG, MAD95, id_i, id_f
 
+def unit_vector(v):
+    v = np.asarray(v, dtype=float)
+    n = np.linalg.norm(v)
+    return v / n if n > 0 else v
+
+def angle_between(v1, v2):
+    """Angle in degrees between two vectors (order-independent)."""
+    u1, u2 = unit_vector(v1), unit_vector(v2)
+    c = np.clip(np.dot(u1, u2), -1.0, 1.0)
+    return np.degrees(np.arccos(c))
+
+def Angular_jump_sequence_analysis(Mx, My, Mz, step,demag='AF'):
+
+    Munit = [unit_vector([Mx[k],My[k],Mz[k]]) for k in range(0,len(Mx))]
+    ang_jump_seq = []
+    for k in np.arange(1,len(Munit)-1):
+        ang_jump_seq.append(angle_between(Munit[k]-Munit[k-1],Munit[k+1]-Munit[k]))
+
+    return ang_jump_seq
+
+def Angular_jump_origin_analysis(Mx, My, Mz, step,demag='AF'):
+
+    Munit = [unit_vector([Mx[k],My[k],Mz[k]]) for k in range(0,len(Mx))]
+    ang_jump_origin = []
+    for k in np.arange(1,len(Munit)):
+        ang_jump_origin.append(angle_between(Munit[k-1],Munit[k]))
+
+    return ang_jump_origin

@@ -10,15 +10,27 @@ name = file.split('/')[-1].split('.')[0]
 fp = open(file, 'r')
 
 Mx, My, Mz, step = [], [], [], []
-for j, line in enumerate(fp):
-    if j > 0:
-        cols = line.split()
-        if 'NA' not in cols[1:4]:
-            Mx.append(float(cols[1])*1e-3)
-            My.append(float(cols[2])*1e-3)
-            Mz.append(float(cols[3])*1e-3)
-            step.append(int(cols[-1])*0.1)
-fp.close()
+if file[len(file)-3:] == 'csv':
+    ## This assumes moment in emu, field in mT
+    for j, line in enumerate(fp):
+        cols = line.split(';')
+        Mx.append(float(cols[1]) * 1e-3)
+        My.append(float(cols[2]) * 1e-3)
+        Mz.append(float(cols[3]) * 1e-3)
+        step.append(int(cols[0].replace('\ufeff', '')))
+    fp.close()
+
+else:
+    for j, line in enumerate(fp):
+        ## This assumes moment in emu, field in G
+        if j > 0:
+            cols = line.split()
+            if 'NA' not in cols[1:4]:
+                Mx.append(float(cols[1]) * 1e-3)
+                My.append(float(cols[2]) * 1e-3)
+                Mz.append(float(cols[3]) * 1e-3)
+                step.append(int(cols[-1]) * 0.1)
+    fp.close()
 
 Mxavg, Myavg, Mzavg, stepavg = [], [], [], []
 Mxfirst, Myfirst, Mzfirst, stepfirst = [], [], [], []

@@ -84,7 +84,7 @@ for fp in files:
                 fpw.close()
 
         IRMacq, Bvalue = plotIRMacq(Birm, Mirm, Bvalue=10, ylim=())
-        plt.show(block=False)
+        #plt.show(block=False)
 
         if save == 'y':
             plt.savefig(path + sample + '_IRMacq.pdf', format='pdf', dpi=200, bbox_inches="tight")
@@ -105,12 +105,18 @@ for fp in files:
 
     if fp_hyst != None:
         Bhyst, Mhyst = [], []
-        for j, line in enumerate(fp_hyst):
-            cols = line.split(',')
-            if len(cols) > 1:
-                if cols[1] == '0':
-                    Bhyst.append(float(cols[3]))
-                    Mhyst.append(float(cols[4]))
+        if 'txt' in fp_hyst.name:
+            for j, line in enumerate(fp_hyst):
+                cols = line.split(',')
+                Bhyst.append(float(cols[0]))
+                Mhyst.append(float(cols[1]))
+        else:
+            for j, line in enumerate(fp_hyst):
+                cols = line.split(',')
+                if len(cols) > 1:
+                    if cols[1] == '0':
+                        Bhyst.append(float(cols[3]))
+                        Mhyst.append(float(cols[4]))
 
         mass = input("Mass of the sample (kg)? (default = 1)  ")
         if mass != '':
@@ -121,18 +127,18 @@ for fp in files:
         nonlincorr = input('Non-linear correction? (y/N)  ')
         nocorr = input('Show data not corrected? (y/N)  ')
         print('\n')
-        interval = 0.2
+        interval = 0.5
 
         if nonlincorr == 'y':
             if nocorr != 'y':
-                Ms, Mrs, Bc, sHF, kHF, alpha = plotHyst(Bhyst, Mhyst, mass=mass, linear=False, interval=interval, ylim=(), shownocorr=False)
+                Ms, Mrs, Bc, sHF, kHF, alpha, beta = plotHyst(Bhyst, Mhyst, mass=mass, linear=False, interval=interval, ylim=(), shownocorr=False)
             else:
-                Ms, Mrs, Bc, sHF, kHF, alpha = plotHyst(Bhyst, Mhyst, mass=mass, linear=False, interval=interval, ylim=(), shownocorr=True)
+                Ms, Mrs, Bc, sHF, kHF, alpha, beta = plotHyst(Bhyst, Mhyst, mass=mass, linear=False, interval=interval, ylim=(), shownocorr=True)
         else:
             if nocorr != 'y':
-                Ms, Mrs, Bc, sHF, kHF, alpha = plotHyst(Bhyst, Mhyst, mass=mass, linear=True, interval=interval, ylim=(), shownocorr=False)
+                Ms, Mrs, Bc, sHF, kHF, alpha, beta = plotHyst(Bhyst, Mhyst, mass=mass, linear=True, interval=interval, ylim=(), shownocorr=False)
             else:
-                Ms, Mrs, Bc, sHF, kHF, alpha = plotHyst(Bhyst, Mhyst, mass=mass, linear=True, interval=interval, ylim=(), shownocorr=True)
+                Ms, Mrs, Bc, sHF, kHF, alpha, beta = plotHyst(Bhyst, Mhyst, mass=mass, linear=True, interval=interval, ylim=(), shownocorr=True)
         if save == 'y':
             plt.savefig(path + sample + '_Hyst.pdf', format='pdf', dpi=200, bbox_inches="tight")
 
@@ -146,28 +152,28 @@ for fp in files:
         fp_bcr.close()
 
     if fp_hyst != None:
-        if nocorr != 'y':
-            if nonlincorr == 'y':
-                if mass != 1:
-                    unit = 'A m2 kg-1'
-                else:
-                    unit = 'A m2'
-                print(' * Ms = '+f'{Ms/mass:.3e}'+' '+unit)
-                print(' * Mrs = '+f'{Mrs/mass:.3e}'+' '+unit)
-                print(' * Bc = '+f'{Bc*1000:.2f}'+' mT')
-                print(' * HF slope = ' + f'{kHF:.3e}' + ' A m2 T-1')
-                print(' * alpha = ' + f'{alpha:.3e}' + ' A m2 T-2')
+        if nonlincorr == 'y':
+            if mass != 1:
+                unit = 'A m2 kg-1'
             else:
-                if mass != 1:
-                    unit = 'A m2 kg-1'
-                    unitHF = 'm3 kg-1'
-                else:
-                    unit = 'A m2'
-                    unitHF = 'm3'
-                print(' * Ms = ' + f'{Ms/mass:.3e}'+' '+unit)
-                print(' * Mrs = ' + f'{Mrs/mass:.3e}'+' '+unit)
-                print(' * Bc = ' + f'{Bc*1000:.1f}'+' mT')
-                print(' * HF slope = ' + f'{sHF:.2e}'+' A m2 T-1 / ' + f'{kHF/mass:.2e}'+' '+unitHF)
+                unit = 'A m2'
+            print(' * Ms = '+f'{Ms/mass:.3e}'+' '+unit)
+            print(' * Mrs = '+f'{Mrs/mass:.3e}'+' '+unit)
+            print(' * Bc = '+f'{Bc*1000:.2f}'+' mT')
+            print(' * HF slope = ' + f'{kHF:.3e}' + ' A m2 T-1')
+            print(' * alpha = ' + f'{alpha:.3e}' + ' A m2 T-2')
+            print(' * beta = ' + f'{beta:.2f}')
+        else:
+            if mass != 1:
+                unit = 'A m2 kg-1'
+                unitHF = 'm3 kg-1'
+            else:
+                unit = 'A m2'
+                unitHF = 'm3'
+            print(' * Ms = ' + f'{Ms/mass:.3e}'+' '+unit)
+            print(' * Mrs = ' + f'{Mrs/mass:.3e}'+' '+unit)
+            print(' * Bc = ' + f'{Bc*1000:.1f}'+' mT')
+            print(' * HF slope = ' + f'{sHF:.2e}'+' A m2 T-1 / ' + f'{kHF/mass:.2e}'+' '+unitHF)
         fp_hyst.close()
 
     if fp_LT != None:

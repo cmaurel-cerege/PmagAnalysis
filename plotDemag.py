@@ -44,6 +44,7 @@ def Plot_TH_demag(Mx, My, Mz, T, label='', norm=False, color='lightgray', marker
         else:
             plt.ylim(0, 1.1)
         plt.plot(T, M/M[0], color='k', marker=marker, mec='k', mfc=color, ms=6, lw=0.5, mew=0.5, label=label)
-    plt.legend()
+    if label != '':
+        plt.legend()
 
     return

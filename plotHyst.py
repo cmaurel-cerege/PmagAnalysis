@@ -6,6 +6,8 @@ from scipy.optimize import curve_fit
 from matplotlib import ticker
 from scipy.interpolate import CubicSpline
 from scipy.interpolate import UnivariateSpline
+import scipy.integrate as integrate
+
 
 def Get_closest_id(L,value):
     return list(L).index(min(L, key=lambda x:abs(x-value)))
@@ -90,7 +92,9 @@ def plotHyst(B,M,mass=1,linear=True,interval=0.3,ylim=(),shownocorr=False):
     Bfit = np.array([Bhalf[k] for k in np.arange(len(Bhalf)) if Bhalf[k] > np.max(B) - interval])
     Mfit = np.array([Mhalf[k] for k in np.arange(len(Bhalf)) if Bhalf[k] > np.max(B) - interval])
 
-    Ms, Mrs, Bc, sHF, kHF, alpha = 0, 0, 0, 0, 0, 0
+    Mhalf2 = np.array([M[k] for k in np.arange(int(len(M)/2),len(M))][::-1])
+
+    Ms, Mrs, Bc, sHF, kHF, alpha, beta = 0, 0, 0, 0, 0, 0, 0
 
     if linear == True:
         popt, pcov = curve_fit(line, Bfit, Mfit)
@@ -117,6 +121,7 @@ def plotHyst(B,M,mass=1,linear=True,interval=0.3,ylim=(),shownocorr=False):
         ax.plot(B, Mcorr, '-', color='darkred', lw=1.5)
 
     elif linear == False:
+        ## Calculate Mrs and Bc
         idb = Get_closest_id(Bhalf, 0)
         if Bhalf[idb] > 0:
             B1, B2, M1, M2 = Bhalf[idb], Bhalf[idb + 1], Mhalf[idb], Mhalf[idb + 1]
@@ -132,13 +137,32 @@ def plotHyst(B,M,mass=1,linear=True,interval=0.3,ylim=(),shownocorr=False):
         slope, intercept = np.polyfit([B1, B2], [M1, M2], 1)
         Bc = -intercept/slope
 
+        ## Calculate Ms and other parameters
         popt, pcov = curve_fit(poly, Bfit, Mfit)
         Ms, kHF, alpha = popt
         Mcorr = poly(Bfit,Ms,kHF,alpha)
-
         ax.plot(Bfit, Mcorr, '-', color='darkred', lw=1.5)
 
-    return Ms, Mrs, Bc, sHF, kHF, alpha
+        Bhalfpos = [b for b in Bhalf if b > 0][::-1]
+        Mhalfpos = [Mhalf[k] for k in np.arange(len(Mhalf)) if Bhalf[k] > 0][::-1]
+
+        cs = CubicSpline(Bhalfpos, Mhalfpos)
+        Bspline = np.linspace(np.min(Bhalfpos),np.max(Bhalfpos),1000)
+        Mpp = cs(Bspline,2)
+
+        vmin, vmax = -1.5, 0
+
+        Bsplinecut = np.array([b for b in Bspline if (np.log(b) > vmin and np.log(b) < vmax)])
+        Mppcut = np.array([np.absolute(Mpp[k]) for k in np.arange(len(Mpp)) if (np.log(Bspline[k]) > vmin and np.log(Bspline[k]) < vmax)])
+        res = stats.linregress(np.log(Bsplinecut), np.log(Mppcut))
+        beta = res.slope+2
+        plt.figure()
+        plt.xlabel('log(B)')
+        plt.ylabel('log(|Mpp|)')
+        plt.plot(np.log(Bsplinecut), res.intercept + res.slope * np.log(Bsplinecut), 'r')
+        plt.plot(np.log(Bspline), np.log(np.absolute(Mpp)),'k',lw=0.5)
+
+    return Ms, Mrs, Bc, sHF, kHF, alpha, beta
 
 def plotVSMLT(T,M,norm=False,ylim=()):
 

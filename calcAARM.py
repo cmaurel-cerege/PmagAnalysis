@@ -40,11 +40,18 @@ name = sys.argv[1].split('/')[-1].split('.')[0]
 Mxtmp, Mytmp, Mztmp = [], [], []
 fp = open(sys.argv[1], 'r')
 for j, line in enumerate(fp):
-    if j > 0:
+    if sys.argv[1].split('.')[-1] == 'DAT':
+        if j > 0:
+            cols = line.split()
+            Mxtmp.append(float(cols[1]) * 1e-3)
+            Mytmp.append(float(cols[2]) * 1e-3)
+            Mztmp.append(float(cols[3]) * 1e-3)
+    else:
         cols = line.split()
         Mxtmp.append(float(cols[1]) * 1e-3)
         Mytmp.append(float(cols[2]) * 1e-3)
         Mztmp.append(float(cols[3]) * 1e-3)
+
 fp.close()
 nb_meas = len(Mxtmp)
 
@@ -163,7 +170,7 @@ if nb_pos == 6:
     eigvals, eigvecs = np.linalg.eig(K)
     valvec = [[eigvals[i], np.transpose(eigvecs)[i]] for i in np.arange(len(eigvals))]
     valvec.sort(key=lambda k: (k[0], -k[1]), reverse=True)
-    eigvals = np.array([valvec[i][0] for i in np.arange(len(valvec))])
+    eigvals = np.array([valvec[i][0] for i in np.arange(len(valvec))]).real
     eigvecs = np.array([valvec[i][1] for i in np.arange(len(valvec))])
     eigvals_mean = (eigvals[0]+eigvals[1]+eigvals[2])/3
     alpha1, alpha2, alpha3 = eigvals[0]/eigvals_mean, eigvals[1]/eigvals_mean, eigvals[2]/eigvals_mean
